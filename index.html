@@ -1,62 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexShopy - Premium Store</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApexShopy Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="header">
-        <div class="logo">ApexShopy</div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
-        </div>
-        <button class="cart-icon-btn" onclick="toggleCart()">
-            🛒 <span class="cart-count" id="cartCount">0</span>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <h1 class="logo">ApexShopy</h1>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+        <button class="cart-btn" onclick="toggleCart()">
+          🛒 Cart (<span id="cartCount">0</span>)
         </button>
-    </header>
+      </div>
+    </div>
+  </header>
 
-    <!-- Category Filter Bar -->
-    <div class="categories">
+  <!-- Controls: Search & Category Filters -->
+  <section class="controls-section">
+    <div class="controls-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search products..." 
+        oninput="filterProducts()" 
+        class="search-bar"
+      >
+      <div class="categories">
         <button class="active" onclick="filterCategory('All', event)">All</button>
         <button onclick="filterCategory('Electronics', event)">Electronics</button>
-        <button onclick="filterCategory('Wearables', event)">Wearables</button>
+        <button onclick="filterCategory('Apparel', event)">Apparel</button>
         <button onclick="filterCategory('Accessories', event)">Accessories</button>
-        <button onclick="filterCategory('Sports & Outdoors', event)">Sports & Outdoors</button>
-        <button onclick="filterCategory('Smart Home', event)">Smart Home</button>
+      </div>
     </div>
+  </section>
 
-    <!-- Main Content / Product Grid -->
-    <main class="main-container">
-        <div class="product-grid" id="productGrid">
-            <!-- Dynamic products render here via script.js -->
-        </div>
-    </main>
+  <!-- Product Grid -->
+  <main class="main-content">
+    <div id="productGrid" class="product-grid"></div>
+  </main>
 
-    <!-- Slide-out Cart Sidebar & Overlay -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    
-    <aside class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h2>Your Cart</h2>
-            <button class="close-cart" onclick="toggleCart()">✕</button>
-        </div>
-        <div class="cart-items" id="cartItems">
-            <!-- Cart items render here dynamically -->
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotalAmount">$0.00</span>
-            </div>
-            <button class="checkout-btn" onclick="checkoutMultiPlatform()">Proceed to Checkout</button>
-        </div>
-    </aside>
+  <!-- Cart Overlay & Sidebar -->
+  <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
+  <aside id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart-btn" onclick="toggleCart()">&times;</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <strong id="cartTotalAmount">$0.00</strong>
+      </div>
+      <button class="checkout-btn" onclick="checkoutMultiPlatform()">Checkout Order</button>
+      <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </aside>
 
-    <!-- External JavaScript File -->
-    <script src="script.js"></script>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 class="footer-logo">ApexShopy</h3>
+        <p>Your one-stop shop for quality products with instant DM checkout.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Connect With Us</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.facebook.com/share/p/19WQNXqUhe/" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=10s3kk6s" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.reddit.com/user/apexshopy" target="_blank" rel="noopener">Reddit</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ApexShopy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script src="script.js"></script>
 </body>
 </html>

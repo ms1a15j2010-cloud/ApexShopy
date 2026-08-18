@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Noise-Canceling Headphones",
+    "category": "Electronics",
+    "price": 129.99,
+    "originalPrice": 179.99,
+    "rating": "★ 4.8 (124)",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 2,
+    "name": "Ergonomic Wireless Optical Mouse",
+    "category": "Electronics",
+    "price": 29.99,
+    "originalPrice": 39.99,
+    "rating": "★ 4.5 (82)",
+    "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 3,
+    "name": "RGB Mechanical Gaming Keyboard",
+    "category": "Electronics",
+    "price": 74.99,
+    "originalPrice": 99.99,
+    "rating": "★ 4.7 (98)",
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 4,
+    "name": "Portable Waterproof Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 45.99,
+    "originalPrice": 59.99,
+    "rating": "★ 4.6 (145)",
+    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 5,
+    "name": "4K Ultra HD Streaming Stick",
+    "category": "Electronics",
+    "price": 39.99,
+    "originalPrice": 49.99,
+    "rating": "★ 4.4 (76)",
+    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 6,
+    "name": "USB-C Multi-Port Adapter Hub",
+    "category": "Electronics",
+    "price": 34.99,
+    "originalPrice": 44.99,
+    "rating": "★ 4.5 (61)",
+    "image": "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 7,
+    "name": "Smart Fitness Watch",
+    "category": "Wearables",
+    "price": 89.99,
+    "originalPrice": 119.99,
+    "rating": "★ 4.6 (89)",
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 8,
+    "name": "Slim Fitness Activity Tracker",
+    "category": "Wearables",
+    "price": 39.99,
+    "originalPrice": 54.99,
+    "rating": "★ 4.3 (54)",
+    "image": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 9,
+    "name": "Heart Rate Monitor Chest Strap",
+    "category": "Wearables",
+    "price": 49.99,
+    "originalPrice": 64.99,
+    "rating": "★ 4.7 (41)",
+    "image": "https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 10,
+    "name": "Open-Ear Bone Conduction Headphones",
+    "category": "Wearables",
+    "price": 89.99,
+    "originalPrice": 119.99,
+    "rating": "★ 4.5 (33)",
+    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 11,
+    "name": "GPS Multisport Running Watch",
+    "category": "Wearables",
+    "price": 159.99,
+    "originalPrice": 199.99,
+    "rating": "★ 4.8 (112)",
+    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 12,
+    "name": "Smart Health & Sleep Tracker Ring",
+    "category": "Wearables",
+    "price": 199.99,
+    "originalPrice": 249.99,
+    "rating": "★ 4.4 (29)",
+    "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 13,
+    "name": "Ergonomic Leather Backpack",
+    "category": "Accessories",
+    "price": 59.99,
+    "originalPrice": 79.99,
+    "rating": "★ 4.7 (56)",
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 14,
+    "name": "Polarized UV400 Sunglasses",
+    "category": "Accessories",
+    "price": 24.99,
+    "originalPrice": 34.99,
+    "rating": "★ 4.5 (88)",
+    "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 15,
+    "name": "Minimalist RFID Blocking Wallet",
+    "category": "Accessories",
+    "price": 29.99,
+    "originalPrice": 39.99,
+    "rating": "★ 4.8 (167)",
+    "image": "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 16,
+    "name": "Travel Cable & Tech Organizer Case",
+    "category": "Accessories",
+    "price": 18.99,
+    "originalPrice": 24.99,
+    "rating": "★ 4.6 (92)",
+    "image": "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 17,
+    "name": "Universal Waterproof Phone Pouch 2-Pack",
+    "category": "Accessories",
+    "price": 14.99,
+    "originalPrice": 19.99,
+    "rating": "★ 4.4 (110)",
+    "image": "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 18,
+    "name": "Canvas Weekender Travel Duffel Bag",
+    "category": "Accessories",
+    "price": 54.99,
+    "originalPrice": 74.99,
+    "rating": "★ 4.7 (48)",
+    "image": "https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 19,
+    "name": "Insulated Stainless Steel Bottle",
+    "category": "Sports & Outdoors",
+    "price": 24.99,
+    "originalPrice": 34.99,
+    "rating": "★ 4.9 (210)",
+    "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 20,
+    "name": "Non-Slip Thick Exercise Yoga Mat",
+    "category": "Sports & Outdoors",
+    "price": 29.99,
+    "originalPrice": 39.99,
+    "rating": "★ 4.7 (134)",
+    "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 21,
+    "name": "Resistance Loop Bands Set of 5",
+    "category": "Sports & Outdoors",
+    "price": 19.99,
+    "originalPrice": 27.99,
+    "rating": "★ 4.8 (180)",
+    "image": "https://images.unsplash.com/photo-1598289431512-b97b0917affc?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 22,
+    "name": "Adjustable Quick-Select Dumbbell Set",
+    "category": "Sports & Outdoors",
+    "price": 129.99,
+    "originalPrice": 169.99,
+    "rating": "★ 4.6 (75)",
+    "image": "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 23,
+    "name": "Lightweight Portable Camping Hammock",
+    "category": "Sports & Outdoors",
+    "price": 34.99,
+    "originalPrice": 44.99,
+    "rating": "★ 4.8 (95)",
+    "image": "https://images.unsplash.com/photo-1445307806294-bff7f67ff225?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 24,
+    "name": "Outdoor Hydration Backpack with 2L Bladder",
+    "category": "Sports & Outdoors",
+    "price": 39.99,
+    "originalPrice": 52.99,
+    "rating": "★ 4.5 (62)",
+    "image": "https://images.unsplash.com/photo-1546938576-6e6a64f317cc?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 25,
+    "name": "Smart LED Desk Lamp",
+    "category": "Smart Home",
+    "price": 39.99,
+    "originalPrice": 49.99,
+    "rating": "★ 4.4 (43)",
+    "image": "https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 26,
+    "name": "Color-Changing Smart Wi-Fi Bulb 4-Pack",
+    "category": "Smart Home",
+    "price": 32.99,
+    "originalPrice": 42.99,
+    "rating": "★ 4.6 (118)",
+    "image": "https://images.unsplash.com/photo-1550985616-10810253b84d?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 27,
+    "name": "Wi-Fi Smart Plug Socket 2-Pack",
+    "category": "Smart Home",
+    "price": 21.99,
+    "originalPrice": 28.99,
+    "rating": "★ 4.5 (142)",
+    "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 28,
+    "name": "1080p Indoor HD Security Camera",
+    "category": "Smart Home",
+    "price": 44.99,
+    "originalPrice": 59.99,
+    "rating": "★ 4.7 (88)",
+    "image": "https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 29,
+    "name": "Wireless Smart Video Doorbell",
+    "category": "Smart Home",
+    "price": 89.99,
+    "originalPrice": 119.99,
+    "rating": "★ 4.6 (67)",
+    "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    "id": 30,
+    "name": "Ultrasonic Cool Mist Smart Humidifier",
+    "category": "Smart Home",
+    "price": 49.99,
+    "originalPrice": 64.99,
+    "rating": "★ 4.4 (51)",
+    "image": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=500&q=80"
+  }
+]
