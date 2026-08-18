@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ApexShopy - Smart Products. Better Deals.">
+    <title>ApexShopy | Premium Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="logo">
+            APEX<span>SHOPY</span>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for products..." onkeyup="filterProducts()">
+        </div>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 <span id="cartCount" class="cart-badge">0</span>
+        </div>
+    </header>
+
+    <!-- Promotional Banner -->
+    <section class="banner">
+        <div class="banner-content">
+            <h2>Super Sale is Live!</h2>
+            <p>Up to 40% off on premium electronics and accessories.</p>
+        </div>
+    </section>
+
+    <!-- Category Filters -->
+    <!-- Example of updating your category buttons -->
+<div class="categories">
+    <button class="active" onclick="filterCategory('All')">All</button>
+    <button onclick="filterCategory('Electronics')">Electronics</button>
+    <button onclick="filterCategory('Wearables')">Wearables</button>
+    <button onclick="filterCategory('Accessories')">Accessories</button>
+    <button onclick="filterCategory('Sports & Outdoors')">Sports & Outdoors</button>
+    <button onclick="filterCategory('Smart Home')">Smart Home</button>
+</div>
+
+    <!-- Product Grid -->
+    <main class="products-container" id="productGrid">
+        <!-- Products will be injected here by JavaScript -->
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotalAmount">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkoutMultiPlatform()">Checkout</button>
+        </div>
+    </aside>
+
+    <script src="script.js"></script>
+</body>
+</html>
