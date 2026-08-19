@@ -1209,3 +1209,64 @@ body {
     width: 100%;
   }
 }
+
+/* =====================================
+   9. PRODUCT DETAIL MODAL
+===================================== */
+.card {
+  cursor: pointer;
+}
+
+.product-modal-content {
+  max-width: 650px;
+  position: relative;
+}
+
+.close-modal-x {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.product-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.product-modal-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+}
+
+.product-modal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 580px) {
+  .product-modal-body {
+    grid-template-columns: 1fr;
+  }
+  .product-modal-img {
+    height: 180px;
+  }
+}
