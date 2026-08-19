@@ -1,5 +1,5 @@
 /* =====================================
-   STORE CONFIGURATION
+   1. STORE CONFIGURATION & STATE
 ===================================== */
 const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/share/p/19WQNXqUhe/",
@@ -7,14 +7,13 @@ const SOCIAL_LINKS = {
   reddit: "https://www.reddit.com/user/apexshopy"
 };
 
-// State
 let products = [];
 let cart = loadCartFromStorage();
 let activeCategory = 'All';
 let searchQuery = '';
 
 // ==========================================
-// 1. FETCH PRODUCTS
+// 2. FETCH PRODUCTS
 // ==========================================
 async function fetchProducts() {
   const container = document.getElementById('productGrid');
@@ -35,7 +34,7 @@ async function fetchProducts() {
 }
 
 // ==========================================
-// 2. UTILITIES & STORAGE
+// 3. UTILITIES & STORAGE
 // ==========================================
 function escapeHTML(str) {
   if (typeof str !== 'string') return str;
@@ -92,7 +91,7 @@ function showToast(message, type = 'info', duration = 3000) {
 }
 
 // ==========================================
-// 3. THEME MANAGEMENT
+// 4. THEME MANAGEMENT
 // ==========================================
 function initTheme() {
   const savedTheme = localStorage.getItem('apex_theme');
@@ -120,7 +119,7 @@ function updateThemeButton(theme) {
 }
 
 // ==========================================
-// 4. UI HANDLERS
+// 5. UI & FILTER HANDLERS
 // ==========================================
 function toggleCart() {
   const sidebar = document.getElementById('cartSidebar');
@@ -150,7 +149,7 @@ function filterCategory(category, event) {
 }
 
 // ==========================================
-// 5. RENDERING FUNCTIONS
+// 6. RENDERING & MODALS
 // ==========================================
 function renderProducts() {
   const container = document.getElementById('productGrid');
@@ -177,7 +176,7 @@ function renderProducts() {
     const hasDiscount = originalPrice && originalPrice > activePrice;
 
     return `
-      <div class="card" data-id="${product.id}">
+      <div class="card" data-id="${product.id}" onclick="openProductModal(${product.id})">
         <img src="${safeImage}" alt="${safeName}" loading="lazy">
         <div class="card-info">
           <h3 class="card-title">${safeName}</h3>
@@ -186,11 +185,60 @@ function renderProducts() {
             <span class="sale-price">${formatCurrency(activePrice)}</span>
             ${hasDiscount ? `<span class="original-price">${formatCurrency(originalPrice)}</span>` : ''}
           </div>
-          <button class="add-btn" onclick="addToCart(${product.id})">Add to Cart</button>
+          <button class="add-btn" onclick="event.stopPropagation(); addToCart(${product.id})">Add to Cart</button>
         </div>
       </div>
     `;
   }).join('');
+}
+
+function openProductModal(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const existingModal = document.getElementById('productDetailModal');
+  if (existingModal) existingModal.remove();
+
+  const safeName = escapeHTML(product.name || 'Product');
+  const safeImage = escapeHTML(product.image || '');
+  const safeDesc = escapeHTML(product.description || 'High quality product designed for durability and performance.');
+  const ratingDisplay = escapeHTML(product.rating || '★ 5.0');
+  const activePrice = product.price || 0;
+  const originalPrice = product.originalPrice;
+  const hasDiscount = originalPrice && originalPrice > activePrice;
+
+  const modal = document.createElement('div');
+  modal.id = 'productDetailModal';
+  modal.className = 'modal-overlay';
+  modal.onclick = (e) => {
+    if (e.target === modal) closeProductModal();
+  };
+
+  modal.innerHTML = `
+    <div class="modal-content product-modal-content">
+      <button class="close-modal-x" onclick="closeProductModal()">&times;</button>
+      <div class="product-modal-body">
+        <img src="${safeImage}" alt="${safeName}" class="product-modal-img">
+        <div class="product-modal-details">
+          <h2>${safeName}</h2>
+          <div class="rating">${ratingDisplay}</div>
+          <p class="product-description">${safeDesc}</p>
+          <div class="price-container">
+            <span class="sale-price">${formatCurrency(activePrice)}</span>
+            ${hasDiscount ? `<span class="original-price">${formatCurrency(originalPrice)}</span>` : ''}
+          </div>
+          <button class="add-btn" onclick="addToCart(${product.id}); closeProductModal();">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+function closeProductModal() {
+  const modal = document.getElementById('productDetailModal');
+  if (modal) modal.remove();
 }
 
 function updateCartUI() {
@@ -237,7 +285,7 @@ function updateCartUI() {
 }
 
 // ==========================================
-// 6. CART MUTATIONS
+// 7. CART MUTATIONS
 // ==========================================
 function addToCart(productId) {
   const product = products.find(p => p.id === productId);
@@ -277,7 +325,7 @@ function clearCart() {
 }
 
 // ==========================================
-// 7. CHECKOUT & MODAL
+// 8. CHECKOUT & ORDER MODAL
 // ==========================================
 function buildOrderSummaryText() {
   const dateStr = new Date().toLocaleDateString();
@@ -328,6 +376,10 @@ function showCheckoutModal(orderSummary, isCopied) {
   const modal = document.createElement('div');
   modal.id = 'checkoutModal';
   modal.className = 'modal-overlay';
+  modal.onclick = (e) => {
+    if (e.target === modal) closeCheckoutModal();
+  };
+
   modal.innerHTML = `
     <div class="modal-content">
       <h2>${isCopied ? '✅ Order Copied to Clipboard!' : '📋 Order Summary Ready'}</h2>
@@ -364,7 +416,7 @@ function closeCheckoutModal() {
 }
 
 // ==========================================
-// 8. INITIALIZATION
+// 9. INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
