@@ -51,6 +51,19 @@ function formatCurrency(amount) {
   return isNaN(num) ? '$0.00' : `$${num.toFixed(2)}`;
 }
 
+function getStockBadge(stock) {
+  const count = typeof stock !== 'undefined' ? Number(stock) : 10;
+  if (count <= 0) return `<span class="stock-badge out-of-stock">Out of Stock</span>`;
+  if (count <= 5) return `<span class="stock-badge low-stock">Only ${count} left!</span>`;
+  return `<span class="stock-badge in-stock">In Stock (${count})</span>`;
+}
+
+function getRelatedProducts(currentProduct, limit = 3) {
+  return products
+    .filter(p => p.category === currentProduct.category && p.id !== currentProduct.id)
+    .slice(0, limit);
+}
+
 function loadCartFromStorage() {
   try {
     const savedCart = localStorage.getItem('apex_cart');
@@ -175,17 +188,26 @@ function renderProducts() {
     const originalPrice = product.originalPrice;
     const hasDiscount = originalPrice && originalPrice > activePrice;
 
+    const stockCount = typeof product.stock !== 'undefined' ? product.stock : 10;
+    const isOutOfStock = stockCount <= 0;
+
     return `
       <div class="card" data-id="${product.id}" onclick="openProductModal(${product.id})">
         <img src="${safeImage}" alt="${safeName}" loading="lazy">
         <div class="card-info">
           <h3 class="card-title">${safeName}</h3>
+          <div class="stock-container">${getStockBadge(stockCount)}</div>
           <div class="rating">${ratingDisplay}</div>
           <div class="price-container">
             <span class="sale-price">${formatCurrency(activePrice)}</span>
             ${hasDiscount ? `<span class="original-price">${formatCurrency(originalPrice)}</span>` : ''}
           </div>
-          <button class="add-btn" onclick="event.stopPropagation(); addToCart(${product.id})">Add to Cart</button>
+          <button 
+            class="add-btn ${isOutOfStock ? 'disabled-btn' : ''}" 
+            ${isOutOfStock ? 'disabled' : ''} 
+            onclick="event.stopPropagation(); addToCart(${product.id})">
+            ${isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+          </button>
         </div>
       </div>
     `;
@@ -207,6 +229,25 @@ function openProductModal(productId) {
   const originalPrice = product.originalPrice;
   const hasDiscount = originalPrice && originalPrice > activePrice;
 
+  const stockCount = typeof product.stock !== 'undefined' ? product.stock : 10;
+  const isOutOfStock = stockCount <= 0;
+
+  const relatedItems = getRelatedProducts(product, 3);
+  const relatedHTML = relatedItems.length > 0 ? `
+    <div class="related-products-section">
+      <h3>You May Also Like</h3>
+      <div class="related-grid">
+        ${relatedItems.map(item => `
+          <div class="related-card" onclick="openProductModal(${item.id})">
+            <img src="${escapeHTML(item.image || '')}" alt="${escapeHTML(item.name || '')}">
+            <div class="related-card-title">${escapeHTML(item.name || '')}</div>
+            <div class="related-card-price">${formatCurrency(item.price)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
+
   const modal = document.createElement('div');
   modal.id = 'productDetailModal';
   modal.className = 'modal-overlay';
@@ -221,15 +262,22 @@ function openProductModal(productId) {
         <img src="${safeImage}" alt="${safeName}" class="product-modal-img">
         <div class="product-modal-details">
           <h2>${safeName}</h2>
+          <div class="stock-container">${getStockBadge(stockCount)}</div>
           <div class="rating">${ratingDisplay}</div>
           <p class="product-description">${safeDesc}</p>
           <div class="price-container">
             <span class="sale-price">${formatCurrency(activePrice)}</span>
             ${hasDiscount ? `<span class="original-price">${formatCurrency(originalPrice)}</span>` : ''}
           </div>
-          <button class="add-btn" onclick="addToCart(${product.id}); closeProductModal();">Add to Cart</button>
+          <button 
+            class="add-btn ${isOutOfStock ? 'disabled-btn' : ''}" 
+            ${isOutOfStock ? 'disabled' : ''} 
+            onclick="addToCart(${product.id}); closeProductModal();">
+            ${isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+          </button>
         </div>
       </div>
+      ${relatedHTML}
     </div>
   `;
 
@@ -291,8 +339,18 @@ function addToCart(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
+  const maxStock = typeof product.stock !== 'undefined' ? product.stock : 10;
+  if (maxStock <= 0) {
+    showToast('Sorry, this product is currently out of stock!', 'error', 3000);
+    return;
+  }
+
   const existingItem = cart.find(item => item.id === productId);
   if (existingItem) {
+    if (existingItem.quantity + 1 > maxStock) {
+      showToast(`Only ${maxStock} items available in stock.`, 'error', 3000);
+      return;
+    }
     existingItem.quantity += 1;
   } else {
     cart.push({ ...product, quantity: 1 });
@@ -305,6 +363,14 @@ function addToCart(productId) {
 function updateQuantity(productId, delta) {
   const item = cart.find(i => i.id === productId);
   if (!item) return;
+
+  const product = products.find(p => p.id === productId);
+  const maxStock = product && typeof product.stock !== 'undefined' ? product.stock : 10;
+
+  if (delta > 0 && item.quantity + delta > maxStock) {
+    showToast(`Only ${maxStock} items available in stock.`, 'error', 3000);
+    return;
+  }
 
   item.quantity += delta;
   if (item.quantity <= 0) {
