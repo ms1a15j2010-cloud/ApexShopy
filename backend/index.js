@@ -13,16 +13,7 @@ app.use(express.json());
 
 app.use("/images", express.static(path.join(__dirname, "..", "images")));
 
-app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "ApexShopy backend is running",
-  });
-});
-
-app.use("/api/products", productRoutes);
-
-let mongoConnection = null;
+let mongoConnectionPromise = null;
 
 async function connectDatabase() {
   if (mongoose.connection.readyState === 1) {
@@ -33,12 +24,33 @@ async function connectDatabase() {
     throw new Error("MONGODB_URI environment variable is not configured");
   }
 
-  if (!mongoConnection) {
-    mongoConnection = mongoose.connect(process.env.MONGODB_URI);
+  if (!mongoConnectionPromise) {
+    mongoConnectionPromise = mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+    });
   }
 
-  await mongoConnection;
+  await mongoConnectionPromise;
 }
+
+app.get("/", async (req, res) => {
+  try {
+    await connectDatabase();
+
+    res.json({
+      success: true,
+      message: "ApexShopy backend is running",
+    });
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: error.message,
+    });
+  }
+});
 
 app.use(async (req, res, next) => {
   try {
@@ -50,9 +62,12 @@ app.use(async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Database connection failed",
+      error: error.message,
     });
   }
 });
+
+app.use("/api/products", productRoutes);
 
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
