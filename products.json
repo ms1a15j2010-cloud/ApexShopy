@@ -5,7 +5,7 @@
     "category": "Electronics",
     "price": 129.99,
     "originalPrice": 179.99,
-    "rating": "★ 4.8 (124)",
+    "rating": "⭐ 4.8 (124)",
     "stock": 3,
     "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80",
     "description": "High-fidelity wireless headphones with active noise cancellation and 30-hour battery life."
@@ -16,7 +16,7 @@
     "category": "Electronics",
     "price": 45.99,
     "originalPrice": 59.99,
-    "rating": "★ 4.6 (145)",
+    "rating": "⭐ 4.6 (145)",
     "stock": 12,
     "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
     "description": "Compact IPX7 waterproof speaker delivering crisp 360-degree audio for outdoors."
@@ -27,7 +27,7 @@
     "category": "Electronics",
     "price": 39.99,
     "originalPrice": 49.99,
-    "rating": "★ 4.7 (210)",
+    "rating": "⭐ 4.7 (210)",
     "stock": 8,
     "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
     "description": "Stream your favorite entertainment in vivid 4K HDR with voice control remote."
@@ -38,7 +38,7 @@
     "category": "Electronics",
     "price": 29.99,
     "originalPrice": 39.99,
-    "rating": "★ 4.5 (98)",
+    "rating": "⭐ 4.5 (98)",
     "stock": 0,
     "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80",
     "description": "Ergonomic true wireless earbuds with touch controls and pocket-sized charging case."
@@ -49,7 +49,7 @@
     "category": "Electronics",
     "price": 34.99,
     "originalPrice": 44.99,
-    "rating": "★ 4.7 (112)",
+    "rating": "⭐ 4.7 (112)",
     "stock": 15,
     "image": "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=500&q=80",
     "description": "High-capacity power bank capable of charging smartphones up to 5 times fast."
@@ -60,18 +60,19 @@
     "category": "Electronics",
     "price": 32.99,
     "originalPrice": 39.99,
-    "rating": "★ 4.6 (76)",
+    "rating": "⭐ 4.6 (76)",
     "stock": 5,
     "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80",
     "description": "Natural handshake position mouse designed to reduce wrist strain during long hours."
   },
+
   {
     "id": 7,
     "name": "Smart Health & Sleep Tracker Ring",
     "category": "Wearables",
     "price": 199.99,
     "originalPrice": 249.99,
-    "rating": "★ 4.6 (85)",
+    "rating": "⭐ 4.6 (85)",
     "stock": 4,
     "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=500&q=80",
     "description": "Lightweight titanium smart ring tracking sleep stages, heart rate, and body temperature."
@@ -82,7 +83,7 @@
     "category": "Wearables",
     "price": 159.99,
     "originalPrice": 199.99,
-    "rating": "★ 4.8 (150)",
+    "rating": "⭐ 4.8 (150)",
     "stock": 2,
     "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80",
     "description": "Durable outdoor smartwatch featuring built-in GPS, workout metrics, and 14-day battery."
@@ -93,7 +94,7 @@
     "category": "Wearables",
     "price": 39.99,
     "originalPrice": 49.99,
-    "rating": "★ 4.4 (180)",
+    "rating": "⭐ 4.4 (180)",
     "stock": 20,
     "image": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=500&q=80",
     "description": "Sleek fitness tracker measuring daily steps, distance, calories burned, and sleep quality."
@@ -104,7 +105,7 @@
     "category": "Wearables",
     "price": 89.99,
     "originalPrice": 119.99,
-    "rating": "★ 4.6 (95)",
+    "rating": "⭐ 4.6 (95)",
     "stock": 7,
     "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80",
     "description": "Full touchscreen smartwatch with customizable dials, health alerts, and call notifications."
@@ -115,7 +116,7 @@
     "category": "Wearables",
     "price": 119.99,
     "originalPrice": 149.99,
-    "rating": "★ 4.5 (62)",
+    "rating": "⭐ 4.5 (62)",
     "stock": 6,
     "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80",
     "description": "Classic watch aesthetic combined with hidden smart sub-display features and tracking."
@@ -126,18 +127,19 @@
     "category": "Wearables",
     "price": 139.99,
     "originalPrice": 169.99,
-    "rating": "★ 4.7 (44)",
+    "rating": "⭐ 4.7 (44)",
     "stock": 3,
     "image": "https://images.unsplash.com/photo-1559348349-86f1f65817fe?auto=format&fit=crop&w=500&q=80",
     "description": "Waterproof cycling computer with turn-by-turn navigation and performance metrics."
   },
+
   {
     "id": 13,
     "name": "Minimalist RFID Blocking Wallet",
     "category": "Accessories",
     "price": 29.99,
     "originalPrice": 39.99,
-    "rating": "★ 4.8 (167)",
+    "rating": "⭐ 4.8 (167)",
     "stock": 14,
     "image": "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=500&q=80",
     "description": "Slim aluminum wallet protecting your cards from electronic theft while keeping a low profile."
@@ -148,7 +150,7 @@
     "category": "Accessories",
     "price": 14.99,
     "originalPrice": 19.99,
-    "rating": "★ 4.6 (310)",
+    "rating": "⭐ 4.6 (310)",
     "stock": 25,
     "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80",
     "description": "Clear touchscreen-compatible dry bag keeping your phone safe underwater up to 100ft."
@@ -159,7 +161,7 @@
     "category": "Accessories",
     "price": 18.99,
     "originalPrice": 24.99,
-    "rating": "★ 4.7 (140)",
+    "rating": "⭐ 4.7 (140)",
     "stock": 18,
     "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=500&q=80",
     "description": "Water-resistant tech case with elastic loops and mesh pockets for cables and adapters."
@@ -170,10 +172,10 @@
     "category": "Accessories",
     "price": 22.99,
     "originalPrice": 29.99,
-    "rating": "★ 4.5 (88)",
+    "rating": "⭐ 4.5 (88)",
     "stock": 9,
     "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80",
-    "description": "Stylish frames engineered to filter harmful digital blue light and prevent eye fatigue."
+    "description": "Stylish frames engineered to filter digital blue light and provide comfortable everyday wear."
   },
   {
     "id": 17,
@@ -181,7 +183,7 @@
     "category": "Accessories",
     "price": 16.99,
     "originalPrice": 21.99,
-    "rating": "★ 4.6 (105)",
+    "rating": "⭐ 4.6 (105)",
     "stock": 11,
     "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80",
     "description": "Compact genuine leather key holder eliminating key jingle and pocket scratches."
@@ -192,18 +194,19 @@
     "category": "Accessories",
     "price": 59.99,
     "originalPrice": 79.99,
-    "rating": "★ 4.7 (230)",
+    "rating": "⭐ 4.7 (230)",
     "stock": 5,
     "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=500&q=80",
     "description": "Durable anti-theft commuter backpack with padded 15.6-inch laptop compartment."
   },
+
   {
     "id": 19,
     "name": "Insulated Stainless Steel Bottle",
     "category": "Sports & Outdoors",
     "price": 24.99,
     "originalPrice": 29.99,
-    "rating": "★ 4.9 (210)",
+    "rating": "⭐ 4.9 (210)",
     "stock": 15,
     "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=500&q=80",
     "description": "Double-wall vacuum insulated flask keeping drinks cold for 24 hours or hot for 12 hours."
@@ -214,7 +217,7 @@
     "category": "Sports & Outdoors",
     "price": 19.99,
     "originalPrice": 24.99,
-    "rating": "★ 4.8 (180)",
+    "rating": "⭐ 4.8 (180)",
     "stock": 30,
     "image": "https://images.unsplash.com/photo-1598289431512-b97b0917affc?auto=format&fit=crop&w=500&q=80",
     "description": "Set of 5 durable latex resistance bands ranging from light to extra-heavy workout levels."
@@ -225,7 +228,7 @@
     "category": "Sports & Outdoors",
     "price": 29.99,
     "originalPrice": 39.99,
-    "rating": "★ 4.7 (165)",
+    "rating": "⭐ 4.7 (165)",
     "stock": 8,
     "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=500&q=80",
     "description": "Eco-friendly TPE exercise mat providing superior grip and high-density joint cushioning."
@@ -236,7 +239,7 @@
     "category": "Sports & Outdoors",
     "price": 129.99,
     "originalPrice": 169.99,
-    "rating": "★ 4.8 (92)",
+    "rating": "⭐ 4.8 (92)",
     "stock": 2,
     "image": "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?auto=format&fit=crop&w=500&q=80",
     "description": "Space-saving home gym dumbbells with rapid weight adjustment mechanism."
@@ -247,7 +250,7 @@
     "category": "Sports & Outdoors",
     "price": 34.99,
     "originalPrice": 44.99,
-    "rating": "★ 4.6 (78)",
+    "rating": "⭐ 4.6 (78)",
     "stock": 10,
     "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=500&q=80",
     "description": "Collapsible aircraft-grade aluminum hiking poles with moisture-wicking cork grips."
@@ -258,18 +261,19 @@
     "category": "Sports & Outdoors",
     "price": 27.99,
     "originalPrice": 35.99,
-    "rating": "★ 4.7 (134)",
+    "rating": "⭐ 4.7 (134)",
     "stock": 6,
     "image": "https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=500&q=80",
     "description": "Heavy-duty parachute nylon hammock supports up to 500 lbs and sets up in minutes."
   },
+
   {
     "id": 25,
     "name": "1080p Indoor HD Security Camera",
     "category": "Smart Home",
     "price": 44.99,
     "originalPrice": 54.99,
-    "rating": "★ 4.7 (88)",
+    "rating": "⭐ 4.7 (88)",
     "stock": 12,
     "image": "https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?auto=format&fit=crop&w=500&q=80",
     "description": "Smart indoor camera featuring motion tracking, night vision, and two-way audio communication."
@@ -280,7 +284,7 @@
     "category": "Smart Home",
     "price": 32.99,
     "originalPrice": 39.99,
-    "rating": "★ 4.6 (150)",
+    "rating": "⭐ 4.6 (150)",
     "stock": 16,
     "image": "https://images.unsplash.com/photo-1550985616-10810253b84d?auto=format&fit=crop&w=500&q=80",
     "description": "Dimmable multicolor smart bulbs compatible with Alexa and Google Assistant without a hub."
@@ -291,7 +295,7 @@
     "category": "Smart Home",
     "price": 21.99,
     "originalPrice": 29.99,
-    "rating": "★ 4.7 (205)",
+    "rating": "⭐ 4.7 (205)",
     "stock": 22,
     "image": "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=500&q=80",
     "description": "Control lights and electronics remotely from anywhere with app timer schedules."
@@ -302,7 +306,7 @@
     "category": "Smart Home",
     "price": 79.99,
     "originalPrice": 99.99,
-    "rating": "★ 4.5 (118)",
+    "rating": "⭐ 4.5 (118)",
     "stock": 4,
     "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=500&q=80",
     "description": "HD video doorbell with real-time phone alerts and customizable motion detection zones."
@@ -313,7 +317,7 @@
     "category": "Smart Home",
     "price": 24.99,
     "originalPrice": 31.99,
-    "rating": "★ 4.6 (90)",
+    "rating": "⭐ 4.6 (90)",
     "stock": 14,
     "image": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=500&q=80",
     "description": "Energy-efficient stick-on night lights that automatically illuminate dark hallways."
@@ -324,9 +328,76 @@
     "category": "Smart Home",
     "price": 89.99,
     "originalPrice": 109.99,
-    "rating": "★ 4.5 (55)",
+    "rating": "⭐ 4.5 (55)",
     "stock": 5,
     "image": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=500&q=80",
     "description": "Tracks indoor air temperature, humidity, particulate matter, and carbon monoxide levels."
+  },
+
+  {
+    "id": 31,
+    "name": "Premium Essential Cotton T-Shirt",
+    "category": "Apparel",
+    "price": 24.99,
+    "originalPrice": 34.99,
+    "rating": "⭐ 4.8 (156)",
+    "stock": 18,
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
+    "description": "Soft premium cotton T-shirt with a clean modern fit, breathable fabric, and everyday comfort."
+  },
+  {
+    "id": 32,
+    "name": "Performance Training T-Shirt",
+    "category": "Apparel",
+    "price": 29.99,
+    "originalPrice": 39.99,
+    "rating": "⭐ 4.9 (124)",
+    "stock": 14,
+    "image": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=500&q=80",
+    "description": "Lightweight moisture-wicking training shirt designed for workouts, running, and active lifestyles."
+  },
+  {
+    "id": 33,
+    "name": "Classic Pullover Hoodie",
+    "category": "Apparel",
+    "price": 49.99,
+    "originalPrice": 69.99,
+    "rating": "⭐ 4.8 (198)",
+    "stock": 9,
+    "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=500&q=80",
+    "description": "Premium fleece-lined hoodie featuring a relaxed fit, adjustable drawstring, and front kangaroo pocket."
+  },
+  {
+    "id": 34,
+    "name": "Athletic Jogger Pants",
+    "category": "Apparel",
+    "price": 44.99,
+    "originalPrice": 59.99,
+    "rating": "⭐ 4.7 (143)",
+    "stock": 11,
+    "image": "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=500&q=80",
+    "description": "Comfortable athletic joggers with tapered legs, stretch fabric, and secure zippered pockets."
+  },
+  {
+    "id": 35,
+    "name": "Modern Essential Polo Shirt",
+    "category": "Apparel",
+    "price": 34.99,
+    "originalPrice": 44.99,
+    "rating": "⭐ 4.6 (109)",
+    "stock": 16,
+    "image": "https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=500&q=80",
+    "description": "Versatile premium polo shirt combining breathable fabric, a structured collar, and a modern silhouette."
+  },
+  {
+    "id": 36,
+    "name": "Lightweight Urban Bomber Jacket",
+    "category": "Apparel",
+    "price": 69.99,
+    "originalPrice": 89.99,
+    "rating": "⭐ 4.8 (87)",
+    "stock": 7,
+    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80",
+    "description": "Lightweight everyday bomber jacket with ribbed cuffs, durable outer fabric, and a contemporary fit."
   }
 ]

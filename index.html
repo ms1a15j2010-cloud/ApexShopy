@@ -1,90 +1,1599 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ApexShopy Store</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="ApexShopy — shop quality electronics, apparel, accessories, sports products, wearables, and smart home essentials at great prices."
+  >
+
+  <meta
+    name="keywords"
+    content="ApexShopy, electronics, apparel, sports, accessories, wearables, smart home, online store"
+  >
+
+  <meta
+    name="author"
+    content="ApexShopy"
+  >
+
+  <meta
+    name="theme-color"
+    content="#111827"
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <title>ApexShopy | Shop Smart. Live Better.</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
+
+
 <body>
 
-  <!-- Header -->
+  <!-- =========================================================
+       HEADER
+  ========================================================== -->
+
   <header class="site-header">
+
     <div class="header-container">
-      <h1 class="logo">ApexShopy</h1>
-      <div class="header-actions">
-        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
-        <button class="cart-btn" onclick="toggleCart()">
-          🛒 Cart (<span id="cartCount">0</span>)
-        </button>
+
+      <!-- BRAND -->
+
+      <a
+        href="index.html"
+        class="logo-link"
+        aria-label="ApexShopy Home"
+      >
+
+        <div
+          class="brand-mark"
+          aria-hidden="true"
+        >
+          A
+        </div>
+
+        <div class="brand-text">
+
+          <span class="logo">
+            ApexShopy
+          </span>
+
+          <span class="brand-tagline">
+            SHOP SMART. LIVE BETTER.
+          </span>
+
+        </div>
+
+      </a>
+
+
+      <!-- SEARCH -->
+
+      <div class="header-search">
+
+        <label
+          for="searchInput"
+          class="sr-only"
+        >
+          Search products
+        </label>
+
+        <div class="search-wrapper">
+
+          <span
+            class="search-icon"
+            aria-hidden="true"
+          >
+            &#128269;
+          </span>
+
+          <input
+            type="search"
+            id="searchInput"
+            class="search-bar"
+            placeholder="Search products..."
+            autocomplete="off"
+            aria-label="Search products"
+            oninput="filterProducts()"
+          >
+
+        </div>
+
       </div>
+
+
+      <!-- HEADER ACTIONS -->
+
+      <div class="header-actions">
+
+        <button
+          id="themeToggleBtn"
+          class="theme-toggle-btn"
+          type="button"
+          onclick="toggleTheme()"
+          aria-label="Toggle dark mode"
+        >
+          &#127769;
+          <span>Dark Mode</span>
+        </button>
+
+
+        <button
+          class="cart-btn"
+          type="button"
+          onclick="toggleCart()"
+          aria-label="Open shopping cart"
+        >
+
+          <span aria-hidden="true">
+            &#128722;
+          </span>
+
+          <span>
+            Cart
+          </span>
+
+          <span
+            id="cartCount"
+            class="cart-count-badge"
+            aria-label="Cart item count"
+          >
+            0
+          </span>
+
+        </button>
+
+      </div>
+
     </div>
+
   </header>
 
-  <!-- Controls: Search & Category Filters -->
-  <section class="controls-section">
-    <div class="controls-container">
-      <input 
-        type="text" 
-        id="searchInput" 
-        placeholder="Search products..." 
-        oninput="filterProducts()" 
-        class="search-bar"
-      >
-      <div class="categories">
-        <button class="active" onclick="filterCategory('All', event)">All</button>
-        <button onclick="filterCategory('Electronics', event)">Electronics</button>
-        <button onclick="filterCategory('Apparel', event)">Apparel</button>
-        <button onclick="filterCategory('Accessories', event)">Accessories</button>
+
+
+  <!-- =========================================================
+       HERO SECTION
+  ========================================================== -->
+
+  <section
+    class="hero-section"
+    aria-labelledby="hero-title"
+  >
+
+    <div class="hero-container">
+
+      <!-- HERO CONTENT -->
+
+      <div class="hero-content">
+
+        <span class="hero-eyebrow">
+
+          <span
+            class="hero-eyebrow-dot"
+            aria-hidden="true"
+          ></span>
+
+          NEW COLLECTION 2026
+
+        </span>
+
+
+        <h1
+          id="hero-title"
+          class="hero-title"
+        >
+
+          Discover Products
+
+          <span>
+            You'll Love.
+          </span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+          Explore carefully selected electronics, apparel,
+          accessories, sports products, wearables, and smart
+          home essentials designed to bring quality, style,
+          and value to your everyday life.
+
+        </p>
+
+
+        <div class="hero-actions">
+
+          <a
+            href="#products"
+            class="hero-primary-btn"
+          >
+            Shop Now
+            <span aria-hidden="true">
+              &#8594;
+            </span>
+          </a>
+
+
+          <a
+            href="#categories"
+            class="hero-secondary-btn"
+          >
+            Explore Categories
+          </a>
+
+        </div>
+
+
+        <!-- TRUST ITEMS -->
+
+        <div class="hero-trust">
+
+          <div class="trust-item">
+
+            <span
+              class="trust-icon"
+              aria-hidden="true"
+            >
+              &#10003;
+            </span>
+
+            <span>
+              Quality Products
+            </span>
+
+          </div>
+
+
+          <div class="trust-item">
+
+            <span
+              class="trust-icon"
+              aria-hidden="true"
+            >
+              &#10003;
+            </span>
+
+            <span>
+              Great Prices
+            </span>
+
+          </div>
+
+
+          <div class="trust-item">
+
+            <span
+              class="trust-icon"
+              aria-hidden="true"
+            >
+              &#10003;
+            </span>
+
+            <span>
+              Easy Checkout
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
+
+
+
+      <!-- HERO VISUAL -->
+
+      <div
+        class="hero-visual"
+        aria-hidden="true"
+      >
+
+        <div class="hero-glow hero-glow-one"></div>
+
+        <div class="hero-glow hero-glow-two"></div>
+
+
+        <div class="hero-card">
+
+          <div class="hero-card-top">
+
+            <span class="hero-card-label">
+              TRENDING NOW
+            </span>
+
+            <span class="hero-card-star">
+              &#9733;
+            </span>
+
+          </div>
+
+
+          <div class="hero-product-visual">
+
+            <div class="hero-product-circle"></div>
+
+            <div class="hero-product-icon">
+              &#128241;
+            </div>
+
+          </div>
+
+
+          <div class="hero-card-bottom">
+
+            <div>
+
+              <span class="hero-mini-label">
+                APEXSHOPY PICKS
+              </span>
+
+              <strong>
+                Smart &amp; Stylish
+              </strong>
+
+            </div>
+
+            <span class="hero-arrow">
+              &#8599;
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
+
   </section>
 
-  <!-- Product Grid -->
-  <main class="main-content">
-    <div id="productGrid" class="product-grid"></div>
+
+
+  <!-- =========================================================
+       BENEFITS
+  ========================================================== -->
+
+  <section
+    class="benefits-section"
+    aria-label="Shopping benefits"
+  >
+
+    <div class="benefits-container">
+
+      <!-- BENEFIT 1 -->
+
+      <div class="benefit-card">
+
+        <div
+          class="benefit-icon"
+          aria-hidden="true"
+        >
+          &#128666;
+        </div>
+
+        <div>
+
+          <h3>
+            Fast Delivery
+          </h3>
+
+          <p>
+            Get your orders delivered quickly.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- BENEFIT 2 -->
+
+      <div class="benefit-card">
+
+        <div
+          class="benefit-icon"
+          aria-hidden="true"
+        >
+          &#128176;
+        </div>
+
+        <div>
+
+          <h3>
+            Great Value
+          </h3>
+
+          <p>
+            Quality products at competitive prices.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- BENEFIT 3 -->
+
+      <div class="benefit-card">
+
+        <div
+          class="benefit-icon"
+          aria-hidden="true"
+        >
+          &#128274;
+        </div>
+
+        <div>
+
+          <h3>
+            Secure Shopping
+          </h3>
+
+          <p>
+            Shop with confidence and peace of mind.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- BENEFIT 4 -->
+
+      <div class="benefit-card">
+
+        <div
+          class="benefit-icon"
+          aria-hidden="true"
+        >
+          &#128172;
+        </div>
+
+        <div>
+
+          <h3>
+            Easy Checkout
+          </h3>
+
+          <p>
+            Simple ordering through instant DM.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       CATEGORY SECTION
+  ========================================================== -->
+
+  <section
+    id="categories"
+    class="category-section"
+    aria-labelledby="category-title"
+  >
+
+    <div class="section-container">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-eyebrow">
+            SHOP BY CATEGORY
+          </span>
+
+          <h2 id="category-title">
+
+            Find What You
+
+            <span>
+              Need
+            </span>
+
+          </h2>
+
+        </div>
+
+
+        <p>
+          Browse our growing collection and discover
+          something perfect for you.
+        </p>
+
+      </div>
+
+
+
+      <!-- CATEGORY CARDS -->
+
+      <div class="category-cards">
+
+
+        <!-- ELECTRONICS -->
+
+        <button
+          class="category-card category-electronics"
+          type="button"
+          onclick="filterCategory('Electronics', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#128187;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Electronics
+              </h3>
+
+              <p>
+                Smart devices &amp; technology
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+
+
+        <!-- APPAREL -->
+
+        <button
+          class="category-card category-apparel"
+          type="button"
+          onclick="filterCategory('Apparel', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#128085;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Apparel
+              </h3>
+
+              <p>
+                Performance &amp; everyday style
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+
+
+        <!-- ACCESSORIES -->
+
+        <button
+          class="category-card category-accessories"
+          type="button"
+          onclick="filterCategory('Accessories', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#128092;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Accessories
+              </h3>
+
+              <p>
+                Complete your everyday look
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+
+
+        <!-- SPORTS -->
+
+        <button
+          class="category-card category-sports"
+          type="button"
+          onclick="filterCategory('Sports & Outdoors', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#127939;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Sports &amp; Outdoors
+              </h3>
+
+              <p>
+                Fitness &amp; outdoor essentials
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+
+
+        <!-- WEARABLES -->
+
+        <button
+          class="category-card category-wearables"
+          type="button"
+          onclick="filterCategory('Wearables', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#8986;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Wearables
+              </h3>
+
+              <p>
+                Smart watches &amp; fitness tech
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+
+
+        <!-- SMART HOME -->
+
+        <button
+          class="category-card category-smart-home"
+          type="button"
+          onclick="filterCategory('Smart Home', event)"
+        >
+
+          <div class="category-card-content">
+
+            <span
+              class="category-icon"
+              aria-hidden="true"
+            >
+              &#127968;
+            </span>
+
+            <div>
+
+              <span class="category-small-text">
+                EXPLORE
+              </span>
+
+              <h3>
+                Smart Home
+              </h3>
+
+              <p>
+                Connected home essentials
+              </p>
+
+            </div>
+
+          </div>
+
+          <span
+            class="category-arrow"
+            aria-hidden="true"
+          >
+            &#8594;
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       PRODUCTS
+  ========================================================== -->
+
+  <main
+    id="products"
+    class="main-content"
+  >
+
+    <div class="section-container">
+
+      <!-- PRODUCTS HEADING -->
+
+      <div class="products-heading">
+
+        <div>
+
+          <span class="section-eyebrow">
+            OUR COLLECTION
+          </span>
+
+          <h2>
+
+            Featured
+
+            <span>
+              Products
+            </span>
+
+          </h2>
+
+          <p>
+            Handpicked products worth adding to your collection.
+          </p>
+
+        </div>
+
+
+        <!-- CATEGORY FILTERS -->
+
+        <div class="products-filter-area">
+
+          <div
+            id="categoryFilters"
+            class="categories"
+            role="group"
+            aria-label="Filter products by category"
+          >
+
+            <button
+              class="active"
+              type="button"
+              onclick="filterCategory('All', event)"
+            >
+              All
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Electronics', event)"
+            >
+              Electronics
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Apparel', event)"
+            >
+              Apparel
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Accessories', event)"
+            >
+              Accessories
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Sports & Outdoors', event)"
+            >
+              Sports &amp; Outdoors
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Wearables', event)"
+            >
+              Wearables
+            </button>
+
+
+            <button
+              type="button"
+              onclick="filterCategory('Smart Home', event)"
+            >
+              Smart Home
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =====================================================
+           PRODUCT GRID
+           JavaScript renders products here.
+      ====================================================== -->
+
+      <div
+        id="productGrid"
+        class="product-grid"
+        aria-live="polite"
+        aria-label="Product collection"
+      ></div>
+
+
+
+      <!-- =====================================================
+           EMPTY SEARCH STATE
+      ====================================================== -->
+
+      <div
+        id="emptyState"
+        class="empty-state"
+        hidden
+      >
+
+        <div
+          class="empty-state-icon"
+          aria-hidden="true"
+        >
+          &#128269;
+        </div>
+
+        <h3>
+          No products found
+        </h3>
+
+        <p>
+          Try searching for another product or choose
+          a different category.
+        </p>
+
+        <button
+          type="button"
+          class="close-modal-btn"
+          onclick="filterCategory('All', event)"
+        >
+          View All Products
+        </button>
+
+      </div>
+
+    </div>
+
   </main>
 
-  <!-- Cart Overlay & Sidebar -->
-  <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
-  <aside id="cartSidebar" class="cart-sidebar">
-    <div class="cart-header">
-      <h2>Your Cart</h2>
-      <button class="close-cart-btn" onclick="toggleCart()">&times;</button>
-    </div>
-    <div id="cartItems" class="cart-items"></div>
-    <div class="cart-footer">
-      <div class="cart-total">
-        <span>Total:</span>
-        <strong id="cartTotalAmount">$0.00</strong>
+
+
+  <!-- =========================================================
+       PROMOTIONAL BANNER
+  ========================================================== -->
+
+  <section
+    class="promo-section"
+    aria-label="ApexShopy promotion"
+  >
+
+    <div class="promo-container">
+
+      <div class="promo-content">
+
+        <span class="promo-eyebrow">
+          APEXSHOPY SPECIAL
+        </span>
+
+        <h2>
+
+          Great Products.
+
+          <span>
+            Better Prices.
+          </span>
+
+        </h2>
+
+        <p>
+          Discover our latest deals and find your next
+          favorite product without breaking the bank.
+        </p>
+
+        <a
+          href="#products"
+          class="promo-btn"
+        >
+          Browse Products
+
+          <span aria-hidden="true">
+            &#8594;
+          </span>
+
+        </a>
+
       </div>
-      <button class="checkout-btn" onclick="checkoutMultiPlatform()">Checkout Order</button>
-      <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+
+
+      <div
+        class="promo-decoration"
+        aria-hidden="true"
+      >
+
+        <div class="promo-circle promo-circle-one"></div>
+
+        <div class="promo-circle promo-circle-two"></div>
+
+        <span class="promo-symbol">
+          &#10024;
+        </span>
+
+      </div>
+
     </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       WHY APEXSHOPY
+  ========================================================== -->
+
+  <section
+    class="why-section"
+    aria-labelledby="why-title"
+  >
+
+    <div class="section-container">
+
+      <div class="section-heading centered">
+
+        <span class="section-eyebrow">
+          WHY APEXSHOPY
+        </span>
+
+        <h2 id="why-title">
+
+          Shopping Made
+
+          <span>
+            Simple
+          </span>
+
+        </h2>
+
+        <p>
+          Everything you need for a smooth and enjoyable
+          shopping experience.
+        </p>
+
+      </div>
+
+
+
+      <div class="why-grid">
+
+
+        <!-- WHY 01 -->
+
+        <article class="why-card">
+
+          <div class="why-number">
+            01
+          </div>
+
+          <div
+            class="why-icon"
+            aria-hidden="true"
+          >
+            &#128230;
+          </div>
+
+          <h3>
+            Curated Selection
+          </h3>
+
+          <p>
+            We focus on products that combine usefulness,
+            quality, and great everyday value.
+          </p>
+
+        </article>
+
+
+
+        <!-- WHY 02 -->
+
+        <article class="why-card">
+
+          <div class="why-number">
+            02
+          </div>
+
+          <div
+            class="why-icon"
+            aria-hidden="true"
+          >
+            &#128200;
+          </div>
+
+          <h3>
+            Fair Pricing
+          </h3>
+
+          <p>
+            Enjoy attractive prices and discover special
+            offers across our growing catalogue.
+          </p>
+
+        </article>
+
+
+
+        <!-- WHY 03 -->
+
+        <article class="why-card">
+
+          <div class="why-number">
+            03
+          </div>
+
+          <div
+            class="why-icon"
+            aria-hidden="true"
+          >
+            &#128172;
+          </div>
+
+          <h3>
+            Easy Ordering
+          </h3>
+
+          <p>
+            Add your products to the cart and place your
+            order through our simple checkout experience.
+          </p>
+
+        </article>
+
+
+
+        <!-- WHY 04 -->
+
+        <article class="why-card">
+
+          <div class="why-number">
+            04
+          </div>
+
+          <div
+            class="why-icon"
+            aria-hidden="true"
+          >
+            &#128075;
+          </div>
+
+          <h3>
+            Customer First
+          </h3>
+
+          <p>
+            We're building ApexShopy around a simple goal:
+            making online shopping easier for everyone.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       CART OVERLAY
+  ========================================================== -->
+
+  <div
+    id="cartOverlay"
+    class="cart-overlay"
+    onclick="toggleCart()"
+    aria-hidden="true"
+  ></div>
+
+
+
+  <!-- =========================================================
+       CART SIDEBAR
+  ========================================================== -->
+
+  <aside
+    id="cartSidebar"
+    class="cart-sidebar"
+    aria-label="Shopping cart"
+    aria-live="polite"
+  >
+
+    <!-- CART HEADER -->
+
+    <div class="cart-header">
+
+      <div>
+
+        <span class="cart-header-eyebrow">
+          YOUR BAG
+        </span>
+
+        <h2>
+          Your Cart
+        </h2>
+
+      </div>
+
+
+      <button
+        class="close-cart-btn"
+        type="button"
+        onclick="toggleCart()"
+        aria-label="Close shopping cart"
+      >
+        &times;
+      </button>
+
+    </div>
+
+
+
+    <!-- CART ITEMS -->
+
+    <div
+      id="cartItems"
+      class="cart-items"
+    ></div>
+
+
+
+    <!-- CART FOOTER -->
+
+    <div class="cart-footer">
+
+      <div class="cart-total">
+
+        <span>
+          Total:
+        </span>
+
+        <strong id="cartTotalAmount">
+          $0.00
+        </strong>
+
+      </div>
+
+
+      <button
+        class="checkout-btn"
+        type="button"
+        onclick="checkoutMultiPlatform()"
+      >
+        &#128722;
+        Checkout Order
+      </button>
+
+
+      <button
+        class="clear-btn"
+        type="button"
+        onclick="clearCart()"
+      >
+        Clear Cart
+      </button>
+
+    </div>
+
   </aside>
 
-  <!-- Footer -->
+
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================== -->
+
   <footer class="site-footer">
+
     <div class="footer-container">
-      <div class="footer-col">
-        <h3 class="footer-logo">ApexShopy</h3>
-        <p>Your one-stop shop for quality products with instant DM checkout.</p>
+
+
+      <!-- FOOTER BRAND -->
+
+      <div class="footer-brand">
+
+        <a
+          href="index.html"
+          class="footer-brand-link"
+          aria-label="ApexShopy Home"
+        >
+
+          <div
+            class="brand-mark"
+            aria-hidden="true"
+          >
+            A
+          </div>
+
+          <div class="brand-text">
+
+            <span class="footer-logo">
+              ApexShopy
+            </span>
+
+            <span class="brand-tagline">
+              SHOP SMART. LIVE BETTER.
+            </span>
+
+          </div>
+
+        </a>
+
+
+        <p>
+          Your modern destination for quality electronics,
+          apparel, accessories, sports products, wearables,
+          smart home products, and everyday essentials.
+        </p>
+
+
+        <!-- SOCIAL LINKS -->
+
+        <div class="footer-socials">
+
+          <a
+            href="https://www.facebook.com/share/p/19WQNXqUhe/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ApexShopy on Facebook"
+          >
+            f
+          </a>
+
+
+          <a
+            href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=10s3kk6s"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ApexShopy on Instagram"
+          >
+            ig
+          </a>
+
+
+          <a
+            href="https://www.reddit.com/user/apexshopy"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ApexShopy on Reddit"
+          >
+            r
+          </a>
+
+        </div>
+
       </div>
+
+
+
+      <!-- SHOP -->
+
       <div class="footer-col">
-        <h4>Connect With Us</h4>
+
+        <h3>
+          Shop
+        </h3>
+
         <ul class="footer-links">
-          <li><a href="https://www.facebook.com/share/p/19WQNXqUhe/" target="_blank" rel="noopener">Facebook</a></li>
-          <li><a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=10s3kk6s" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://www.reddit.com/user/apexshopy" target="_blank" rel="noopener">Reddit</a></li>
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('All', event)"
+            >
+              All Products
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Electronics', event)"
+            >
+              Electronics
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Apparel', event)"
+            >
+              Apparel
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Accessories', event)"
+            >
+              Accessories
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Sports & Outdoors', event)"
+            >
+              Sports &amp; Outdoors
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Wearables', event)"
+            >
+              Wearables
+            </a>
+          </li>
+
+
+          <li>
+            <a
+              href="#products"
+              onclick="filterCategory('Smart Home', event)"
+            >
+              Smart Home
+            </a>
+          </li>
+
         </ul>
+
       </div>
+
+
+
+      <!-- CUSTOMER CARE -->
+
+      <div class="footer-col">
+
+        <h3>
+          Customer Care
+        </h3>
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="#products">
+              Browse Products
+            </a>
+          </li>
+
+
+          <li>
+            <a href="#products">
+              Special Offers
+            </a>
+          </li>
+
+
+          <li>
+            <a href="#products">
+              New Arrivals
+            </a>
+          </li>
+
+
+          <li>
+            <a href="mailto:hello@apexshopy.com">
+              Contact Us
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+
+
+      <!-- APEXSHOPY -->
+
+      <div class="footer-col">
+
+        <h3>
+          ApexShopy
+        </h3>
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="#categories">
+              Categories
+            </a>
+          </li>
+
+
+          <li>
+            <a href="#products">
+              Featured Products
+            </a>
+          </li>
+
+
+          <li>
+            <a href="#products">
+              Shop Now
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
     </div>
+
+
+
+    <!-- FOOTER BOTTOM -->
+
     <div class="footer-bottom">
-      <p>&copy; 2026 ApexShopy. All rights reserved.</p>
+
+      <div class="footer-bottom-container">
+
+        <p>
+          &copy; 2026 ApexShopy. All rights reserved.
+        </p>
+
+        <p>
+          Built for better shopping.
+        </p>
+
+      </div>
+
     </div>
+
   </footer>
 
-  <!-- Script -->
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
+
   <script src="script.js"></script>
+
 </body>
+
 </html>
