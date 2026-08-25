@@ -1,3 +1,4 @@
+
 const express = require("express");
 const Product = require("../models/Product");
 
@@ -19,6 +20,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch products",
+      error: error.message,
     });
   }
 });
@@ -45,6 +47,7 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch product",
+      error: error.message,
     });
   }
 });
@@ -130,3 +133,4 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+
