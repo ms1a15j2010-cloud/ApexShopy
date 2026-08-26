@@ -4,174 +4,63 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="ApexShopy — shop quality electronics, apparel, accessories, sports products, wearables, and smart home essentials at great prices."
-  >
-
-  <meta
-    name="keywords"
-    content="ApexShopy, electronics, apparel, sports, accessories, wearables, smart home, online store"
-  >
-
-  <meta
-    name="author"
-    content="ApexShopy"
-  >
-
-  <meta
-    name="theme-color"
-    content="#111827"
-  >
-
-  <meta
-    name="robots"
-    content="index, follow"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ApexShopy — shop quality electronics, apparel, accessories, sports products, wearables, and smart home essentials at great prices.">
+  <meta name="keywords" content="ApexShopy, electronics, apparel, sports, accessories, wearables, smart home, online store">
+  <meta name="author" content="ApexShopy">
+  <meta name="theme-color" content="#111827">
+  <meta name="robots" content="index, follow">
   <title>ApexShopy | Shop Smart. Live Better.</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
   <!-- =========================================================
        HEADER
   ========================================================== -->
-
   <header class="site-header">
-
     <div class="header-container">
 
       <!-- BRAND -->
-
-      <a
-        href="index.html"
-        class="logo-link"
-        aria-label="ApexShopy Home"
-      >
-
-        <div
-          class="brand-mark"
-          aria-hidden="true"
-        >
-          A
-        </div>
-
+      <a href="index.html" class="logo-link" aria-label="ApexShopy Home">
+        <div class="brand-mark" aria-hidden="true">A</div>
         <div class="brand-text">
-
-          <span class="logo">
-            ApexShopy
-          </span>
-
-          <span class="brand-tagline">
-            SHOP SMART. LIVE BETTER.
-          </span>
-
+          <span class="logo">ApexShopy</span>
+          <span class="brand-tagline">SHOP SMART. LIVE BETTER.</span>
         </div>
-
       </a>
 
-
       <!-- SEARCH -->
-
       <div class="header-search">
-
-        <label
-          for="searchInput"
-          class="sr-only"
-        >
-          Search products
-        </label>
-
+        <label for="searchInput" class="sr-only">Search products</label>
         <div class="search-wrapper">
-
-          <span
-            class="search-icon"
-            aria-hidden="true"
-          >
-            &#128269;
-          </span>
-
-          <input
-            type="search"
-            id="searchInput"
-            class="search-bar"
-            placeholder="Search products..."
-            autocomplete="off"
-            aria-label="Search products"
-            oninput="filterProducts()"
-          >
-
+          <span class="search-icon" aria-hidden="true">&#128269;</span>
+          <input type="search" id="searchInput" class="search-bar" placeholder="Search products..." autocomplete="off" aria-label="Search products" oninput="filterProducts()">
         </div>
-
       </div>
 
-
       <!-- HEADER ACTIONS -->
-
       <div class="header-actions">
-
-        <a
-          href="/admin/"
-          class="admin-nav-link"
-          style="color: var(--text-color, #111827); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db;"
-        >
+        
+        <!-- ADMIN LINK -->
+        <a href="/admin/" class="admin-nav-link" style="color: var(--text-color, #111827); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db;">
           Admin
         </a>
 
-        <button
-          id="themeToggleBtn"
-          class="theme-toggle-btn"
-          type="button"
-          onclick="toggleTheme()"
-          aria-label="Toggle dark mode"
-        >
-          &#127769;
-          <span>Dark Mode</span>
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode">
+          &#127769; <span>Dark Mode</span>
         </button>
 
-
-        <button
-          class="cart-btn"
-          type="button"
-          onclick="toggleCart()"
-          aria-label="Open shopping cart"
-        >
-
-          <span aria-hidden="true">
-            &#128722;
-          </span>
-
-          <span>
-            Cart
-          </span>
-
-          <span
-            id="cartCount"
-            class="cart-count-badge"
-            aria-label="Cart item count"
-          >
-            0
-          </span>
-
+        <button class="cart-btn" type="button" onclick="toggleCart()" aria-label="Open shopping cart">
+          <span aria-hidden="true">&#128722;</span>
+          <span>Cart</span>
+          <span id="cartCount" class="cart-count-badge" aria-label="Cart item count">0</span>
         </button>
-
       </div>
 
     </div>
-
   </header>
-
-
   <!-- =========================================================
        HERO SECTION
   ========================================================== -->
