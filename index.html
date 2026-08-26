@@ -116,9 +116,90 @@
       </div>
 
 
+      <!-- =========================================================
+       HEADER
+  ========================================================== -->
+
+  <header class="site-header">
+
+    <div class="header-container">
+
+      <!-- BRAND -->
+
+      <a
+        href="index.html"
+        class="logo-link"
+        aria-label="ApexShopy Home"
+      >
+
+        <div
+          class="brand-mark"
+          aria-hidden="true"
+        >
+          A
+        </div>
+
+        <div class="brand-text">
+
+          <span class="logo">
+            ApexShopy
+          </span>
+
+          <span class="brand-tagline">
+            SHOP SMART. LIVE BETTER.
+          </span>
+
+        </div>
+
+      </a>
+
+
+      <!-- SEARCH -->
+
+      <div class="header-search">
+
+        <label
+          for="searchInput"
+          class="sr-only"
+        >
+          Search products
+        </label>
+
+        <div class="search-wrapper">
+
+          <span
+            class="search-icon"
+            aria-hidden="true"
+          >
+            &#128269;
+          </span>
+
+          <input
+            type="search"
+            id="searchInput"
+            class="search-bar"
+            placeholder="Search products..."
+            autocomplete="off"
+            aria-label="Search products"
+            oninput="filterProducts()"
+          >
+
+        </div>
+
+      </div>
+
+
       <!-- HEADER ACTIONS -->
 
       <div class="header-actions">
+
+        <a
+          href="/admin/"
+          class="admin-nav-link"
+          style="color: var(--text-color, #111827); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db;"
+        >
+          Admin
+        </a>
 
         <button
           id="themeToggleBtn"
@@ -162,7 +243,6 @@
     </div>
 
   </header>
-
 
 
   <!-- =========================================================
