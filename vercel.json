@@ -2,11 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": "/admin.html"
-    },
-    {
-      "source": "/((?!.*\\.).*)",
+      "source": "/((?!admin|.*\\.).*)",
       "destination": "/index.html"
     }
   ]
