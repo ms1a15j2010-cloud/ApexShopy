@@ -233,3 +233,22 @@ flex-shrink: 0;
 padding: 7px 8px !important;
 }
 }
+
+/* =========================================
+320px - CART BUTTON FIX
+========================================= */
+
+@media (max-width: 320px) {
+
+.cart-btn {
+flex-shrink: 0 !important;
+width: 38px !important;
+min-width: 38px !important;
+padding: 7px 5px !important;
+overflow: visible !important;
+}
+
+.header-actions {
+flex-shrink: 0 !important;
+}
+}
