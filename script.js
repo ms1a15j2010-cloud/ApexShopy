@@ -76,7 +76,7 @@ async function fetchProducts(reset = false) {
     );
 
     /*
-      SEARCH IS SENT TO MONGODB/BACKEND.
+      SEARCH IS SENT TO THE BACKEND.
     */
     if (searchQuery.trim()) {
       params.set(
@@ -85,11 +85,6 @@ async function fetchProducts(reset = false) {
       );
     }
 
-    /*
-      Category is currently handled on the
-      frontend because the backend route
-      does not have a category parameter.
-    */
     const response = await fetch(
       `${API_BASE_URL}/api/products?${params.toString()}`,
       {
@@ -153,6 +148,7 @@ async function fetchProducts(reset = false) {
       container.innerHTML = `
         <div class="error-msg">
           <p>Unable to load products right now.</p>
+
           <button
             type="button"
             onclick="fetchProducts(true)"
@@ -226,6 +222,145 @@ function formatCurrency(amount) {
   return Number.isFinite(num)
     ? `$${num.toFixed(2)}`
     : "$0.00";
+}
+
+
+/*
+  Determines whether a product has
+  an affiliate purchase URL.
+
+  Your imported Admitad/AliExpress
+  products contain:
+
+  affiliateUrl
+  source: "AliExpress"
+*/
+function isAffiliateProduct(product) {
+  return Boolean(
+    product &&
+    typeof product.affiliateUrl === "string" &&
+    product.affiliateUrl.trim()
+  );
+}
+
+
+function getAffiliateSource(product) {
+  if (
+    product &&
+    typeof product.source === "string" &&
+    product.source.trim()
+  ) {
+    return product.source.trim();
+  }
+
+  return "Affiliate Partner";
+}
+
+
+/*
+  Opens the Admitad affiliate URL.
+
+  IMPORTANT:
+  We intentionally use the affiliateUrl
+  stored in MongoDB.
+
+  That URL is responsible for tracking
+  the referral and potential commission.
+*/
+function openAffiliateProduct(productId) {
+  const product =
+    products.find(
+      (item) =>
+        String(
+          getProductId(item)
+        ) ===
+        String(productId)
+    );
+
+  if (!product) {
+    showToast(
+      "Product could not be found.",
+      "error",
+      3000
+    );
+
+    return;
+  }
+
+  if (
+    !isAffiliateProduct(product)
+  ) {
+    showToast(
+      "Affiliate link is not available for this product.",
+      "error",
+      3500
+    );
+
+    return;
+  }
+
+  const affiliateUrl =
+    product.affiliateUrl.trim();
+
+  /*
+    Open in a new tab so the customer
+    can return to ApexShopy.
+  */
+  window.open(
+    affiliateUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+
+/*
+  Safe helper used by the UI to decide
+  which purchase button to display.
+*/
+function getAffiliateButtonHTML(product) {
+  if (!isAffiliateProduct(product)) {
+    return `
+      <button
+        type="button"
+        class="add-btn"
+        onclick="
+          event.stopPropagation();
+          addToCart('${escapeHTML(
+            String(getProductId(product))
+          )}')
+        "
+      >
+        Add to Cart
+      </button>
+    `;
+  }
+
+  const productId =
+    escapeHTML(
+      String(
+        getProductId(product)
+      )
+    );
+
+  const source =
+    escapeHTML(
+      getAffiliateSource(product)
+    );
+
+  return `
+    <button
+      type="button"
+      class="add-btn affiliate-buy-btn"
+      onclick="
+        event.stopPropagation();
+        openAffiliateProduct('${productId}')
+      "
+      title="Buy this product from ${source}"
+    >
+      🛒 Buy on ${source}
+    </button>
+  `;
 }
 
 
@@ -318,6 +453,7 @@ function saveCartToStorage() {
       "apex_cart",
       JSON.stringify(cart)
     );
+
   } catch (error) {
     console.error(
       "Error saving cart:",
@@ -503,11 +639,6 @@ function filterProducts() {
     searchTimer
   );
 
-  /*
-    Wait 350ms after typing stops,
-    then ask MongoDB for matching
-    products.
-  */
   searchTimer =
     setTimeout(() => {
       fetchProducts(true);
@@ -548,13 +679,6 @@ function filterCategory(
     );
   }
 
-  /*
-    Reload from page 1.
-
-    This is important because otherwise
-    the category would only filter the
-    currently loaded 40 products.
-  */
   fetchProducts(true);
 }
 
@@ -673,6 +797,65 @@ function renderProducts() {
           const isOutOfStock =
             stockCount <= 0;
 
+          const affiliateProduct =
+            isAffiliateProduct(
+              product
+            );
+
+          const source =
+            escapeHTML(
+              getAffiliateSource(
+                product
+              )
+            );
+
+          /*
+            Affiliate products should not
+            show a fake local stock state.
+
+            The actual purchase happens
+            on the partner marketplace.
+          */
+          const purchaseButton =
+            affiliateProduct
+              ? `
+                <button
+                  type="button"
+                  class="add-btn affiliate-buy-btn"
+                  onclick="
+                    event.stopPropagation();
+                    openAffiliateProduct('${safeId}')
+                  "
+                  title="Buy from ${source}"
+                >
+                  🛒 Buy on ${source}
+                </button>
+              `
+              : `
+                <button
+                  class="add-btn ${
+                    isOutOfStock
+                      ? "disabled-btn"
+                      : ""
+                  }"
+                  ${
+                    isOutOfStock
+                      ? "disabled"
+                      : ""
+                  }
+                  onclick="
+                    event.stopPropagation();
+                    addToCart('${safeId}')
+                  "
+                >
+                  ${
+                    isOutOfStock
+                      ? "Out of Stock"
+                      : "Add to Cart"
+                  }
+                </button>
+              `;
+
           return `
             <div
               class="card"
@@ -692,11 +875,21 @@ function renderProducts() {
                   ${safeName}
                 </h3>
 
-                <div class="stock-container">
-                  ${getStockBadge(
-                    stockCount
-                  )}
-                </div>
+                ${
+                  affiliateProduct
+                    ? `
+                      <div class="affiliate-badge">
+                        ${source}
+                      </div>
+                    `
+                    : `
+                      <div class="stock-container">
+                        ${getStockBadge(
+                          stockCount
+                        )}
+                      </div>
+                    `
+                }
 
                 <div class="rating">
                   ${ratingDisplay}
@@ -724,28 +917,7 @@ function renderProducts() {
 
                 </div>
 
-                <button
-                  class="add-btn ${
-                    isOutOfStock
-                      ? "disabled-btn"
-                      : ""
-                  }"
-                  ${
-                    isOutOfStock
-                      ? "disabled"
-                      : ""
-                  }
-                  onclick="
-                    event.stopPropagation();
-                    addToCart('${safeId}')
-                  "
-                >
-                  ${
-                    isOutOfStock
-                      ? "Out of Stock"
-                      : "Add to Cart"
-                  }
-                </button>
+                ${purchaseButton}
 
               </div>
             </div>
@@ -827,6 +999,7 @@ async function loadMoreProducts() {
 
   if (button) {
     button.disabled = true;
+
     button.textContent =
       "Loading...";
   }
@@ -850,6 +1023,7 @@ async function loadMoreProducts() {
 
     updatedButton.textContent =
       "Load More Products";
+
   } else {
     updatedButton.remove();
   }
@@ -944,6 +1118,18 @@ function openProductModal(
   const isOutOfStock =
     stockCount <= 0;
 
+  const affiliateProduct =
+    isAffiliateProduct(
+      product
+    );
+
+  const affiliateSource =
+    escapeHTML(
+      getAffiliateSource(
+        product
+      )
+    );
+
   const relatedItems =
     getRelatedProducts(
       product,
@@ -1019,6 +1205,59 @@ function openProductModal(
       `
       : "";
 
+  /*
+    Purchase button for the modal.
+
+    Affiliate product:
+    Opens Admitad tracking URL.
+
+    Normal product:
+    Uses the existing cart system.
+  */
+  const modalPurchaseButton =
+    affiliateProduct
+      ? `
+        <button
+          type="button"
+          class="add-btn affiliate-buy-btn"
+          onclick="
+            openAffiliateProduct('${safeId}')
+          "
+        >
+          🛒 Buy on ${affiliateSource}
+        </button>
+
+        <p class="affiliate-note">
+          You will be redirected to ${affiliateSource}
+          to complete your purchase.
+        </p>
+      `
+      : `
+        <button
+          type="button"
+          class="add-btn ${
+            isOutOfStock
+              ? "disabled-btn"
+              : ""
+          }"
+          ${
+            isOutOfStock
+              ? "disabled"
+              : ""
+          }
+          onclick="
+            addToCart('${safeId}');
+            closeProductModal();
+          "
+        >
+          ${
+            isOutOfStock
+              ? "Out of Stock"
+              : "Add to Cart"
+          }
+        </button>
+      `;
+
   const modal =
     document.createElement(
       "div"
@@ -1064,11 +1303,21 @@ function openProductModal(
             ${safeName}
           </h2>
 
-          <div class="stock-container">
-            ${getStockBadge(
-              stockCount
-            )}
-          </div>
+          ${
+            affiliateProduct
+              ? `
+                <div class="affiliate-badge">
+                  ${affiliateSource}
+                </div>
+              `
+              : `
+                <div class="stock-container">
+                  ${getStockBadge(
+                    stockCount
+                  )}
+                </div>
+              `
+          }
 
           <div class="rating">
             ${ratingDisplay}
@@ -1100,29 +1349,7 @@ function openProductModal(
 
           </div>
 
-          <button
-            type="button"
-            class="add-btn ${
-              isOutOfStock
-                ? "disabled-btn"
-                : ""
-            }"
-            ${
-              isOutOfStock
-                ? "disabled"
-                : ""
-            }
-            onclick="
-              addToCart('${safeId}');
-              closeProductModal();
-            "
-          >
-            ${
-              isOutOfStock
-                ? "Out of Stock"
-                : "Add to Cart"
-            }
-          </button>
+          ${modalPurchaseButton}
 
         </div>
       </div>
@@ -1359,6 +1586,23 @@ function addToCart(
     return;
   }
 
+  /*
+    Affiliate products are purchased
+    directly through the affiliate link.
+
+    Do not put them into the local
+    ApexShopy checkout cart.
+  */
+  if (
+    isAffiliateProduct(product)
+  ) {
+    openAffiliateProduct(
+      productId
+    );
+
+    return;
+  }
+
   const actualProductId =
     getProductId(
       product
@@ -1447,6 +1691,23 @@ function updateQuantity(
     return;
   }
 
+  /*
+    Affiliate products should not normally
+    exist inside the local cart.
+
+    This protects the cart if an older
+    saved cart contains one.
+  */
+  if (
+    isAffiliateProduct(item)
+  ) {
+    removeFromCart(
+      productId
+    );
+
+    return;
+  }
+
   const product =
     products.find(
       (productItem) =>
@@ -1491,6 +1752,7 @@ function updateQuantity(
     removeFromCart(
       productId
     );
+
   } else {
     updateCartUI();
   }
@@ -1767,6 +2029,7 @@ document.addEventListener(
 
     /*
       Initial API request:
+
       /api/products?page=1&limit=40
     */
     fetchProducts(true);
