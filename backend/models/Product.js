@@ -19,10 +19,34 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // Legacy/current price field.
+    // Kept as PKR for compatibility.
     price: {
       type: Number,
       required: true,
       min: 0,
+    },
+
+    // Explicit PKR price.
+    pricePKR: {
+      type: Number,
+      min: 0,
+      default: null,
+    },
+
+    // Original USD price from affiliate/feed data.
+    // Never calculated from PKR automatically.
+    priceUSD: {
+      type: Number,
+      min: 0,
+      default: null,
+    },
+
+    // Currency used by the legacy `price` field.
+    currency: {
+      type: String,
+      default: "PKR",
+      trim: true,
     },
 
     category: {
@@ -66,10 +90,14 @@ const productSchema = new mongoose.Schema(
       index: true,
     },
   },
-
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports =
+  mongoose.model(
+    "Product",
+    productSchema
+  );
+
