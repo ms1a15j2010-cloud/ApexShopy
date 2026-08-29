@@ -7,7 +7,9 @@ const router = express.Router();
 // GET all products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const products = await Product.find()
+  .sort({ _id: -1 })
+  .limit(100);
 
     res.json({
       success: true,
