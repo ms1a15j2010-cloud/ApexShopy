@@ -443,8 +443,9 @@ function extractUSDFromAffiliateUrl(
       USD%2119.88
       USD%2119.88%21
 
-      Search for USD followed by !
-      and a numeric price.
+      Search for USD followed by !,
+      colon, or whitespace and a
+      numeric price.
     */
 
     const usdMatch =
@@ -468,7 +469,7 @@ function extractUSDFromAffiliateUrl(
         Number.isFinite(
           value
         ) &&
-        value >= 0
+        value > 0
       ) {
         return value;
       }
@@ -508,7 +509,7 @@ function extractUSDFromAffiliateUrl(
           Number.isFinite(
             value
           ) &&
-          value >= 0
+          value > 0
         ) {
           return value;
         }
@@ -526,6 +527,20 @@ function extractUSDFromAffiliateUrl(
 }
 
 
+/*
+  IMPORTANT:
+
+  A backend priceUSD of 0 means
+  "USD price unavailable", not a
+  real $0.00 product price.
+
+  Therefore we only accept a direct
+  backend USD value when it is > 0.
+
+  If it is 0 or missing, we recover
+  the USD amount from affiliateUrl.
+*/
+
 function getPriceUSD(
   product
 ) {
@@ -538,17 +553,10 @@ function getPriceUSD(
     Number.isFinite(
       directUSD
     ) &&
-    directUSD >= 0
+    directUSD > 0
   ) {
     return directUSD;
   }
-
-  /*
-    If backend has not yet populated
-    priceUSD, recover the original
-    AliExpress USD amount from the
-    Admitad affiliate URL.
-  */
 
   const urlUSD =
     extractUSDFromAffiliateUrl(
@@ -556,7 +564,8 @@ function getPriceUSD(
     );
 
   if (
-    urlUSD !== null
+    urlUSD !== null &&
+    urlUSD > 0
   ) {
     return urlUSD;
   }
@@ -573,9 +582,9 @@ function formatUSD(
 
   return Number.isFinite(
     num
-  )
+  ) && num > 0
     ? `$${num.toFixed(2)}`
-    : "$0.00";
+    : "";
 }
 
 
@@ -1738,6 +1747,7 @@ function openProductModal(
       Number.isFinite(
         originalPriceUSD
       ) &&
+      originalPriceUSD > 0 &&
       priceUSD !==
         null &&
       originalPriceUSD >
@@ -1766,6 +1776,7 @@ function openProductModal(
       Number.isFinite(
         originalPriceUSD
       ) &&
+      originalPriceUSD > 0 &&
       priceUSD !==
         null &&
       originalPriceUSD >
@@ -2155,7 +2166,8 @@ function updateCartUI() {
 
                     ${
                       itemTotalUSD !==
-                      null
+                      null &&
+                      itemTotalUSD > 0
                         ? `
                           <span>
                             ${formatUSD(
@@ -2488,7 +2500,8 @@ function buildOrderSummaryText() {
 
       if (
         priceUSD !==
-        null
+        null &&
+        priceUSD > 0
       ) {
         const subtotalUSD =
           priceUSD *
