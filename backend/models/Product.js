@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
+    // ==============================
+    // BASIC PRODUCT INFORMATION
+    // ==============================
+
     name: {
       type: String,
       required: true,
       trim: true,
+      maxlength: 200,
     },
 
     description: {
@@ -37,7 +42,31 @@ const productSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+
+    // ==============================
+    // ALIEXPRESS / ADMITAD
+    // ==============================
+
+    affiliateUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    source: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    externalId: {
+      type: String,
+      default: "",
+      trim: true,
+      index: true,
+    },
   },
+
   {
     timestamps: true,
   }
