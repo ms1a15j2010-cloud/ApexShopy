@@ -3,6 +3,7 @@
 ===================================== */
 
 const API_BASE_URL = "https://backend-kappa-orcin-35.vercel.app";
+
 const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/share/p/19WQNXqUhe/",
   instagram:
@@ -12,18 +13,39 @@ const SOCIAL_LINKS = {
 
 let products = [];
 let cart = loadCartFromStorage();
+
 let activeCategory = "All";
 let searchQuery = "";
+
+// Pagination state
+let currentPage = 1;
+let productsPerPage = 40;
+let hasMoreProducts = true;
+let isLoadingProducts = false;
 
 // ==========================================
 // 2. FETCH PRODUCTS FROM MONGODB API
 // ==========================================
 
-async function fetchProducts() {
+async function fetchProducts(reset = false) {
   const container = document.getElementById("productGrid");
 
+  if (isLoadingProducts) return;
+
+  if (!hasMoreProducts && !reset) return;
+
+  if (reset) {
+    currentPage = 1;
+    hasMoreProducts = true;
+    products = [];
+  }
+
+  isLoadingProducts = true;
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/products`);
+    const response = await fetch(
+      `${API_BASE_URL}/api/products?page=${currentPage}&limit=${productsPerPage}`
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -35,13 +57,21 @@ async function fetchProducts() {
       throw new Error("Invalid products response from server.");
     }
 
-    products = data.products;
+    // Add new products without replacing existing products
+    products = [...products, ...data.products];
+
+    hasMoreProducts = Boolean(data.hasMore);
+
+    currentPage += 1;
 
     renderProducts();
   } catch (err) {
-    console.error("Failed to load products from MongoDB API:", err);
+    console.error(
+      "Failed to load products from MongoDB API:",
+      err
+    );
 
-    if (container) {
+    if (container && products.length === 0) {
       container.innerHTML = `
         <div class="error-msg">
           <p>Unable to load products right now.</p>
@@ -49,7 +79,13 @@ async function fetchProducts() {
       `;
     }
 
-    showToast("Failed to connect to store server.", "error", 4000);
+    showToast(
+      "Failed to connect to store server.",
+      "error",
+      4000
+    );
+  } finally {
+    isLoadingProducts = false;
   }
 }
 
@@ -79,7 +115,8 @@ function formatCurrency(amount) {
 }
 
 function getStockBadge(stock) {
-  const count = typeof stock !== "undefined" ? Number(stock) : 10;
+  const count =
+    typeof stock !== "undefined" ? Number(stock) : 10;
 
   if (count <= 0) {
     return `<span class="stock-badge out-of-stock">Out of Stock</span>`;
@@ -118,14 +155,22 @@ function loadCartFromStorage() {
 
 function saveCartToStorage() {
   try {
-    localStorage.setItem("apex_cart", JSON.stringify(cart));
+    localStorage.setItem(
+      "apex_cart",
+      JSON.stringify(cart)
+    );
   } catch (err) {
     console.error("Error saving cart:", err);
   }
 }
 
-function showToast(message, type = "info", duration = 3000) {
-  let container = document.getElementById("toast-container");
+function showToast(
+  message,
+  type = "info",
+  duration = 3000
+) {
+  let container =
+    document.getElementById("toast-container");
 
   if (!container) {
     container = document.createElement("div");
@@ -136,7 +181,11 @@ function showToast(message, type = "info", duration = 3000) {
   const toast = document.createElement("div");
 
   toast.className = `toast ${type}`;
-  toast.style.setProperty("--delay", `${duration / 1000}s`);
+  toast.style.setProperty(
+    "--delay",
+    `${duration / 1000}s`
+  );
+
   toast.textContent = message;
 
   container.appendChild(toast);
@@ -151,40 +200,60 @@ function showToast(message, type = "info", duration = 3000) {
 // ==========================================
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("apex_theme");
+  const savedTheme =
+    localStorage.getItem("apex_theme");
 
   const systemPrefersDark = window.matchMedia(
     "(prefers-color-scheme: dark)"
   ).matches;
 
   const theme =
-    savedTheme || (systemPrefersDark ? "dark" : "light");
+    savedTheme ||
+    (systemPrefersDark ? "dark" : "light");
 
-  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.setAttribute(
+    "data-theme",
+    theme
+  );
 
   updateThemeButton(theme);
 }
 
 function toggleTheme() {
   const currentTheme =
-    document.documentElement.getAttribute("data-theme");
+    document.documentElement.getAttribute(
+      "data-theme"
+    );
 
   const newTheme =
-    currentTheme === "dark" ? "light" : "dark";
+    currentTheme === "dark"
+      ? "light"
+      : "dark";
 
-  document.documentElement.setAttribute("data-theme", newTheme);
+  document.documentElement.setAttribute(
+    "data-theme",
+    newTheme
+  );
 
-  localStorage.setItem("apex_theme", newTheme);
+  localStorage.setItem(
+    "apex_theme",
+    newTheme
+  );
 
   updateThemeButton(newTheme);
 }
 
 function updateThemeButton(theme) {
-  const btn = document.getElementById("themeToggleBtn");
+  const btn =
+    document.getElementById(
+      "themeToggleBtn"
+    );
 
   if (btn) {
     btn.textContent =
-      theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+      theme === "dark"
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
   }
 }
 
@@ -193,8 +262,15 @@ function updateThemeButton(theme) {
 // ==========================================
 
 function toggleCart() {
-  const sidebar = document.getElementById("cartSidebar");
-  const overlay = document.getElementById("cartOverlay");
+  const sidebar =
+    document.getElementById(
+      "cartSidebar"
+    );
+
+  const overlay =
+    document.getElementById(
+      "cartOverlay"
+    );
 
   if (sidebar) {
     sidebar.classList.toggle("open");
@@ -206,7 +282,10 @@ function toggleCart() {
 }
 
 function filterProducts() {
-  const input = document.getElementById("searchInput");
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
 
   if (input) {
     searchQuery = input.value.trim();
@@ -215,15 +294,28 @@ function filterProducts() {
   }
 }
 
-function filterCategory(category, event) {
+function filterCategory(
+  category,
+  event
+) {
   activeCategory = category;
 
-  const buttons = document.querySelectorAll(".categories button");
+  const buttons =
+    document.querySelectorAll(
+      ".categories button"
+    );
 
-  buttons.forEach((btn) => btn.classList.remove("active"));
+  buttons.forEach((btn) =>
+    btn.classList.remove("active")
+  );
 
-  if (event && event.currentTarget) {
-    event.currentTarget.classList.add("active");
+  if (
+    event &&
+    event.currentTarget
+  ) {
+    event.currentTarget.classList.add(
+      "active"
+    );
   }
 
   renderProducts();
@@ -234,21 +326,32 @@ function filterCategory(category, event) {
 // ==========================================
 
 function renderProducts() {
-  const container = document.getElementById("productGrid");
+  const container =
+    document.getElementById(
+      "productGrid"
+    );
 
   if (!container) return;
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      activeCategory === "All" ||
-      product.category === activeCategory;
+  const filteredProducts =
+    products.filter((product) => {
+      const matchesCategory =
+        activeCategory === "All" ||
+        product.category ===
+          activeCategory;
 
-    const matchesSearch = (product.name || "")
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+      const matchesSearch =
+        (product.name || "")
+          .toLowerCase()
+          .includes(
+            searchQuery.toLowerCase()
+          );
 
-    return matchesCategory && matchesSearch;
-  });
+      return (
+        matchesCategory &&
+        matchesSearch
+      );
+    });
 
   if (filteredProducts.length === 0) {
     container.innerHTML = `
@@ -257,154 +360,307 @@ function renderProducts() {
       </div>
     `;
 
+    renderLoadMoreButton();
+
     return;
   }
 
-  container.innerHTML = filteredProducts
-    .map((product) => {
-      const productId = getProductId(product);
+  container.innerHTML =
+    filteredProducts
+      .map((product) => {
+        const productId =
+          getProductId(product);
 
-      const safeName = escapeHTML(
-        product.name || "Product"
-      );
+        const safeName =
+          escapeHTML(
+            product.name ||
+              "Product"
+          );
 
-      const safeImage = escapeHTML(
-        product.image || ""
-      );
+        const safeImage =
+          escapeHTML(
+            product.image || ""
+          );
 
-      const ratingDisplay = escapeHTML(
-        product.rating || "⭐ 5.0"
-      );
+        const ratingDisplay =
+          escapeHTML(
+            product.rating ||
+              "⭐ 5.0"
+          );
 
-      const activePrice = product.price || 0;
+        const activePrice =
+          product.price || 0;
 
-      const originalPrice = product.originalPrice;
+        const originalPrice =
+          product.originalPrice;
 
-      const hasDiscount =
-        originalPrice && originalPrice > activePrice;
+        const hasDiscount =
+          originalPrice &&
+          originalPrice >
+            activePrice;
 
-      const stockCount =
-        typeof product.stock !== "undefined"
-          ? product.stock
-          : 10;
+        const stockCount =
+          typeof product.stock !==
+          "undefined"
+            ? product.stock
+            : 10;
 
-      const isOutOfStock = stockCount <= 0;
+        const isOutOfStock =
+          stockCount <= 0;
 
-      return `
-        <div
-          class="card"
-          data-id="${escapeHTML(String(productId))}"
-          onclick="openProductModal('${escapeHTML(String(productId))}')"
-        >
-          <img
-            src="${safeImage}"
-            alt="${safeName}"
-            loading="lazy"
+        return `
+          <div
+            class="card"
+            data-id="${escapeHTML(
+              String(productId)
+            )}"
+            onclick="openProductModal('${escapeHTML(
+              String(productId)
+            )}')"
           >
-
-          <div class="card-info">
-
-            <h3 class="card-title">
-              ${safeName}
-            </h3>
-
-            <div class="stock-container">
-              ${getStockBadge(stockCount)}
-            </div>
-
-            <div class="rating">
-              ${ratingDisplay}
-            </div>
-
-            <div class="price-container">
-              <span class="sale-price">
-                ${formatCurrency(activePrice)}
-              </span>
-
-              ${
-                hasDiscount
-                  ? `
-                    <span class="original-price">
-                      ${formatCurrency(originalPrice)}
-                    </span>
-                  `
-                  : ""
-              }
-            </div>
-
-            <button
-              class="add-btn ${
-                isOutOfStock ? "disabled-btn" : ""
-              }"
-              ${isOutOfStock ? "disabled" : ""}
-              onclick="
-                event.stopPropagation();
-                addToCart('${escapeHTML(String(productId))}')
-              "
+            <img
+              src="${safeImage}"
+              alt="${safeName}"
+              loading="lazy"
             >
-              ${
-                isOutOfStock
-                  ? "Out of Stock"
-                  : "Add to Cart"
-              }
-            </button>
 
+            <div class="card-info">
+
+              <h3 class="card-title">
+                ${safeName}
+              </h3>
+
+              <div class="stock-container">
+                ${getStockBadge(
+                  stockCount
+                )}
+              </div>
+
+              <div class="rating">
+                ${ratingDisplay}
+              </div>
+
+              <div class="price-container">
+                <span class="sale-price">
+                  ${formatCurrency(
+                    activePrice
+                  )}
+                </span>
+
+                ${
+                  hasDiscount
+                    ? `
+                      <span class="original-price">
+                        ${formatCurrency(
+                          originalPrice
+                        )}
+                      </span>
+                    `
+                    : ""
+                }
+              </div>
+
+              <button
+                class="add-btn ${
+                  isOutOfStock
+                    ? "disabled-btn"
+                    : ""
+                }"
+                ${
+                  isOutOfStock
+                    ? "disabled"
+                    : ""
+                }
+                onclick="
+                  event.stopPropagation();
+                  addToCart('${escapeHTML(
+                    String(productId)
+                  )}')
+                "
+              >
+                ${
+                  isOutOfStock
+                    ? "Out of Stock"
+                    : "Add to Cart"
+                }
+              </button>
+
+            </div>
           </div>
-        </div>
-      `;
-    })
-    .join("");
+        `;
+      })
+      .join("");
+
+  renderLoadMoreButton();
 }
 
-function openProductModal(productId) {
-  const product = products.find(
-    (p) => String(getProductId(p)) === String(productId)
-  );
+// ==========================================
+// LOAD MORE BUTTON
+// ==========================================
+
+function renderLoadMoreButton() {
+  const existingButton =
+    document.getElementById(
+      "loadMoreProductsBtn"
+    );
+
+  if (existingButton) {
+    existingButton.remove();
+  }
+
+  if (!hasMoreProducts) {
+    return;
+  }
+
+  const button =
+    document.createElement(
+      "button"
+    );
+
+  button.id =
+    "loadMoreProductsBtn";
+
+  button.className =
+    "load-more-btn";
+
+  button.textContent =
+    "Load More Products";
+
+  button.onclick =
+    loadMoreProducts;
+
+  const container =
+    document.getElementById(
+      "productGrid"
+    );
+
+  if (
+    container &&
+    container.parentNode
+  ) {
+    container.parentNode.appendChild(
+      button
+    );
+  }
+}
+
+async function loadMoreProducts() {
+  const button =
+    document.getElementById(
+      "loadMoreProductsBtn"
+    );
+
+  if (
+    isLoadingProducts ||
+    !hasMoreProducts
+  ) {
+    return;
+  }
+
+  if (button) {
+    button.disabled = true;
+    button.textContent =
+      "Loading...";
+  }
+
+  await fetchProducts();
+
+  const updatedButton =
+    document.getElementById(
+      "loadMoreProductsBtn"
+    );
+
+  if (updatedButton) {
+    if (hasMoreProducts) {
+      updatedButton.disabled =
+        false;
+
+      updatedButton.textContent =
+        "Load More Products";
+    } else {
+      updatedButton.remove();
+    }
+  }
+}
+
+// ==========================================
+// PRODUCT MODAL
+// ==========================================
+
+function openProductModal(
+  productId
+) {
+  const product =
+    products.find(
+      (p) =>
+        String(
+          getProductId(p)
+        ) ===
+        String(productId)
+    );
 
   if (!product) return;
 
   const existingModal =
-    document.getElementById("productDetailModal");
+    document.getElementById(
+      "productDetailModal"
+    );
 
   if (existingModal) {
     existingModal.remove();
   }
 
-  const actualProductId = getProductId(product);
+  const actualProductId =
+    getProductId(product);
 
-  const safeName = escapeHTML(
-    product.name || "Product"
-  );
+  const safeName =
+    escapeHTML(
+      product.name ||
+        "Product"
+    );
 
-  const safeImage = escapeHTML(
-    product.image || ""
-  );
+  const safeImage =
+    escapeHTML(
+      product.image || ""
+    );
 
-  const safeDesc = escapeHTML(
-    product.description ||
-      "High quality product designed for durability and performance."
-  );
+  const safeDesc =
+    escapeHTML(
+      product.description ||
+        "High quality product designed for durability and performance."
+    );
 
-  const ratingDisplay = escapeHTML(
-    product.rating || "⭐ 5.0"
-  );
+  const ratingDisplay =
+    escapeHTML(
+      product.rating ||
+        "⭐ 5.0"
+    );
 
-  const activePrice = product.price || 0;
+  const activePrice =
+    product.price || 0;
 
-  const originalPrice = product.originalPrice;
+  const originalPrice =
+    product.originalPrice;
 
   const hasDiscount =
-    originalPrice && originalPrice > activePrice;
+    originalPrice &&
+    originalPrice >
+      activePrice;
 
   const stockCount =
-    typeof product.stock !== "undefined"
+    typeof product.stock !==
+    "undefined"
       ? product.stock
       : 10;
 
-  const isOutOfStock = stockCount <= 0;
+  const isOutOfStock =
+    stockCount <= 0;
 
   const relatedItems =
-    getRelatedProducts(product, 3);
+    getRelatedProducts(
+      product,
+      3
+    );
 
   const relatedHTML =
     relatedItems.length > 0
@@ -417,33 +673,43 @@ function openProductModal(productId) {
 
             ${relatedItems
               .map((item) => {
-                const itemId = getProductId(item);
+                const itemId =
+                  getProductId(
+                    item
+                  );
 
                 return `
                   <div
                     class="related-card"
                     onclick="openProductModal('${escapeHTML(
-                      String(itemId)
+                      String(
+                        itemId
+                      )
                     )}')"
                   >
 
                     <img
                       src="${escapeHTML(
-                        item.image || ""
+                        item.image ||
+                          ""
                       )}"
                       alt="${escapeHTML(
-                        item.name || ""
+                        item.name ||
+                          ""
                       )}"
                     >
 
                     <div class="related-card-title">
                       ${escapeHTML(
-                        item.name || ""
+                        item.name ||
+                          ""
                       )}
                     </div>
 
                     <div class="related-card-price">
-                      ${formatCurrency(item.price)}
+                      ${formatCurrency(
+                        item.price
+                      )}
                     </div>
 
                   </div>
@@ -457,10 +723,16 @@ function openProductModal(productId) {
       `
       : "";
 
-  const modal = document.createElement("div");
+  const modal =
+    document.createElement(
+      "div"
+    );
 
-  modal.id = "productDetailModal";
-  modal.className = "modal-overlay";
+  modal.id =
+    "productDetailModal";
+
+  modal.className =
+    "modal-overlay";
 
   modal.onclick = (e) => {
     if (e.target === modal) {
@@ -491,7 +763,9 @@ function openProductModal(productId) {
           <h2>${safeName}</h2>
 
           <div class="stock-container">
-            ${getStockBadge(stockCount)}
+            ${getStockBadge(
+              stockCount
+            )}
           </div>
 
           <div class="rating">
@@ -505,14 +779,18 @@ function openProductModal(productId) {
           <div class="price-container">
 
             <span class="sale-price">
-              ${formatCurrency(activePrice)}
+              ${formatCurrency(
+                activePrice
+              )}
             </span>
 
             ${
               hasDiscount
                 ? `
                   <span class="original-price">
-                    ${formatCurrency(originalPrice)}
+                    ${formatCurrency(
+                      originalPrice
+                    )}
                   </span>
                 `
                 : ""
@@ -526,10 +804,16 @@ function openProductModal(productId) {
                 ? "disabled-btn"
                 : ""
             }"
-            ${isOutOfStock ? "disabled" : ""}
+            ${
+              isOutOfStock
+                ? "disabled"
+                : ""
+            }
             onclick="
               addToCart('${escapeHTML(
-                String(actualProductId)
+                String(
+                  actualProductId
+                )
               )}');
               closeProductModal();
             "
@@ -549,13 +833,16 @@ function openProductModal(productId) {
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(
+    modal
+  );
 }
 
 function closeProductModal() {
-  const modal = document.getElementById(
-    "productDetailModal"
-  );
+  const modal =
+    document.getElementById(
+      "productDetailModal"
+    );
 
   if (modal) {
     modal.remove();
@@ -570,34 +857,48 @@ function updateCartUI() {
   saveCartToStorage();
 
   const cartCountEl =
-    document.getElementById("cartCount");
+    document.getElementById(
+      "cartCount"
+    );
 
   const cartItemsEl =
-    document.getElementById("cartItems");
+    document.getElementById(
+      "cartItems"
+    );
 
   const cartTotalAmountEl =
-    document.getElementById("cartTotalAmount");
+    document.getElementById(
+      "cartTotalAmount"
+    );
 
-  const totalItems = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const totalItems =
+    cart.reduce(
+      (sum, item) =>
+        sum + item.quantity,
+      0
+    );
 
-  const totalPrice = cart.reduce(
-    (sum, item) =>
-      sum +
-      (Number(item.price) || 0) *
-        item.quantity,
-    0
-  );
+  const totalPrice =
+    cart.reduce(
+      (sum, item) =>
+        sum +
+        (Number(
+          item.price
+        ) || 0) *
+          item.quantity,
+      0
+    );
 
   if (cartCountEl) {
-    cartCountEl.textContent = totalItems;
+    cartCountEl.textContent =
+      totalItems;
   }
 
   if (cartTotalAmountEl) {
     cartTotalAmountEl.textContent =
-      formatCurrency(totalPrice);
+      formatCurrency(
+        totalPrice
+      );
   }
 
   if (!cartItemsEl) return;
@@ -612,102 +913,116 @@ function updateCartUI() {
     return;
   }
 
-  cartItemsEl.innerHTML = cart
-    .map((item) => {
-      const itemId = getProductId(item);
+  cartItemsEl.innerHTML =
+    cart
+      .map((item) => {
+        const itemId =
+          getProductId(item);
 
-      const safeName = escapeHTML(
-        item.name || "Product"
-      );
+        const safeName =
+          escapeHTML(
+            item.name ||
+              "Product"
+          );
 
-      const safeImage = escapeHTML(
-        item.image || ""
-      );
+        const safeImage =
+          escapeHTML(
+            item.image || ""
+          );
 
-      const itemTotal =
-        (Number(item.price) || 0) *
-        item.quantity;
+        const itemTotal =
+          (Number(
+            item.price
+          ) || 0) *
+          item.quantity;
 
-      return `
-        <div
-          class="cart-item"
-          data-id="${escapeHTML(
-            String(itemId)
-          )}"
-        >
-
-          <img
-            src="${safeImage}"
-            alt="${safeName}"
-            class="cart-item-img"
-            loading="lazy"
+        return `
+          <div
+            class="cart-item"
+            data-id="${escapeHTML(
+              String(itemId)
+            )}"
           >
 
-          <div class="cart-item-details">
+            <img
+              src="${safeImage}"
+              alt="${safeName}"
+              class="cart-item-img"
+              loading="lazy"
+            >
 
-            <h4 class="cart-item-title">
-              ${safeName}
-            </h4>
+            <div class="cart-item-details">
 
-            <p class="cart-item-price">
-              ${formatCurrency(
-                item.price
-              )} x ${item.quantity}
-              =
-              ${formatCurrency(itemTotal)}
-            </p>
+              <h4 class="cart-item-title">
+                ${safeName}
+              </h4>
+
+              <p class="cart-item-price">
+                ${formatCurrency(
+                  item.price
+                )} x ${item.quantity}
+                =
+                ${formatCurrency(
+                  itemTotal
+                )}
+              </p>
+
+            </div>
+
+            <div class="cart-controls">
+
+              <button
+                onclick="updateQuantity('${escapeHTML(
+                  String(itemId)
+                )}', -1)"
+              >
+                -
+              </button>
+
+              <span>
+                ${item.quantity}
+              </span>
+
+              <button
+                onclick="updateQuantity('${escapeHTML(
+                  String(itemId)
+                )}', 1)"
+              >
+                +
+              </button>
+
+              <button
+                class="remove-btn"
+                onclick="removeFromCart('${escapeHTML(
+                  String(itemId)
+                )}')"
+              >
+                &times;
+              </button>
+
+            </div>
 
           </div>
-
-          <div class="cart-controls">
-
-            <button
-              onclick="updateQuantity('${escapeHTML(
-                String(itemId)
-              )}', -1)"
-            >
-              -
-            </button>
-
-            <span>
-              ${item.quantity}
-            </span>
-
-            <button
-              onclick="updateQuantity('${escapeHTML(
-                String(itemId)
-              )}', 1)"
-            >
-              +
-            </button>
-
-            <button
-              class="remove-btn"
-              onclick="removeFromCart('${escapeHTML(
-                String(itemId)
-              )}')"
-            >
-              &times;
-            </button>
-
-          </div>
-
-        </div>
-      `;
-    })
-    .join("");
+        `;
+      })
+      .join("");
 }
 
 // ==========================================
 // 8. CART MUTATIONS
 // ==========================================
 
-function addToCart(productId) {
-  const product = products.find(
-    (p) =>
-      String(getProductId(p)) ===
-      String(productId)
-  );
+function addToCart(
+  productId
+) {
+  const product =
+    products.find(
+      (p) =>
+        String(
+          getProductId(p)
+        ) ===
+        String(productId)
+    );
 
   if (!product) return;
 
@@ -715,8 +1030,11 @@ function addToCart(productId) {
     getProductId(product);
 
   const maxStock =
-    typeof product.stock !== "undefined"
-      ? Number(product.stock)
+    typeof product.stock !==
+    "undefined"
+      ? Number(
+          product.stock
+        )
       : 10;
 
   if (maxStock <= 0) {
@@ -729,15 +1047,21 @@ function addToCart(productId) {
     return;
   }
 
-  const existingItem = cart.find(
-    (item) =>
-      String(getProductId(item)) ===
-      String(actualProductId)
-  );
+  const existingItem =
+    cart.find(
+      (item) =>
+        String(
+          getProductId(item)
+        ) ===
+        String(
+          actualProductId
+        )
+    );
 
   if (existingItem) {
     if (
-      existingItem.quantity + 1 >
+      existingItem.quantity +
+        1 >
       maxStock
     ) {
       showToast(
@@ -749,7 +1073,8 @@ function addToCart(productId) {
       return;
     }
 
-    existingItem.quantity += 1;
+    existingItem.quantity +=
+      1;
   } else {
     cart.push({
       ...product,
@@ -766,30 +1091,44 @@ function addToCart(productId) {
   );
 }
 
-function updateQuantity(productId, delta) {
-  const item = cart.find(
-    (i) =>
-      String(getProductId(i)) ===
-      String(productId)
-  );
+function updateQuantity(
+  productId,
+  delta
+) {
+  const item =
+    cart.find(
+      (i) =>
+        String(
+          getProductId(i)
+        ) ===
+        String(productId)
+    );
 
   if (!item) return;
 
-  const product = products.find(
-    (p) =>
-      String(getProductId(p)) ===
-      String(productId)
-  );
+  const product =
+    products.find(
+      (p) =>
+        String(
+          getProductId(p)
+        ) ===
+        String(productId)
+    );
 
   const maxStock =
     product &&
-    typeof product.stock !== "undefined"
-      ? Number(product.stock)
+    typeof product.stock !==
+      "undefined"
+      ? Number(
+          product.stock
+        )
       : 10;
 
   if (
     delta > 0 &&
-    item.quantity + delta > maxStock
+    item.quantity +
+      delta >
+      maxStock
   ) {
     showToast(
       `Only ${maxStock} items available in stock.`,
@@ -803,16 +1142,22 @@ function updateQuantity(productId, delta) {
   item.quantity += delta;
 
   if (item.quantity <= 0) {
-    removeFromCart(productId);
+    removeFromCart(
+      productId
+    );
   } else {
     updateCartUI();
   }
 }
 
-function removeFromCart(productId) {
+function removeFromCart(
+  productId
+) {
   cart = cart.filter(
     (item) =>
-      String(getProductId(item)) !==
+      String(
+        getProductId(item)
+      ) !==
       String(productId)
   );
 
@@ -841,18 +1186,23 @@ function buildOrderSummaryText() {
 
   let total = 0;
 
-  cart.forEach((item, index) => {
-    const itemSubtotal =
-      (Number(item.price) || 0) *
-      item.quantity;
+  cart.forEach(
+    (item, index) => {
+      const itemSubtotal =
+        (Number(
+          item.price
+        ) || 0) *
+        item.quantity;
 
-    total += itemSubtotal;
+      total +=
+        itemSubtotal;
 
-    text +=
-      `${index + 1}. ${item.name} x${item.quantity} - $${itemSubtotal.toFixed(
-        2
-      )}\n`;
-  });
+      text +=
+        `${index + 1}. ${item.name} x${item.quantity} - $${itemSubtotal.toFixed(
+          2
+        )}\n`;
+    }
+  );
 
   text +=
     `-----------------------------------\n`;
@@ -930,10 +1280,15 @@ function showCheckoutModal(
   }
 
   const modal =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  modal.id = "checkoutModal";
-  modal.className = "modal-overlay";
+  modal.id =
+    "checkoutModal";
+
+  modal.className =
+    "modal-overlay";
 
   modal.onclick = (e) => {
     if (e.target === modal) {
@@ -1006,7 +1361,9 @@ function showCheckoutModal(
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(
+    modal
+  );
 
   const textarea =
     modal.querySelector(
@@ -1014,7 +1371,8 @@ function showCheckoutModal(
     );
 
   if (textarea) {
-    textarea.value = orderSummary;
+    textarea.value =
+      orderSummary;
   }
 }
 
@@ -1040,8 +1398,9 @@ document.addEventListener(
   () => {
     initTheme();
 
-    fetchProducts();
+    fetchProducts(true);
 
     updateCartUI();
   }
 );
+

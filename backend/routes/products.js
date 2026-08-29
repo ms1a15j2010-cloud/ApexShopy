@@ -1,19 +1,36 @@
-
 const express = require("express");
 const Product = require("../models/Product");
 
 const router = express.Router();
 
-// GET all products
+// GET products with pagination
 router.get("/", async (req, res) => {
   try {
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 40;
+
+    // Safety limits
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 40;
+    if (limit > 100) limit = 100;
+
+    const skip = (page - 1) * limit;
+
     const products = await Product.find()
-  .sort({ _id: -1 })
-  .limit(100);
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Product.countDocuments();
 
     res.json({
       success: true,
+      page,
+      limit,
       count: products.length,
+      total,
+      totalPages: Math.ceil(total / limit),
+      hasMore: skip + products.length < total,
       products,
     });
   } catch (error) {
@@ -135,4 +152,3 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
-
