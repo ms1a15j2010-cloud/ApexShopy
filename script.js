@@ -133,7 +133,9 @@ async function fetchProducts(reset = false) {
     ) {
       container.innerHTML = `
         <div class="error-msg">
-          <p>Unable to load products right now.</p>
+          <p>
+            Unable to load products right now.
+          </p>
 
           <button
             type="button"
@@ -158,13 +160,14 @@ async function fetchProducts(reset = false) {
 
 
 /* =====================================
-   3. UTILITIES & STORAGE
+   3. UTILITIES
 ===================================== */
 
 function getProductId(product) {
   return (
     product?._id ||
-    product?.id
+    product?.id ||
+    product?.externalId
   );
 }
 
@@ -202,19 +205,18 @@ function escapeHTML(value) {
 
 
 /* =====================================
-   PRICE HELPERS
+   4. PRICE HELPERS
 ===================================== */
 
-function getUSDPrice(product) {
-  const value =
-    Number(product?.priceUSD);
+/*
+  PKR price.
 
-  return Number.isFinite(value) &&
-    value >= 0
-    ? value
-    : null;
-}
+  Backend now sends:
+    pricePKR
+    price
 
+  pricePKR is preferred.
+*/
 
 function getPKRPrice(product) {
   const pricePKR =
@@ -230,10 +232,194 @@ function getPKRPrice(product) {
   const legacyPrice =
     Number(product?.price);
 
-  return Number.isFinite(legacyPrice) &&
+  if (
+    Number.isFinite(legacyPrice) &&
     legacyPrice >= 0
-    ? legacyPrice
-    : 0;
+  ) {
+    return legacyPrice;
+  }
+
+  return 0;
+}
+
+
+/*
+  Decode an affiliate URL several times.
+
+  Admitad/AliExpress URLs can contain
+  nested encoded AliExpress URLs.
+*/
+
+function decodeAffiliateURL(url) {
+  if (!url) {
+    return "";
+  }
+
+  let decoded =
+    String(url);
+
+  for (
+    let i = 0;
+    i < 5;
+    i++
+  ) {
+    try {
+      const next =
+        decodeURIComponent(
+          decoded
+        );
+
+      if (
+        next === decoded
+      ) {
+        break;
+      }
+
+      decoded = next;
+
+    } catch (error) {
+      break;
+    }
+  }
+
+  return decoded;
+}
+
+
+/*
+  Extract the original USD price
+  from the existing AliExpress URL.
+
+  Example encoded data may contain:
+
+    USD!19.88!19.88
+
+  or:
+
+    USD%2119.88%2119.88
+*/
+
+function getUSDPriceFromAffiliateURL(
+  affiliateUrl
+) {
+  if (!affiliateUrl) {
+    return null;
+  }
+
+  const decoded =
+    decodeAffiliateURL(
+      affiliateUrl
+    );
+
+  /*
+    AliExpress affiliate feeds commonly
+    contain the currency followed by price.
+  */
+
+  const patterns = [
+    /USD[!|;,\s]+(\d+(?:\.\d{1,2})?)/i,
+    /USD(\d+(?:\.\d{1,2})?)/i,
+    /(?:price|sale_price|amount)[=:"']+USD[!|;,\s]+(\d+(?:\.\d{1,2})?)/i,
+    /(?:USD|US\$|\$)\s*(\d+(?:\.\d{1,2})?)/i,
+  ];
+
+  for (
+    const pattern of patterns
+  ) {
+    const match =
+      decoded.match(
+        pattern
+      );
+
+    if (
+      match &&
+      match[1]
+    ) {
+      const value =
+        Number(match[1]);
+
+      if (
+        Number.isFinite(value) &&
+        value > 0
+      ) {
+        return value;
+      }
+    }
+  }
+
+  /*
+    Fallback specifically for
+    AliExpress URL parameter patterns.
+  */
+
+  const usdIndex =
+    decoded
+      .toUpperCase()
+      .indexOf("USD");
+
+  if (
+    usdIndex !== -1
+  ) {
+    const afterUSD =
+      decoded.substring(
+        usdIndex + 3
+      );
+
+    const fallback =
+      afterUSD.match(
+        /[!|;,\s]+(\d+(?:\.\d{1,2})?)/
+      );
+
+    if (
+      fallback &&
+      fallback[1]
+    ) {
+      const value =
+        Number(
+          fallback[1]
+        );
+
+      if (
+        Number.isFinite(value) &&
+        value > 0
+      ) {
+        return value;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+/*
+  USD price priority:
+
+  1. priceUSD from database
+  2. USD price inside affiliateUrl
+  3. null
+
+  IMPORTANT:
+  We do NOT convert PKR back into USD.
+  This keeps the original AliExpress price intact.
+*/
+
+function getUSDPrice(product) {
+  const databaseUSD =
+    Number(
+      product?.priceUSD
+    );
+
+  if (
+    Number.isFinite(databaseUSD) &&
+    databaseUSD > 0
+  ) {
+    return databaseUSD;
+  }
+
+  return getUSDPriceFromAffiliateURL(
+    product?.affiliateUrl
+  );
 }
 
 
@@ -252,70 +438,32 @@ function formatPKR(amount) {
     Number(amount);
 
   return Number.isFinite(num)
-    ? `PKR ${num.toFixed(2)}`
+    ? `PKR ${num.toLocaleString(
+        "en-PK",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`
     : "PKR 0.00";
 }
 
 
 /*
-  Legacy function retained so the
-  existing cart code continues working.
+  Kept for compatibility with existing
+  cart/order code.
 */
+
 function formatCurrency(amount) {
-  return formatPKR(amount);
+  return formatPKR(
+    amount
+  );
 }
 
 
-function getPriceHTML(product) {
-  const usd =
-    getUSDPrice(product);
-
-  const pkr =
-    getPKRPrice(product);
-
-  const originalPrice =
-    Number(product?.originalPrice);
-
-  const hasOriginalPrice =
-    Number.isFinite(originalPrice) &&
-    originalPrice > pkr;
-
-  return `
-    <div class="price-container">
-
-      ${
-        usd !== null
-          ? `
-            <span class="sale-price">
-              ${formatUSD(usd)}
-            </span>
-          `
-          : ""
-      }
-
-      <span class="pkr-price">
-        ${formatPKR(pkr)}
-      </span>
-
-      ${
-        hasOriginalPrice
-          ? `
-            <span class="original-price">
-              ${formatPKR(originalPrice)}
-            </span>
-          `
-          : ""
-      }
-
-    </div>
-  `;
-}
-
-
-function getCartPrice(product) {
-  return getPKRPrice(product);
-}
-
+/* =====================================
+   5. STOCK
+===================================== */
 
 function getStockBadge(stock) {
   const count =
@@ -347,6 +495,10 @@ function getStockBadge(stock) {
 }
 
 
+/* =====================================
+   6. RELATED PRODUCTS
+===================================== */
+
 function getRelatedProducts(
   currentProduct,
   limit = 3
@@ -357,19 +509,30 @@ function getRelatedProducts(
     );
 
   return products
-    .filter((product) => {
-      return (
-        product.category ===
-          currentProduct.category &&
-        String(
-          getProductId(product)
-        ) !==
-          String(currentId)
-      );
-    })
-    .slice(0, limit);
+    .filter(
+      (product) => {
+        return (
+          product.category ===
+            currentProduct.category &&
+          String(
+            getProductId(
+              product
+            )
+          ) !==
+            String(currentId)
+        );
+      }
+    )
+    .slice(
+      0,
+      limit
+    );
 }
 
+
+/* =====================================
+   7. CART STORAGE
+===================================== */
 
 function loadCartFromStorage() {
   try {
@@ -383,7 +546,9 @@ function loadCartFromStorage() {
     }
 
     const parsed =
-      JSON.parse(savedCart);
+      JSON.parse(
+        savedCart
+      );
 
     return Array.isArray(parsed)
       ? parsed
@@ -404,7 +569,9 @@ function saveCartToStorage() {
   try {
     localStorage.setItem(
       "apex_cart",
-      JSON.stringify(cart)
+      JSON.stringify(
+        cart
+      )
     );
 
   } catch (error) {
@@ -415,6 +582,10 @@ function saveCartToStorage() {
   }
 }
 
+
+/* =====================================
+   8. TOAST
+===================================== */
 
 function showToast(
   message,
@@ -460,14 +631,17 @@ function showToast(
     toast
   );
 
-  setTimeout(() => {
-    toast.remove();
-  }, duration + 300);
+  setTimeout(
+    () => {
+      toast.remove();
+    },
+    duration + 300
+  );
 }
 
 
 /* =====================================
-   4. THEME MANAGEMENT
+   9. THEME MANAGEMENT
 ===================================== */
 
 function initTheme() {
@@ -494,7 +668,9 @@ function initTheme() {
     theme
   );
 
-  updateThemeButton(theme);
+  updateThemeButton(
+    theme
+  );
 }
 
 
@@ -525,7 +701,9 @@ function toggleTheme() {
 }
 
 
-function updateThemeButton(theme) {
+function updateThemeButton(
+  theme
+) {
   const button =
     document.getElementById(
       "themeToggleBtn"
@@ -543,7 +721,7 @@ function updateThemeButton(theme) {
 
 
 /* =====================================
-   5. CART SIDEBAR
+   10. CART SIDEBAR
 ===================================== */
 
 function toggleCart() {
@@ -572,7 +750,7 @@ function toggleCart() {
 
 
 /* =====================================
-   6. SEARCH
+   11. SEARCH
 ===================================== */
 
 function filterProducts() {
@@ -593,14 +771,19 @@ function filterProducts() {
   );
 
   searchTimer =
-    setTimeout(() => {
-      fetchProducts(true);
-    }, 350);
+    setTimeout(
+      () => {
+        fetchProducts(
+          true
+        );
+      },
+      350
+    );
 }
 
 
 /* =====================================
-   7. CATEGORY FILTER
+   12. CATEGORY FILTER
 ===================================== */
 
 function filterCategory(
@@ -632,12 +815,106 @@ function filterCategory(
     );
   }
 
-  fetchProducts(true);
+  fetchProducts(
+    true
+  );
 }
 
 
 /* =====================================
-   8. RENDER PRODUCTS
+   13. AFFILIATE BUYING FLOW
+===================================== */
+
+
+/*
+  Opens the Admitad/AliExpress
+  affiliate URL.
+
+  The affiliate URL is the URL supplied
+  by the Admitad feed, so the affiliate
+  tracking remains intact.
+*/
+
+function buyFromAffiliate(
+  productId
+) {
+  const product =
+    products.find(
+      (item) =>
+        String(
+          getProductId(item)
+        ) ===
+        String(productId)
+    );
+
+  if (!product) {
+    showToast(
+      "Product not found.",
+      "error",
+      3000
+    );
+
+    return;
+  }
+
+  const affiliateUrl =
+    product.affiliateUrl;
+
+  if (
+    !affiliateUrl ||
+    typeof affiliateUrl !==
+      "string"
+  ) {
+    showToast(
+      "Buying link is not available for this product.",
+      "error",
+      4000
+    );
+
+    return;
+  }
+
+  /*
+    Open affiliate destination
+    in a new tab.
+  */
+
+  window.open(
+    affiliateUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+
+/*
+  Compatibility aliases.
+
+  These make the function usable if
+  another part of the HTML calls one
+  of these names.
+*/
+
+function buyProduct(
+  productId
+) {
+  buyFromAffiliate(
+    productId
+  );
+}
+
+
+function openAffiliateLink(
+  productId
+) {
+  buyFromAffiliate(
+    productId
+  );
+}
+
+
+/* =====================================
+   14. RENDER PRODUCTS
 ===================================== */
 
 function renderProducts() {
@@ -718,6 +995,16 @@ function renderProducts() {
                 "⭐ 5.0"
             );
 
+          const pkrPrice =
+            getPKRPrice(
+              product
+            );
+
+          const usdPrice =
+            getUSDPrice(
+              product
+            );
+
           const stockCount =
             typeof product.stock !==
             "undefined"
@@ -729,11 +1016,10 @@ function renderProducts() {
           const isOutOfStock =
             stockCount <= 0;
 
-          const affiliateUrl =
-            typeof product.affiliateUrl ===
-              "string"
-              ? product.affiliateUrl.trim()
-              : "";
+          const hasAffiliate =
+            Boolean(
+              product.affiliateUrl
+            );
 
           return `
             <div
@@ -764,50 +1050,76 @@ function renderProducts() {
                   ${ratingDisplay}
                 </div>
 
-                ${getPriceHTML(
-                  product
-                )}
+                <div class="price-container">
 
-                ${
-                  affiliateUrl
-                    ? `
-                      <button
-                        type="button"
-                        class="add-btn buy-affiliate-btn"
-                        onclick="
-                          event.stopPropagation();
-                          buyAffiliateProduct('${safeId}')
-                        "
-                      >
-                        Buy on AliExpress
-                      </button>
-                    `
-                    : `
-                      <button
-                        type="button"
-                        class="add-btn ${
-                          isOutOfStock
-                            ? "disabled-btn"
-                            : ""
-                        }"
-                        ${
-                          isOutOfStock
-                            ? "disabled"
-                            : ""
-                        }
-                        onclick="
-                          event.stopPropagation();
-                          addToCart('${safeId}')
-                        "
-                      >
-                        ${
-                          isOutOfStock
-                            ? "Out of Stock"
-                            : "Add to Cart"
-                        }
-                      </button>
-                    `
-                }
+                  ${
+                    usdPrice !== null
+                      ? `
+                        <span class="sale-price">
+                          ${formatUSD(
+                            usdPrice
+                          )}
+                        </span>
+                      `
+                      : ""
+                  }
+
+                  <span
+                    class="pkr-price"
+                  >
+                    ${formatPKR(
+                      pkrPrice
+                    )}
+                  </span>
+
+                </div>
+
+                <div
+                  class="product-actions"
+                >
+
+                  ${
+                    hasAffiliate
+                      ? `
+                        <button
+                          type="button"
+                          class="buy-btn"
+                          onclick="
+                            event.stopPropagation();
+                            buyFromAffiliate('${safeId}');
+                          "
+                        >
+                          Buy on AliExpress
+                        </button>
+                      `
+                      : ""
+                  }
+
+                  <button
+                    type="button"
+                    class="add-btn ${
+                      isOutOfStock
+                        ? "disabled-btn"
+                        : ""
+                    }"
+                    ${
+                      isOutOfStock
+                        ? "disabled"
+                        : ""
+                    }
+                    onclick="
+                      event.stopPropagation();
+                      addToCart('${safeId}');
+                    "
+                  >
+                    ${
+                      isOutOfStock
+                        ? "Out of Stock"
+                        : "Add to Cart"
+                    }
+                  </button>
+
+                </div>
 
               </div>
             </div>
@@ -821,7 +1133,7 @@ function renderProducts() {
 
 
 /* =====================================
-   9. LOAD MORE
+   15. LOAD MORE
 ===================================== */
 
 function renderLoadMoreButton() {
@@ -919,57 +1231,7 @@ async function loadMoreProducts() {
 
 
 /* =====================================
-   10. AFFILIATE BUYING
-===================================== */
-
-function buyAffiliateProduct(
-  productId
-) {
-  const product =
-    products.find(
-      (item) =>
-        String(
-          getProductId(item)
-        ) ===
-        String(productId)
-    );
-
-  if (!product) {
-    showToast(
-      "Product not found.",
-      "error",
-      3000
-    );
-
-    return;
-  }
-
-  const affiliateUrl =
-    typeof product.affiliateUrl ===
-      "string"
-      ? product.affiliateUrl.trim()
-      : "";
-
-  if (!affiliateUrl) {
-    showToast(
-      "Buying link is not available for this product.",
-      "error",
-      3500
-    );
-
-    return;
-  }
-
-  window.open(
-    affiliateUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-
-/* =====================================
-   11. PRODUCT MODAL
+   16. PRODUCT MODAL
 ===================================== */
 
 function openProductModal(
@@ -998,7 +1260,9 @@ function openProductModal(
   }
 
   const actualProductId =
-    getProductId(product);
+    getProductId(
+      product
+    );
 
   const safeId =
     escapeHTML(
@@ -1031,6 +1295,16 @@ function openProductModal(
         "⭐ 5.0"
     );
 
+  const pkrPrice =
+    getPKRPrice(
+      product
+    );
+
+  const usdPrice =
+    getUSDPrice(
+      product
+    );
+
   const stockCount =
     typeof product.stock !==
     "undefined"
@@ -1042,11 +1316,10 @@ function openProductModal(
   const isOutOfStock =
     stockCount <= 0;
 
-  const affiliateUrl =
-    typeof product.affiliateUrl ===
-      "string"
-      ? product.affiliateUrl.trim()
-      : "";
+  const hasAffiliate =
+    Boolean(
+      product.affiliateUrl
+    );
 
   const relatedItems =
     getRelatedProducts(
@@ -1080,6 +1353,16 @@ function openProductModal(
                       )
                     );
 
+                  const itemUSD =
+                    getUSDPrice(
+                      item
+                    );
+
+                  const itemPKR =
+                    getPKRPrice(
+                      item
+                    );
+
                   return `
                     <div
                       class="related-card"
@@ -1098,24 +1381,30 @@ function openProductModal(
                         loading="lazy"
                       >
 
-                      <div class="related-card-title">
+                      <div
+                        class="related-card-title"
+                      >
                         ${escapeHTML(
                           item.name ||
                             ""
                         )}
                       </div>
 
-                      <div class="related-card-price">
+                      <div
+                        class="related-card-price"
+                      >
                         ${
-                          getUSDPrice(item) !== null
+                          itemUSD !== null
                             ? formatUSD(
-                                getUSDPrice(item)
+                                itemUSD
                               )
                             : ""
                         }
+
                         <br>
+
                         ${formatPKR(
-                          getPKRPrice(item)
+                          itemPKR
                         )}
                       </div>
 
@@ -1142,17 +1431,20 @@ function openProductModal(
   modal.className =
     "modal-overlay";
 
-  modal.onclick = (event) => {
-    if (
-      event.target ===
-      modal
-    ) {
-      closeProductModal();
-    }
-  };
+  modal.onclick =
+    (event) => {
+      if (
+        event.target ===
+        modal
+      ) {
+        closeProductModal();
+      }
+    };
 
   modal.innerHTML = `
-    <div class="modal-content product-modal-content">
+    <div
+      class="modal-content product-modal-content"
+    >
 
       <button
         type="button"
@@ -1162,7 +1454,9 @@ function openProductModal(
         &times;
       </button>
 
-      <div class="product-modal-body">
+      <div
+        class="product-modal-body"
+      >
 
         <img
           src="${safeImage}"
@@ -1170,7 +1464,9 @@ function openProductModal(
           class="product-modal-img"
         >
 
-        <div class="product-modal-details">
+        <div
+          class="product-modal-details"
+        >
 
           <h2>
             ${safeName}
@@ -1186,53 +1482,85 @@ function openProductModal(
             ${ratingDisplay}
           </div>
 
-          <p class="product-description">
+          <p
+            class="product-description"
+          >
             ${safeDesc}
           </p>
 
-          ${getPriceHTML(
-            product
-          )}
+          <div
+            class="price-container"
+          >
 
-          ${
-            affiliateUrl
-              ? `
-                <button
-                  type="button"
-                  class="add-btn buy-affiliate-btn"
-                  onclick="
-                    buyAffiliateProduct('${safeId}')
-                  "
-                >
-                  Buy on AliExpress
-                </button>
-              `
-              : `
-                <button
-                  type="button"
-                  class="add-btn ${
-                    isOutOfStock
-                      ? "disabled-btn"
-                      : ""
-                  }"
-                  ${
-                    isOutOfStock
-                      ? "disabled"
-                      : ""
-                  }
-                  onclick="
-                    addToCart('${safeId}');
-                    closeProductModal();
-                  "
-                >
-                  ${
-                    isOutOfStock
-                      ? "Out of Stock"
-                      : "Add to Cart"
-                  }
-                </button>
-              `
-          }
+            ${
+              usdPrice !== null
+                ? `
+                  <span
+                    class="sale-price"
+                  >
+                    ${formatUSD(
+                      usdPrice
+                    )}
+                  </span>
+                `
+                : ""
+            }
+
+            <span
+              class="pkr-price"
+            >
+              ${formatPKR(
+                pkrPrice
+              )}
+            </span>
+
+          </div>
+
+          <div
+            class="product-modal-actions"
+          >
+
+            ${
+              hasAffiliate
+                ? `
+                  <button
+                    type="button"
+                    class="buy-btn"
+                    onclick="
+                      buyFromAffiliate('${safeId}');
+                    "
+                  >
+                    Buy on AliExpress
+                  </button>
+                `
+                : ""
+            }
+
+            <button
+              type="button"
+              class="add-btn ${
+                isOutOfStock
+                  ? "disabled-btn"
+                  : ""
+              }"
+              ${
+                isOutOfStock
+                  ? "disabled"
+                  : ""
+              }
+              onclick="
+                addToCart('${safeId}');
+                closeProductModal();
+              "
+            >
+              ${
+                isOutOfStock
+                  ? "Out of Stock"
+                  : "Add to Cart"
+              }
+            </button>
+
+          </div>
 
         </div>
       </div>
@@ -1261,7 +1589,7 @@ function closeProductModal() {
 
 
 /* =====================================
-   12. CART UI
+   17. CART UI
 ===================================== */
 
 function updateCartUI() {
@@ -1298,7 +1626,11 @@ function updateCartUI() {
     cart.reduce(
       (sum, item) =>
         sum +
-        getCartPrice(item) *
+        (
+          Number(
+            item.price
+          ) || 0
+        ) *
           (
             Number(
               item.quantity
@@ -1367,18 +1699,18 @@ function updateCartUI() {
             ) || 0;
 
           const price =
-            getCartPrice(
-              item
-            );
-
-          const usd =
-            getUSDPrice(
-              item
-            );
+            Number(
+              item.price
+            ) || 0;
 
           const itemTotal =
             price *
             quantity;
+
+          const itemUSD =
+            getUSDPrice(
+              item
+            );
 
           return `
             <div
@@ -1393,28 +1725,44 @@ function updateCartUI() {
                 loading="lazy"
               >
 
-              <div class="cart-item-details">
+              <div
+                class="cart-item-details"
+              >
 
-                <h4 class="cart-item-title">
+                <h4
+                  class="cart-item-title"
+                >
                   ${safeName}
                 </h4>
 
-                <p class="cart-item-price">
+                <p
+                  class="cart-item-price"
+                >
                   ${
-                    usd !== null
-                      ? `${formatUSD(usd)}`
+                    itemUSD !== null
+                      ? `${formatUSD(
+                          itemUSD
+                        )} | `
                       : ""
                   }
-                  <br>
-                  ${formatPKR(price)}
+
+                  ${formatPKR(
+                    price
+                  )}
+
                   x ${quantity}
+
                   =
-                  ${formatPKR(itemTotal)}
+                  ${formatPKR(
+                    itemTotal
+                  )}
                 </p>
 
               </div>
 
-              <div class="cart-controls">
+              <div
+                class="cart-controls"
+              >
 
                 <button
                   type="button"
@@ -1453,7 +1801,7 @@ function updateCartUI() {
 
 
 /* =====================================
-   13. CART MUTATIONS
+   18. CART MUTATIONS
 ===================================== */
 
 function addToCart(
@@ -1527,10 +1875,6 @@ function addToCart(
   } else {
     cart.push({
       ...product,
-      price:
-        getCartPrice(product),
-      pricePKR:
-        getCartPrice(product),
       quantity: 1,
     });
   }
@@ -1638,7 +1982,7 @@ function clearCart() {
 
 
 /* =====================================
-   14. CHECKOUT
+   19. CHECKOUT
 ===================================== */
 
 function buildOrderSummaryText() {
@@ -1656,8 +2000,12 @@ function buildOrderSummaryText() {
 
   cart.forEach(
     (item, index) => {
-      const subtotalPKR =
-        getCartPrice(item) *
+      const subtotal =
+        (
+          Number(
+            item.price
+          ) || 0
+        ) *
         (
           Number(
             item.quantity
@@ -1665,18 +2013,22 @@ function buildOrderSummaryText() {
         );
 
       totalPKR +=
-        subtotalPKR;
+        subtotal;
 
-      const usd =
-        getUSDPrice(item);
+      const itemUSD =
+        getUSDPrice(
+          item
+        );
 
       text +=
-        `${index + 1}. ${item.name} x${item.quantity} - ${formatPKR(subtotalPKR)}`;
+        `${index + 1}. ${item.name} x${item.quantity}`;
 
-      if (usd !== null) {
+      if (
+        itemUSD !== null
+      ) {
         text +=
-          ` / ${formatUSD(
-            usd *
+          ` - ${formatUSD(
+            itemUSD *
               (
                 Number(
                   item.quantity
@@ -1685,7 +2037,10 @@ function buildOrderSummaryText() {
           )}`;
       }
 
-      text += "\n";
+      text +=
+        ` - ${formatPKR(
+          subtotal
+        )}\n`;
     }
   );
 
@@ -1693,7 +2048,9 @@ function buildOrderSummaryText() {
     `-----------------------------------\n`;
 
   text +=
-    `*Total Order Value:* ${formatPKR(totalPKR)}\n`;
+    `*Total Order Value:* ${formatPKR(
+      totalPKR
+    )}\n`;
 
   text +=
     `Please process my order!`;
@@ -1779,17 +2136,20 @@ function showCheckoutModal(
   modal.className =
     "modal-overlay";
 
-  modal.onclick = (event) => {
-    if (
-      event.target ===
-      modal
-    ) {
-      closeCheckoutModal();
-    }
-  };
+  modal.onclick =
+    (event) => {
+      if (
+        event.target ===
+        modal
+      ) {
+        closeCheckoutModal();
+      }
+    };
 
   modal.innerHTML = `
-    <div class="modal-content">
+    <div
+      class="modal-content"
+    >
 
       <h2>
         ${
@@ -1812,7 +2172,9 @@ function showCheckoutModal(
         class="order-summary-box"
       ></textarea>
 
-      <div class="social-links">
+      <div
+        class="social-links"
+      >
 
         <a
           href="${SOCIAL_LINKS.facebook}"
@@ -1885,7 +2247,7 @@ function closeCheckoutModal() {
 
 
 /* =====================================
-   15. INITIALIZATION
+   20. INITIALIZATION
 ===================================== */
 
 document.addEventListener(
@@ -1895,7 +2257,8 @@ document.addEventListener(
 
     updateCartUI();
 
-    fetchProducts(true);
+    fetchProducts(
+      true
+    );
   }
 );
-
