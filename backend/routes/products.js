@@ -23,25 +23,10 @@ function normalizeProductPrices(product) {
     ...product,
   };
 
-  /*
-    Keep the existing `price` field intact.
-
-    If pricePKR exists, use it as the PKR display price.
-    Otherwise fall back to the existing price field.
-  */
-
   const pricePKR =
     Number.isFinite(Number(product.pricePKR))
       ? Number(product.pricePKR)
       : Number(product.price);
-
-  /*
-    priceUSD is optional for existing products.
-
-    We deliberately DO NOT guess a USD price from PKR here.
-    Existing products will receive priceUSD when the
-    Admitad importer is updated.
-  */
 
   const priceUSD =
     Number.isFinite(Number(product.priceUSD))
@@ -58,11 +43,6 @@ function normalizeProductPrices(product) {
       ? Number(priceUSD.toFixed(2))
       : null;
 
-  /*
-    Keep legacy `price` synchronized with PKR so the
-    existing frontend/cart continues working.
-  */
-
   normalized.price =
     normalized.pricePKR;
 
@@ -70,8 +50,229 @@ function normalizeProductPrices(product) {
 }
 
 // ============================================================
+// APEXSHOPY CATEGORY KEYWORDS
+//
+// These mirror the category logic used by the frontend.
+//
+// IMPORTANT:
+// The order matters.
+// Wearables and Smart Home are checked before Electronics,
+// Sports & Outdoors before Apparel, etc.
+// ============================================================
+
+const CATEGORY_RULES = {
+  Wearables: [
+    "wearable",
+    "smart watch",
+    "smartwatch",
+    "fitness tracker",
+    "fitness band",
+    "smart band",
+    "sports watch",
+    "heart rate monitor",
+  ],
+
+  "Smart Home": [
+    "smart home",
+    "home automation",
+    "home appliance",
+    "security",
+    "lighting",
+    "smart bulb",
+    "smart lamp",
+    "smart plug",
+    "smart switch",
+    "security camera",
+    "ip camera",
+    "doorbell camera",
+    "home security",
+    "robot vacuum",
+  ],
+
+  "Sports & Outdoors": [
+    "sports",
+    "sporting",
+    "outdoor",
+    "fitness",
+    "exercise",
+    "camping",
+    "hiking",
+    "cycling",
+    "fishing",
+    "running",
+    "sportswear",
+    "gym equipment",
+    "workout",
+    "yoga",
+    "football",
+    "soccer",
+    "basketball",
+    "tennis",
+    "volleyball",
+    "running shoes",
+    "sports shoes",
+  ],
+
+  Apparel: [
+    "tops",
+    "tees",
+    "clothing",
+    "apparel",
+    "men's clothing",
+    "women's clothing",
+    "boys' clothing",
+    "girls' clothing",
+    "shoes",
+    "sneakers",
+    "underwear",
+    "sleepwear",
+    "jackets",
+    "pants",
+    "dresses",
+    "shirts",
+    "hoodies",
+    "skirts",
+    "socks",
+    "t-shirt",
+    "t shirt",
+    "sweatshirt",
+    "jeans",
+    "hoodie",
+    "joggers",
+  ],
+
+  Accessories: [
+    "bags",
+    "luggage",
+    "wallet",
+    "jewelry",
+    "accessories",
+    "keychain",
+    "belts",
+    "sunglasses",
+    "watches",
+    "backpack",
+    "handbag",
+    "crossbody",
+    "belt",
+    "watch strap",
+  ],
+
+  Electronics: [
+    "consumer electronics",
+    "computer",
+    "phones",
+    "phone",
+    "tablet",
+    "electronic",
+    "camera",
+    "audio",
+    "headphone",
+    "earphone",
+    "speaker",
+    "gaming",
+    "computer accessories",
+    "home electronics",
+    "bluetooth",
+    "keyboard",
+    "mouse",
+    "usb",
+    "charger",
+    "power bank",
+    "projector",
+    "drone",
+    "headphones",
+    "earbuds",
+  ],
+
+  AccessoriesTools: [
+    "tool",
+    "tool parts",
+    "automotive",
+    "car",
+    "motorcycle",
+    "vehicle",
+    "replacement parts",
+  ],
+};
+
+// ============================================================
+// HELPER: Build category MongoDB filter
+//
+// Category matching is performed against BOTH:
+//   - product.category
+//   - product.name
+//
+// This allows products such as:
+// "Smart Watch Fitness Tracker"
+// to be found even if the database category itself
+// is something more generic.
+// ============================================================
+
+function buildCategoryFilter(category) {
+  if (!category || category === "All") {
+    return null;
+  }
+
+  const normalizedCategory =
+    String(category)
+      .trim()
+      .toLowerCase();
+
+  let actualCategory = null;
+
+  for (const categoryName of Object.keys(
+    CATEGORY_RULES
+  )) {
+    if (
+      categoryName.toLowerCase() ===
+      normalizedCategory
+    ) {
+      actualCategory = categoryName;
+      break;
+    }
+  }
+
+  if (!actualCategory) {
+    return null;
+  }
+
+  const keywords =
+    CATEGORY_RULES[
+      actualCategory
+    ];
+
+  const expressions = [];
+
+  keywords.forEach(
+    (keyword) => {
+      const safeKeyword =
+        escapeRegex(keyword);
+
+      expressions.push({
+        category: {
+          $regex: safeKeyword,
+          $options: "i",
+        },
+      });
+
+      expressions.push({
+        name: {
+          $regex: safeKeyword,
+          $options: "i",
+        },
+      });
+    }
+  );
+
+  return {
+    $or: expressions,
+  };
+}
+
+// ============================================================
 // GET PRODUCTS
-// Pagination + Search
+// Pagination + Search + Category
 // ============================================================
 
 router.get("/", async (req, res) => {
@@ -94,6 +295,7 @@ router.get("/", async (req, res) => {
       limit = 40;
     }
 
+    // Never allow a request to pull more than 100 products.
     if (limit > 100) {
       limit = 100;
     }
@@ -108,48 +310,91 @@ router.get("/", async (req, res) => {
         : "";
 
     // ----------------------------------------------------------
+    // Category
+    // ----------------------------------------------------------
+
+    const category =
+      typeof req.query.category === "string"
+        ? req.query.category.trim()
+        : "";
+
+    // ----------------------------------------------------------
     // Build MongoDB filter
     // ----------------------------------------------------------
 
-    const filter = {};
+    const filterParts = [];
+
+    // ----------------------------------------------------------
+    // SEARCH FILTER
+    // ----------------------------------------------------------
 
     if (search) {
       const safeSearch =
         escapeRegex(search);
 
-      filter.$or = [
-        {
-          name: {
-            $regex: safeSearch,
-            $options: "i",
+      filterParts.push({
+        $or: [
+          {
+            name: {
+              $regex: safeSearch,
+              $options: "i",
+            },
           },
-        },
-        {
-          description: {
-            $regex: safeSearch,
-            $options: "i",
+          {
+            description: {
+              $regex: safeSearch,
+              $options: "i",
+            },
           },
-        },
-        {
-          category: {
-            $regex: safeSearch,
-            $options: "i",
+          {
+            category: {
+              $regex: safeSearch,
+              $options: "i",
+            },
           },
-        },
-        {
-          source: {
-            $regex: safeSearch,
-            $options: "i",
+          {
+            source: {
+              $regex: safeSearch,
+              $options: "i",
+            },
           },
-        },
-        {
-          externalId: {
-            $regex: safeSearch,
-            $options: "i",
+          {
+            externalId: {
+              $regex: safeSearch,
+              $options: "i",
+            },
           },
-        },
-      ];
+        ],
+      });
     }
+
+    // ----------------------------------------------------------
+    // CATEGORY FILTER
+    // ----------------------------------------------------------
+
+    const categoryFilter =
+      buildCategoryFilter(
+        category
+      );
+
+    if (categoryFilter) {
+      filterParts.push(
+        categoryFilter
+      );
+    }
+
+    // ----------------------------------------------------------
+    // FINAL FILTER
+    // ----------------------------------------------------------
+
+    const filter =
+      filterParts.length === 0
+        ? {}
+        : filterParts.length === 1
+        ? filterParts[0]
+        : {
+            $and: filterParts,
+          };
 
     // ----------------------------------------------------------
     // Calculate pagination
@@ -214,6 +459,8 @@ router.get("/", async (req, res) => {
       totalPages,
       hasMore,
       search,
+      category:
+        category || "All",
       products,
     });
   } catch (error) {
@@ -285,10 +532,7 @@ router.post("/", async (req, res) => {
       ...req.body,
     };
 
-    /*
-      If pricePKR is supplied but legacy price isn't,
-      keep the old `price` field compatible.
-    */
+    // Keep price and pricePKR compatible.
 
     if (
       body.price === undefined &&
@@ -297,12 +541,6 @@ router.post("/", async (req, res) => {
       body.price =
         Number(body.pricePKR);
     }
-
-    /*
-      If price is supplied but pricePKR isn't,
-      preserve compatibility by treating the existing
-      price as the PKR price.
-    */
 
     if (
       body.pricePKR === undefined &&
@@ -347,10 +585,7 @@ router.put("/:id", async (req, res) => {
       ...req.body,
     };
 
-    /*
-      Keep price and pricePKR synchronized
-      when only one is supplied.
-    */
+    // Keep price and pricePKR synchronized.
 
     if (
       body.pricePKR !== undefined &&
@@ -450,3 +685,4 @@ router.delete("/:id", async (req, res) => {
 // ============================================================
 
 module.exports = router;
+
