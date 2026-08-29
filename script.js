@@ -1,5 +1,5 @@
 /* =====================================
-   1. STORE CONFIGURATION & STATE
+   APEXSHOPY - STORE CONFIGURATION & STATE
 ===================================== */
 
 const API_BASE_URL =
@@ -14,35 +14,171 @@ const SOCIAL_LINKS = {
     "https://www.reddit.com/user/apexshopy",
 };
 
+const USD_TO_PKR =
+  277;
+
 let products = [];
 let cart = loadCartFromStorage();
 
 let activeCategory = "All";
 let searchQuery = "";
 
-// Pagination
 let currentPage = 1;
 const productsPerPage = 40;
 let hasMoreProducts = true;
 let isLoadingProducts = false;
 
-// Search debounce
 let searchTimer = null;
 
 
 /* =====================================
-   2. FETCH PRODUCTS FROM API
+   AFFILIATE BUTTON STYLE
 ===================================== */
 
-async function fetchProducts(reset = false) {
+function injectAffiliateStyles() {
+  if (
+    document.getElementById(
+      "apex-affiliate-button-styles"
+    )
+  ) {
+    return;
+  }
+
+  const style =
+    document.createElement("style");
+
+  style.id =
+    "apex-affiliate-button-styles";
+
+  style.textContent = `
+    .affiliate-buy-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      min-height: 42px !important;
+      box-sizing: border-box !important;
+      margin-top: 10px !important;
+      padding: 11px 16px !important;
+      border: 1px solid #ff6a00 !important;
+      border-radius: 10px !important;
+      background: #ffffff !important;
+      color: #ff6a00 !important;
+      font-family: inherit !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      line-height: 1.2 !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease !important;
+    }
+
+    .affiliate-buy-btn:hover {
+      background: #ff6a00 !important;
+      color: #ffffff !important;
+      transform: translateY(-1px) !important;
+      box-shadow:
+        0 5px 14px rgba(255, 106, 0, 0.22) !important;
+    }
+
+    .affiliate-buy-btn:active {
+      transform: translateY(0) !important;
+    }
+
+    .affiliate-buy-btn.aliexpress {
+      border-color: #ff4747 !important;
+      color: #ff4747 !important;
+    }
+
+    .affiliate-buy-btn.aliexpress:hover {
+      background: #ff4747 !important;
+      color: #ffffff !important;
+    }
+
+    .product-price-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .price-usd {
+      font-weight: 800;
+    }
+
+    .price-pkr {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .modal-price-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .modal-price-usd {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .modal-price-pkr {
+      font-size: 16px;
+      opacity: 0.85;
+    }
+
+    .cart-price-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .cart-price-pkr {
+      opacity: 0.85;
+    }
+
+    .affiliate-source-label {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 11px;
+      opacity: 0.7;
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+
+/* =====================================
+   FETCH PRODUCTS FROM API
+===================================== */
+
+async function fetchProducts(
+  reset = false
+) {
   const container =
-    document.getElementById("productGrid");
+    document.getElementById(
+      "productGrid"
+    );
 
   if (isLoadingProducts) {
     return;
   }
 
-  if (!hasMoreProducts && !reset) {
+  if (
+    !hasMoreProducts &&
+    !reset
+  ) {
     return;
   }
 
@@ -63,27 +199,39 @@ async function fetchProducts(reset = false) {
   isLoadingProducts = true;
 
   try {
-    const params = new URLSearchParams();
+    const params =
+      new URLSearchParams();
 
-    params.set("page", currentPage);
-    params.set("limit", productsPerPage);
+    params.set(
+      "page",
+      currentPage
+    );
 
-    if (searchQuery.trim()) {
+    params.set(
+      "limit",
+      productsPerPage
+    );
+
+    if (
+      searchQuery.trim()
+    ) {
       params.set(
         "search",
         searchQuery.trim()
       );
     }
 
-    const response = await fetch(
-      `${API_BASE_URL}/api/products?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const response =
+      await fetch(
+        `${API_BASE_URL}/api/products?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            Accept:
+              "application/json",
+          },
+        }
+      );
 
     if (!response.ok) {
       throw new Error(
@@ -96,7 +244,9 @@ async function fetchProducts(reset = false) {
 
     if (
       !data.success ||
-      !Array.isArray(data.products)
+      !Array.isArray(
+        data.products
+      )
     ) {
       throw new Error(
         "Invalid products response from server."
@@ -160,22 +310,26 @@ async function fetchProducts(reset = false) {
 
 
 /* =====================================
-   3. UTILITIES
+   UTILITIES
 ===================================== */
 
-function getProductId(product) {
+function getProductId(
+  product
+) {
   return (
     product?._id ||
-    product?.id ||
-    product?.externalId
+    product?.id
   );
 }
 
 
-function escapeHTML(value) {
+function escapeHTML(
+  value
+) {
   if (
     value === null ||
-    typeof value === "undefined"
+    typeof value ===
+      "undefined"
   ) {
     return "";
   }
@@ -205,35 +359,35 @@ function escapeHTML(value) {
 
 
 /* =====================================
-   4. PRICE HELPERS
+   PRICE HELPERS
 ===================================== */
 
-/*
-  PKR price.
-
-  Backend now sends:
-    pricePKR
-    price
-
-  pricePKR is preferred.
-*/
-
-function getPKRPrice(product) {
+function getPricePKR(
+  product
+) {
   const pricePKR =
-    Number(product?.pricePKR);
+    Number(
+      product?.pricePKR
+    );
 
   if (
-    Number.isFinite(pricePKR) &&
+    Number.isFinite(
+      pricePKR
+    ) &&
     pricePKR >= 0
   ) {
     return pricePKR;
   }
 
   const legacyPrice =
-    Number(product?.price);
+    Number(
+      product?.price
+    );
 
   if (
-    Number.isFinite(legacyPrice) &&
+    Number.isFinite(
+      legacyPrice
+    ) &&
     legacyPrice >= 0
   ) {
     return legacyPrice;
@@ -243,235 +397,257 @@ function getPKRPrice(product) {
 }
 
 
-/*
-  Decode an affiliate URL several times.
-
-  Admitad/AliExpress URLs can contain
-  nested encoded AliExpress URLs.
-*/
-
-function decodeAffiliateURL(url) {
-  if (!url) {
-    return "";
-  }
-
-  let decoded =
-    String(url);
-
-  for (
-    let i = 0;
-    i < 5;
-    i++
-  ) {
-    try {
-      const next =
-        decodeURIComponent(
-          decoded
-        );
-
-      if (
-        next === decoded
-      ) {
-        break;
-      }
-
-      decoded = next;
-
-    } catch (error) {
-      break;
-    }
-  }
-
-  return decoded;
-}
-
-
-/*
-  Extract the original USD price
-  from the existing AliExpress URL.
-
-  Example encoded data may contain:
-
-    USD!19.88!19.88
-
-  or:
-
-    USD%2119.88%2119.88
-*/
-
-function getUSDPriceFromAffiliateURL(
+function extractUSDFromAffiliateUrl(
   affiliateUrl
 ) {
   if (!affiliateUrl) {
     return null;
   }
 
-  const decoded =
-    decodeAffiliateURL(
-      affiliateUrl
-    );
-
-  /*
-    AliExpress affiliate feeds commonly
-    contain the currency followed by price.
-  */
-
-  const patterns = [
-    /USD[!|;,\s]+(\d+(?:\.\d{1,2})?)/i,
-    /USD(\d+(?:\.\d{1,2})?)/i,
-    /(?:price|sale_price|amount)[=:"']+USD[!|;,\s]+(\d+(?:\.\d{1,2})?)/i,
-    /(?:USD|US\$|\$)\s*(\d+(?:\.\d{1,2})?)/i,
-  ];
-
-  for (
-    const pattern of patterns
-  ) {
-    const match =
-      decoded.match(
-        pattern
+  try {
+    let decoded =
+      String(
+        affiliateUrl
       );
 
-    if (
-      match &&
-      match[1]
+    for (
+      let i = 0;
+      i < 5;
+      i++
     ) {
-      const value =
-        Number(match[1]);
+      const previous =
+        decoded;
+
+      try {
+        decoded =
+          decodeURIComponent(
+            decoded
+          );
+      } catch {
+        break;
+      }
 
       if (
-        Number.isFinite(value) &&
-        value > 0
+        decoded ===
+        previous
       ) {
-        return value;
+        break;
       }
     }
-  }
 
-  /*
-    Fallback specifically for
-    AliExpress URL parameter patterns.
-  */
+    /*
+      Admitad/AliExpress URLs commonly
+      contain values such as:
 
-  const usdIndex =
-    decoded
-      .toUpperCase()
-      .indexOf("USD");
+      USD!19.88
+      USD%2119.88
+      USD%2119.88%21
 
-  if (
-    usdIndex !== -1
-  ) {
-    const afterUSD =
-      decoded.substring(
-        usdIndex + 3
-      );
+      Search for USD followed by !
+      and a numeric price.
+    */
 
-    const fallback =
-      afterUSD.match(
-        /[!|;,\s]+(\d+(?:\.\d{1,2})?)/
+    const usdMatch =
+      decoded.match(
+        /USD[!:\s]+(\d+(?:[.,]\d{1,2})?)/i
       );
 
     if (
-      fallback &&
-      fallback[1]
+      usdMatch &&
+      usdMatch[1]
     ) {
       const value =
         Number(
-          fallback[1]
+          usdMatch[1].replace(
+            ",",
+            "."
+          )
         );
 
       if (
-        Number.isFinite(value) &&
-        value > 0
+        Number.isFinite(
+          value
+        ) &&
+        value >= 0
       ) {
         return value;
       }
     }
+
+    /*
+      Also handle normal query-style
+      currency/price parameters.
+    */
+
+    const patterns = [
+      /(?:price|sale_price|salePrice|amount)[=:_-](\d+(?:[.,]\d{1,2})?)/i,
+      /USD[^0-9]{0,10}(\d+(?:[.,]\d{1,2})?)/i,
+    ];
+
+    for (
+      const pattern of patterns
+    ) {
+      const match =
+        decoded.match(
+          pattern
+        );
+
+      if (
+        match &&
+        match[1]
+      ) {
+        const value =
+          Number(
+            match[1].replace(
+              ",",
+              "."
+            )
+          );
+
+        if (
+          Number.isFinite(
+            value
+          ) &&
+          value >= 0
+        ) {
+          return value;
+        }
+      }
+    }
+
+  } catch (error) {
+    console.warn(
+      "Could not extract USD price:",
+      error
+    );
   }
 
   return null;
 }
 
 
-/*
-  USD price priority:
-
-  1. priceUSD from database
-  2. USD price inside affiliateUrl
-  3. null
-
-  IMPORTANT:
-  We do NOT convert PKR back into USD.
-  This keeps the original AliExpress price intact.
-*/
-
-function getUSDPrice(product) {
-  const databaseUSD =
+function getPriceUSD(
+  product
+) {
+  const directUSD =
     Number(
       product?.priceUSD
     );
 
   if (
-    Number.isFinite(databaseUSD) &&
-    databaseUSD > 0
+    Number.isFinite(
+      directUSD
+    ) &&
+    directUSD >= 0
   ) {
-    return databaseUSD;
+    return directUSD;
   }
 
-  return getUSDPriceFromAffiliateURL(
-    product?.affiliateUrl
-  );
+  /*
+    If backend has not yet populated
+    priceUSD, recover the original
+    AliExpress USD amount from the
+    Admitad affiliate URL.
+  */
+
+  const urlUSD =
+    extractUSDFromAffiliateUrl(
+      product?.affiliateUrl
+    );
+
+  if (
+    urlUSD !== null
+  ) {
+    return urlUSD;
+  }
+
+  return null;
 }
 
 
-function formatUSD(amount) {
+function formatUSD(
+  amount
+) {
   const num =
     Number(amount);
 
-  return Number.isFinite(num)
+  return Number.isFinite(
+    num
+  )
     ? `$${num.toFixed(2)}`
     : "$0.00";
 }
 
 
-function formatPKR(amount) {
+function formatPKR(
+  amount
+) {
   const num =
     Number(amount);
 
-  return Number.isFinite(num)
-    ? `PKR ${num.toLocaleString(
-        "en-PK",
-        {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }
-      )}`
-    : "PKR 0.00";
+  if (
+    !Number.isFinite(
+      num
+    )
+  ) {
+    return "PKR 0.00";
+  }
+
+  return `PKR ${num.toLocaleString(
+    "en-PK",
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }
+  )}`;
 }
 
 
-/*
-  Kept for compatibility with existing
-  cart/order code.
-*/
-
-function formatCurrency(amount) {
+function formatCurrency(
+  amount
+) {
   return formatPKR(
     amount
   );
 }
 
 
+function getDisplayPrices(
+  product
+) {
+  const pricePKR =
+    getPricePKR(
+      product
+    );
+
+  const priceUSD =
+    getPriceUSD(
+      product
+    );
+
+  return {
+    pricePKR,
+    priceUSD,
+  };
+}
+
+
 /* =====================================
-   5. STOCK
+   STOCK
 ===================================== */
 
-function getStockBadge(stock) {
+function getStockBadge(
+  stock
+) {
   const count =
-    typeof stock !== "undefined"
+    typeof stock !==
+    "undefined"
       ? Number(stock)
       : 10;
 
-  if (count <= 0) {
+  if (
+    count <= 0
+  ) {
     return `
       <span class="stock-badge out-of-stock">
         Out of Stock
@@ -479,7 +655,9 @@ function getStockBadge(stock) {
     `;
   }
 
-  if (count <= 5) {
+  if (
+    count <= 5
+  ) {
     return `
       <span class="stock-badge low-stock">
         Only ${count} left!
@@ -496,7 +674,108 @@ function getStockBadge(stock) {
 
 
 /* =====================================
-   6. RELATED PRODUCTS
+   AFFILIATE HELPERS
+===================================== */
+
+function hasAffiliateUrl(
+  product
+) {
+  return Boolean(
+    product &&
+    product.affiliateUrl &&
+    String(
+      product.affiliateUrl
+    ).trim()
+  );
+}
+
+
+function getAffiliateLabel(
+  product
+) {
+  const source =
+    String(
+      product?.source ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+
+  if (
+    source.includes(
+      "aliexpress"
+    )
+  ) {
+    return "Buy on AliExpress";
+  }
+
+  if (
+    source.includes(
+      "admitad"
+    )
+  ) {
+    return "Buy Now";
+  }
+
+  return "Buy Now";
+}
+
+
+function getAffiliateButton(
+  product
+) {
+  if (
+    !hasAffiliateUrl(
+      product
+    )
+  ) {
+    return "";
+  }
+
+  const affiliateUrl =
+    escapeHTML(
+      String(
+        product.affiliateUrl
+      )
+    );
+
+  const label =
+    escapeHTML(
+      getAffiliateLabel(
+        product
+      )
+    );
+
+  const source =
+    String(
+      product?.source ||
+        ""
+    )
+      .toLowerCase();
+
+  const className =
+    source.includes(
+      "aliexpress"
+    )
+      ? "affiliate-buy-btn aliexpress"
+      : "affiliate-buy-btn";
+
+  return `
+    <a
+      href="${affiliateUrl}"
+      target="_blank"
+      rel="nofollow sponsored noopener noreferrer"
+      class="${className}"
+      onclick="event.stopPropagation()"
+    >
+      ${label}
+    </a>
+  `;
+}
+
+
+/* =====================================
+   RELATED PRODUCTS
 ===================================== */
 
 function getRelatedProducts(
@@ -510,18 +789,17 @@ function getRelatedProducts(
 
   return products
     .filter(
-      (product) => {
-        return (
-          product.category ===
-            currentProduct.category &&
+      (product) =>
+        product.category ===
+          currentProduct.category &&
+        String(
+          getProductId(
+            product
+          )
+        ) !==
           String(
-            getProductId(
-              product
-            )
-          ) !==
-            String(currentId)
-        );
-      }
+            currentId
+          )
     )
     .slice(
       0,
@@ -531,7 +809,7 @@ function getRelatedProducts(
 
 
 /* =====================================
-   7. CART STORAGE
+   CART STORAGE
 ===================================== */
 
 function loadCartFromStorage() {
@@ -550,7 +828,9 @@ function loadCartFromStorage() {
         savedCart
       );
 
-    return Array.isArray(parsed)
+    return Array.isArray(
+      parsed
+    )
       ? parsed
       : [];
 
@@ -584,7 +864,7 @@ function saveCartToStorage() {
 
 
 /* =====================================
-   8. TOAST
+   TOAST
 ===================================== */
 
 function showToast(
@@ -641,7 +921,7 @@ function showToast(
 
 
 /* =====================================
-   9. THEME MANAGEMENT
+   THEME MANAGEMENT
 ===================================== */
 
 function initTheme() {
@@ -681,7 +961,8 @@ function toggleTheme() {
     );
 
   const newTheme =
-    currentTheme === "dark"
+    currentTheme ===
+    "dark"
       ? "light"
       : "dark";
 
@@ -721,7 +1002,7 @@ function updateThemeButton(
 
 
 /* =====================================
-   10. CART SIDEBAR
+   CART SIDEBAR
 ===================================== */
 
 function toggleCart() {
@@ -750,7 +1031,7 @@ function toggleCart() {
 
 
 /* =====================================
-   11. SEARCH
+   SEARCH
 ===================================== */
 
 function filterProducts() {
@@ -783,7 +1064,7 @@ function filterProducts() {
 
 
 /* =====================================
-   12. CATEGORY FILTER
+   CATEGORY FILTER
 ===================================== */
 
 function filterCategory(
@@ -822,99 +1103,7 @@ function filterCategory(
 
 
 /* =====================================
-   13. AFFILIATE BUYING FLOW
-===================================== */
-
-
-/*
-  Opens the Admitad/AliExpress
-  affiliate URL.
-
-  The affiliate URL is the URL supplied
-  by the Admitad feed, so the affiliate
-  tracking remains intact.
-*/
-
-function buyFromAffiliate(
-  productId
-) {
-  const product =
-    products.find(
-      (item) =>
-        String(
-          getProductId(item)
-        ) ===
-        String(productId)
-    );
-
-  if (!product) {
-    showToast(
-      "Product not found.",
-      "error",
-      3000
-    );
-
-    return;
-  }
-
-  const affiliateUrl =
-    product.affiliateUrl;
-
-  if (
-    !affiliateUrl ||
-    typeof affiliateUrl !==
-      "string"
-  ) {
-    showToast(
-      "Buying link is not available for this product.",
-      "error",
-      4000
-    );
-
-    return;
-  }
-
-  /*
-    Open affiliate destination
-    in a new tab.
-  */
-
-  window.open(
-    affiliateUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-
-/*
-  Compatibility aliases.
-
-  These make the function usable if
-  another part of the HTML calls one
-  of these names.
-*/
-
-function buyProduct(
-  productId
-) {
-  buyFromAffiliate(
-    productId
-  );
-}
-
-
-function openAffiliateLink(
-  productId
-) {
-  buyFromAffiliate(
-    productId
-  );
-}
-
-
-/* =====================================
-   14. RENDER PRODUCTS
+   RENDER PRODUCTS
 ===================================== */
 
 function renderProducts() {
@@ -929,18 +1118,16 @@ function renderProducts() {
 
   const filteredProducts =
     products.filter(
-      (product) => {
-        return (
-          activeCategory ===
-            "All" ||
-          product.category ===
-            activeCategory
-        );
-      }
+      (product) =>
+        activeCategory ===
+          "All" ||
+        product.category ===
+          activeCategory
     );
 
   if (
-    filteredProducts.length === 0
+    filteredProducts.length ===
+    0
   ) {
     container.innerHTML = `
       <div class="no-results">
@@ -964,7 +1151,9 @@ function renderProducts() {
   container.innerHTML =
     filteredProducts
       .map(
-        (product) => {
+        (
+          product
+        ) => {
           const productId =
             getProductId(
               product
@@ -995,15 +1184,53 @@ function renderProducts() {
                 "⭐ 5.0"
             );
 
-          const pkrPrice =
-            getPKRPrice(
+          const prices =
+            getDisplayPrices(
               product
             );
 
-          const usdPrice =
-            getUSDPrice(
-              product
+          const pricePKR =
+            prices.pricePKR;
+
+          const priceUSD =
+            prices.priceUSD;
+
+          const originalPricePKR =
+            Number(
+              product.originalPricePKR
             );
+
+          const originalPriceUSD =
+            Number(
+              product.originalPriceUSD
+            );
+
+          const legacyOriginalPrice =
+            Number(
+              product.originalPrice
+            );
+
+          const hasOriginalPKR =
+            Number.isFinite(
+              originalPricePKR
+            ) &&
+            originalPricePKR >
+              pricePKR;
+
+          const hasOriginalUSD =
+            Number.isFinite(
+              originalPriceUSD
+            ) &&
+            priceUSD !== null &&
+            originalPriceUSD >
+              priceUSD;
+
+          const hasLegacyOriginal =
+            Number.isFinite(
+              legacyOriginalPrice
+            ) &&
+            legacyOriginalPrice >
+              pricePKR;
 
           const stockCount =
             typeof product.stock !==
@@ -1014,12 +1241,91 @@ function renderProducts() {
               : 10;
 
           const isOutOfStock =
-            stockCount <= 0;
+            stockCount <=
+            0;
 
-          const hasAffiliate =
-            Boolean(
-              product.affiliateUrl
+          const affiliateButton =
+            getAffiliateButton(
+              product
             );
+
+          let priceHTML = `
+            <div class="product-price-row">
+          `;
+
+          if (
+            priceUSD !==
+            null
+          ) {
+            priceHTML += `
+              <span class="sale-price price-usd">
+                ${formatUSD(
+                  priceUSD
+                )}
+              </span>
+            `;
+          }
+
+          priceHTML += `
+              <span class="price-pkr">
+                ${formatPKR(
+                  pricePKR
+                )}
+              </span>
+            </div>
+          `;
+
+          if (
+            hasOriginalUSD ||
+            hasOriginalPKR ||
+            hasLegacyOriginal
+          ) {
+            priceHTML += `
+              <div class="product-price-row">
+            `;
+
+            if (
+              hasOriginalUSD
+            ) {
+              priceHTML += `
+                <span class="original-price">
+                  ${formatUSD(
+                    originalPriceUSD
+                  )}
+                </span>
+              `;
+            }
+
+            if (
+              hasOriginalPKR
+            ) {
+              priceHTML += `
+                <span class="original-price">
+                  ${formatPKR(
+                    originalPricePKR
+                  )}
+                </span>
+              `;
+            }
+
+            if (
+              !hasOriginalUSD &&
+              !hasOriginalPKR &&
+              hasLegacyOriginal
+            ) {
+              priceHTML += `
+                <span class="original-price">
+                  ${formatPKR(
+                    legacyOriginalPrice
+                  )}
+                </span>
+              `;
+            }
+
+            priceHTML += `
+              </div>
+            `;
+          }
 
           return `
             <div
@@ -1050,76 +1356,33 @@ function renderProducts() {
                   ${ratingDisplay}
                 </div>
 
-                <div class="price-container">
+                ${priceHTML}
 
+                ${affiliateButton}
+
+                <button
+                  type="button"
+                  class="add-btn ${
+                    isOutOfStock
+                      ? "disabled-btn"
+                      : ""
+                  }"
                   ${
-                    usdPrice !== null
-                      ? `
-                        <span class="sale-price">
-                          ${formatUSD(
-                            usdPrice
-                          )}
-                        </span>
-                      `
+                    isOutOfStock
+                      ? "disabled"
                       : ""
                   }
-
-                  <span
-                    class="pkr-price"
-                  >
-                    ${formatPKR(
-                      pkrPrice
-                    )}
-                  </span>
-
-                </div>
-
-                <div
-                  class="product-actions"
+                  onclick="
+                    event.stopPropagation();
+                    addToCart('${safeId}')
+                  "
                 >
-
                   ${
-                    hasAffiliate
-                      ? `
-                        <button
-                          type="button"
-                          class="buy-btn"
-                          onclick="
-                            event.stopPropagation();
-                            buyFromAffiliate('${safeId}');
-                          "
-                        >
-                          Buy on AliExpress
-                        </button>
-                      `
-                      : ""
+                    isOutOfStock
+                      ? "Out of Stock"
+                      : "Add to Cart"
                   }
-
-                  <button
-                    type="button"
-                    class="add-btn ${
-                      isOutOfStock
-                        ? "disabled-btn"
-                        : ""
-                    }"
-                    ${
-                      isOutOfStock
-                        ? "disabled"
-                        : ""
-                    }
-                    onclick="
-                      event.stopPropagation();
-                      addToCart('${safeId}');
-                    "
-                  >
-                    ${
-                      isOutOfStock
-                        ? "Out of Stock"
-                        : "Add to Cart"
-                    }
-                  </button>
-
-                </div>
+                </button>
 
               </div>
             </div>
@@ -1133,7 +1396,7 @@ function renderProducts() {
 
 
 /* =====================================
-   15. LOAD MORE
+   LOAD MORE
 ===================================== */
 
 function renderLoadMoreButton() {
@@ -1146,7 +1409,9 @@ function renderLoadMoreButton() {
     existingButton.remove();
   }
 
-  if (!hasMoreProducts) {
+  if (
+    !hasMoreProducts
+  ) {
     return;
   }
 
@@ -1200,7 +1465,9 @@ async function loadMoreProducts() {
   }
 
   if (button) {
-    button.disabled = true;
+    button.disabled =
+      true;
+
     button.textContent =
       "Loading...";
   }
@@ -1214,11 +1481,15 @@ async function loadMoreProducts() {
       "loadMoreProductsBtn"
     );
 
-  if (!updatedButton) {
+  if (
+    !updatedButton
+  ) {
     return;
   }
 
-  if (hasMoreProducts) {
+  if (
+    hasMoreProducts
+  ) {
     updatedButton.disabled =
       false;
 
@@ -1231,7 +1502,7 @@ async function loadMoreProducts() {
 
 
 /* =====================================
-   16. PRODUCT MODAL
+   PRODUCT MODAL
 ===================================== */
 
 function openProductModal(
@@ -1241,9 +1512,13 @@ function openProductModal(
     products.find(
       (item) =>
         String(
-          getProductId(item)
+          getProductId(
+            item
+          )
         ) ===
-        String(productId)
+        String(
+          productId
+        )
     );
 
   if (!product) {
@@ -1295,14 +1570,30 @@ function openProductModal(
         "⭐ 5.0"
     );
 
-  const pkrPrice =
-    getPKRPrice(
+  const prices =
+    getDisplayPrices(
       product
     );
 
-  const usdPrice =
-    getUSDPrice(
-      product
+  const pricePKR =
+    prices.pricePKR;
+
+  const priceUSD =
+    prices.priceUSD;
+
+  const originalPricePKR =
+    Number(
+      product.originalPricePKR
+    );
+
+  const originalPriceUSD =
+    Number(
+      product.originalPriceUSD
+    );
+
+  const legacyOriginalPrice =
+    Number(
+      product.originalPrice
     );
 
   const stockCount =
@@ -1314,12 +1605,8 @@ function openProductModal(
       : 10;
 
   const isOutOfStock =
-    stockCount <= 0;
-
-  const hasAffiliate =
-    Boolean(
-      product.affiliateUrl
-    );
+    stockCount <=
+    0;
 
   const relatedItems =
     getRelatedProducts(
@@ -1328,7 +1615,8 @@ function openProductModal(
     );
 
   const relatedHTML =
-    relatedItems.length > 0
+    relatedItems.length >
+    0
       ? `
         <div class="related-products-section">
 
@@ -1340,7 +1628,9 @@ function openProductModal(
 
             ${relatedItems
               .map(
-                (item) => {
+                (
+                  item
+                ) => {
                   const itemId =
                     getProductId(
                       item
@@ -1353,13 +1643,8 @@ function openProductModal(
                       )
                     );
 
-                  const itemUSD =
-                    getUSDPrice(
-                      item
-                    );
-
-                  const itemPKR =
-                    getPKRPrice(
+                  const itemPrices =
+                    getDisplayPrices(
                       item
                     );
 
@@ -1381,31 +1666,28 @@ function openProductModal(
                         loading="lazy"
                       >
 
-                      <div
-                        class="related-card-title"
-                      >
+                      <div class="related-card-title">
                         ${escapeHTML(
                           item.name ||
                             ""
                         )}
                       </div>
 
-                      <div
-                        class="related-card-price"
-                      >
+                      <div class="related-card-price">
+
                         ${
-                          itemUSD !== null
+                          itemPrices.priceUSD !==
+                          null
                             ? formatUSD(
-                                itemUSD
+                                itemPrices.priceUSD
                               )
                             : ""
                         }
 
-                        <br>
-
                         ${formatPKR(
-                          itemPKR
+                          itemPrices.pricePKR
                         )}
+
                       </div>
 
                     </div>
@@ -1419,6 +1701,127 @@ function openProductModal(
         </div>
       `
       : "";
+
+  const affiliateButton =
+    getAffiliateButton(
+      product
+    );
+
+  let priceHTML = `
+    <div class="modal-price-row">
+  `;
+
+  if (
+    priceUSD !==
+    null
+  ) {
+    priceHTML += `
+      <span class="sale-price modal-price-usd">
+        ${formatUSD(
+          priceUSD
+        )}
+      </span>
+    `;
+  }
+
+  priceHTML += `
+      <span class="modal-price-pkr">
+        ${formatPKR(
+          pricePKR
+        )}
+      </span>
+    </div>
+  `;
+
+  if (
+    (
+      Number.isFinite(
+        originalPriceUSD
+      ) &&
+      priceUSD !==
+        null &&
+      originalPriceUSD >
+        priceUSD
+    ) ||
+    (
+      Number.isFinite(
+        originalPricePKR
+      ) &&
+      originalPricePKR >
+        pricePKR
+    ) ||
+    (
+      Number.isFinite(
+        legacyOriginalPrice
+      ) &&
+      legacyOriginalPrice >
+        pricePKR
+    )
+  ) {
+    priceHTML += `
+      <div class="modal-price-row">
+    `;
+
+    if (
+      Number.isFinite(
+        originalPriceUSD
+      ) &&
+      priceUSD !==
+        null &&
+      originalPriceUSD >
+        priceUSD
+    ) {
+      priceHTML += `
+        <span class="original-price">
+          ${formatUSD(
+            originalPriceUSD
+          )}
+        </span>
+      `;
+    }
+
+    if (
+      Number.isFinite(
+        originalPricePKR
+      ) &&
+      originalPricePKR >
+        pricePKR
+    ) {
+      priceHTML += `
+        <span class="original-price">
+          ${formatPKR(
+            originalPricePKR
+          )}
+        </span>
+      `;
+    }
+
+    if (
+      !Number.isFinite(
+        originalPricePKR
+      ) &&
+      !Number.isFinite(
+        originalPriceUSD
+      ) &&
+      Number.isFinite(
+        legacyOriginalPrice
+      ) &&
+      legacyOriginalPrice >
+        pricePKR
+    ) {
+      priceHTML += `
+        <span class="original-price">
+          ${formatPKR(
+            legacyOriginalPrice
+          )}
+        </span>
+      `;
+    }
+
+    priceHTML += `
+      </div>
+    `;
+  }
 
   const modal =
     document.createElement(
@@ -1442,9 +1845,7 @@ function openProductModal(
     };
 
   modal.innerHTML = `
-    <div
-      class="modal-content product-modal-content"
-    >
+    <div class="modal-content product-modal-content">
 
       <button
         type="button"
@@ -1454,9 +1855,7 @@ function openProductModal(
         &times;
       </button>
 
-      <div
-        class="product-modal-body"
-      >
+      <div class="product-modal-body">
 
         <img
           src="${safeImage}"
@@ -1464,9 +1863,7 @@ function openProductModal(
           class="product-modal-img"
         >
 
-        <div
-          class="product-modal-details"
-        >
+        <div class="product-modal-details">
 
           <h2>
             ${safeName}
@@ -1482,85 +1879,37 @@ function openProductModal(
             ${ratingDisplay}
           </div>
 
-          <p
-            class="product-description"
-          >
+          <p class="product-description">
             ${safeDesc}
           </p>
 
-          <div
-            class="price-container"
-          >
+          ${priceHTML}
 
+          ${affiliateButton}
+
+          <button
+            type="button"
+            class="add-btn ${
+              isOutOfStock
+                ? "disabled-btn"
+                : ""
+            }"
             ${
-              usdPrice !== null
-                ? `
-                  <span
-                    class="sale-price"
-                  >
-                    ${formatUSD(
-                      usdPrice
-                    )}
-                  </span>
-                `
+              isOutOfStock
+                ? "disabled"
                 : ""
             }
-
-            <span
-              class="pkr-price"
-            >
-              ${formatPKR(
-                pkrPrice
-              )}
-            </span>
-
-          </div>
-
-          <div
-            class="product-modal-actions"
+            onclick="
+              addToCart('${safeId}');
+              closeProductModal();
+            "
           >
-
             ${
-              hasAffiliate
-                ? `
-                  <button
-                    type="button"
-                    class="buy-btn"
-                    onclick="
-                      buyFromAffiliate('${safeId}');
-                    "
-                  >
-                    Buy on AliExpress
-                  </button>
-                `
-                : ""
+              isOutOfStock
+                ? "Out of Stock"
+                : "Add to Cart"
             }
-
-            <button
-              type="button"
-              class="add-btn ${
-                isOutOfStock
-                  ? "disabled-btn"
-                  : ""
-              }"
-              ${
-                isOutOfStock
-                  ? "disabled"
-                  : ""
-              }
-              onclick="
-                addToCart('${safeId}');
-                closeProductModal();
-              "
-            >
-              ${
-                isOutOfStock
-                  ? "Out of Stock"
-                  : "Add to Cart"
-              }
-            </button>
-
-          </div>
+          </button>
 
         </div>
       </div>
@@ -1589,7 +1938,7 @@ function closeProductModal() {
 
 
 /* =====================================
-   17. CART UI
+   CART UI
 ===================================== */
 
 function updateCartUI() {
@@ -1612,7 +1961,10 @@ function updateCartUI() {
 
   const totalItems =
     cart.reduce(
-      (sum, item) =>
+      (
+        sum,
+        item
+      ) =>
         sum +
         (
           Number(
@@ -1622,40 +1974,97 @@ function updateCartUI() {
       0
     );
 
-  const totalPrice =
+  const totalPricePKR =
     cart.reduce(
-      (sum, item) =>
+      (
+        sum,
+        item
+      ) =>
         sum +
+        getPricePKR(
+          item
+        ) *
         (
           Number(
-            item.price
+            item.quantity
           ) || 0
-        ) *
-          (
-            Number(
-              item.quantity
-            ) || 0
-          ),
+        ),
       0
     );
 
-  if (cartCountEl) {
+  const totalPriceUSD =
+    cart.reduce(
+      (
+        sum,
+        item
+      ) => {
+        const usd =
+          getPriceUSD(
+            item
+          );
+
+        if (
+          usd ===
+          null
+        ) {
+          return sum;
+        }
+
+        return (
+          sum +
+          usd *
+            (
+              Number(
+                item.quantity
+              ) || 0
+            )
+        );
+      },
+      0
+    );
+
+  if (
+    cartCountEl
+  ) {
     cartCountEl.textContent =
       totalItems;
   }
 
-  if (cartTotalAmountEl) {
-    cartTotalAmountEl.textContent =
-      formatPKR(
-        totalPrice
-      );
+  if (
+    cartTotalAmountEl
+  ) {
+    if (
+      totalPriceUSD >
+      0
+    ) {
+      cartTotalAmountEl.innerHTML = `
+        ${formatUSD(
+          totalPriceUSD
+        )}
+        <span class="price-pkr">
+          ${formatPKR(
+            totalPricePKR
+          )}
+        </span>
+      `;
+    } else {
+      cartTotalAmountEl.textContent =
+        formatPKR(
+          totalPricePKR
+        );
+    }
   }
 
-  if (!cartItemsEl) {
+  if (
+    !cartItemsEl
+  ) {
     return;
   }
 
-  if (cart.length === 0) {
+  if (
+    cart.length ===
+    0
+  ) {
     cartItemsEl.innerHTML = `
       <p class="empty-cart-msg">
         Your cart is currently empty.
@@ -1668,7 +2077,9 @@ function updateCartUI() {
   cartItemsEl.innerHTML =
     cart
       .map(
-        (item) => {
+        (
+          item
+        ) => {
           const itemId =
             getProductId(
               item
@@ -1698,19 +2109,26 @@ function updateCartUI() {
               item.quantity
             ) || 0;
 
-          const price =
-            Number(
-              item.price
-            ) || 0;
-
-          const itemTotal =
-            price *
-            quantity;
-
-          const itemUSD =
-            getUSDPrice(
+          const pricePKR =
+            getPricePKR(
               item
             );
+
+          const priceUSD =
+            getPriceUSD(
+              item
+            );
+
+          const itemTotalPKR =
+            pricePKR *
+            quantity;
+
+          const itemTotalUSD =
+            priceUSD !==
+            null
+              ? priceUSD *
+                quantity
+              : null;
 
           return `
             <div
@@ -1725,44 +2143,42 @@ function updateCartUI() {
                 loading="lazy"
               >
 
-              <div
-                class="cart-item-details"
-              >
+              <div class="cart-item-details">
 
-                <h4
-                  class="cart-item-title"
-                >
+                <h4 class="cart-item-title">
                   ${safeName}
                 </h4>
 
-                <p
-                  class="cart-item-price"
-                >
-                  ${
-                    itemUSD !== null
-                      ? `${formatUSD(
-                          itemUSD
-                        )} | `
-                      : ""
-                  }
+                <p class="cart-item-price">
 
-                  ${formatPKR(
-                    price
-                  )}
+                  <span class="cart-price-row">
 
-                  x ${quantity}
+                    ${
+                      itemTotalUSD !==
+                      null
+                        ? `
+                          <span>
+                            ${formatUSD(
+                              itemTotalUSD
+                            )}
+                          </span>
+                        `
+                        : ""
+                    }
 
-                  =
-                  ${formatPKR(
-                    itemTotal
-                  )}
+                    <span class="cart-price-pkr">
+                      ${formatPKR(
+                        itemTotalPKR
+                      )}
+                    </span>
+
+                  </span>
+
                 </p>
 
               </div>
 
-              <div
-                class="cart-controls"
-              >
+              <div class="cart-controls">
 
                 <button
                   type="button"
@@ -1801,7 +2217,7 @@ function updateCartUI() {
 
 
 /* =====================================
-   18. CART MUTATIONS
+   ADD TO CART
 ===================================== */
 
 function addToCart(
@@ -1811,9 +2227,13 @@ function addToCart(
     products.find(
       (item) =>
         String(
-          getProductId(item)
+          getProductId(
+            item
+          )
         ) ===
-        String(productId)
+        String(
+          productId
+        )
     );
 
   if (!product) {
@@ -1833,7 +2253,10 @@ function addToCart(
         )
       : 10;
 
-  if (maxStock <= 0) {
+  if (
+    maxStock <=
+    0
+  ) {
     showToast(
       "Sorry, this product is currently out of stock!",
       "error",
@@ -1847,14 +2270,18 @@ function addToCart(
     cart.find(
       (item) =>
         String(
-          getProductId(item)
+          getProductId(
+            item
+          )
         ) ===
         String(
           actualProductId
         )
     );
 
-  if (existingItem) {
+  if (
+    existingItem
+  ) {
     if (
       existingItem.quantity +
         1 >
@@ -1882,12 +2309,19 @@ function addToCart(
   updateCartUI();
 
   showToast(
-    `${product.name || "Item"} added to cart!`,
+    `${
+      product.name ||
+      "Item"
+    } added to cart!`,
     "success",
     2500
   );
 }
 
+
+/* =====================================
+   UPDATE QUANTITY
+===================================== */
 
 function updateQuantity(
   productId,
@@ -1901,7 +2335,9 @@ function updateQuantity(
             cartItem
           )
         ) ===
-        String(productId)
+        String(
+          productId
+        )
     );
 
   if (!item) {
@@ -1916,7 +2352,9 @@ function updateQuantity(
             productItem
           )
         ) ===
-        String(productId)
+        String(
+          productId
+        )
     );
 
   const maxStock =
@@ -1947,7 +2385,8 @@ function updateQuantity(
     delta;
 
   if (
-    item.quantity <= 0
+    item.quantity <=
+    0
   ) {
     removeFromCart(
       productId
@@ -1958,6 +2397,10 @@ function updateQuantity(
 }
 
 
+/* =====================================
+   REMOVE FROM CART
+===================================== */
+
 function removeFromCart(
   productId
 ) {
@@ -1965,14 +2408,22 @@ function removeFromCart(
     cart.filter(
       (item) =>
         String(
-          getProductId(item)
+          getProductId(
+            item
+          )
         ) !==
-        String(productId)
+        String(
+          productId
+        )
     );
 
   updateCartUI();
 }
 
+
+/* =====================================
+   CLEAR CART
+===================================== */
 
 function clearCart() {
   cart = [];
@@ -1982,7 +2433,7 @@ function clearCart() {
 
 
 /* =====================================
-   19. CHECKOUT
+   ORDER SUMMARY
 ===================================== */
 
 function buildOrderSummaryText() {
@@ -1996,59 +2447,88 @@ function buildOrderSummaryText() {
   text +=
     `-----------------------------------\n`;
 
-  let totalPKR = 0;
+  let totalPKR =
+    0;
+
+  let totalUSD =
+    0;
+
+  let hasUSD =
+    false;
 
   cart.forEach(
-    (item, index) => {
-      const subtotal =
-        (
-          Number(
-            item.price
-          ) || 0
-        ) *
-        (
-          Number(
-            item.quantity
-          ) || 0
-        );
+    (
+      item,
+      index
+    ) => {
+      const quantity =
+        Number(
+          item.quantity
+        ) || 0;
 
-      totalPKR +=
-        subtotal;
-
-      const itemUSD =
-        getUSDPrice(
+      const pricePKR =
+        getPricePKR(
           item
         );
 
-      text +=
-        `${index + 1}. ${item.name} x${item.quantity}`;
+      const priceUSD =
+        getPriceUSD(
+          item
+        );
+
+      const subtotalPKR =
+        pricePKR *
+        quantity;
+
+      totalPKR +=
+        subtotalPKR;
+
+      let usdText =
+        "";
 
       if (
-        itemUSD !== null
+        priceUSD !==
+        null
       ) {
-        text +=
-          ` - ${formatUSD(
-            itemUSD *
-              (
-                Number(
-                  item.quantity
-                ) || 0
-              )
+        const subtotalUSD =
+          priceUSD *
+          quantity;
+
+        totalUSD +=
+          subtotalUSD;
+
+        hasUSD =
+          true;
+
+        usdText =
+          ` / ${formatUSD(
+            subtotalUSD
           )}`;
       }
 
       text +=
-        ` - ${formatPKR(
-          subtotal
-        )}\n`;
+        `${index + 1}. ${
+          item.name
+        } x${quantity} - ${formatPKR(
+          subtotalPKR
+        )}${usdText}\n`;
     }
   );
 
   text +=
     `-----------------------------------\n`;
 
+  if (
+    hasUSD
+  ) {
+    text +=
+      `*Total USD:* ${formatUSD(
+        totalUSD
+      )}\n`;
+  }
+
   text +=
-    `*Total Order Value:* ${formatPKR(
+    `*Total PKR:* ${formatPKR(
       totalPKR
     )}\n`;
 
@@ -2059,8 +2539,15 @@ function buildOrderSummaryText() {
 }
 
 
+/* =====================================
+   CHECKOUT
+===================================== */
+
 async function checkoutMultiPlatform() {
-  if (cart.length === 0) {
+  if (
+    cart.length ===
+    0
+  ) {
     showToast(
       "Your cart is empty. Add items first!",
       "error",
@@ -2112,6 +2599,10 @@ async function checkoutMultiPlatform() {
 }
 
 
+/* =====================================
+   CHECKOUT MODAL
+===================================== */
+
 function showCheckoutModal(
   orderSummary,
   isCopied
@@ -2121,7 +2612,9 @@ function showCheckoutModal(
       "checkoutModal"
     );
 
-  if (existingModal) {
+  if (
+    existingModal
+  ) {
     existingModal.remove();
   }
 
@@ -2147,9 +2640,7 @@ function showCheckoutModal(
     };
 
   modal.innerHTML = `
-    <div
-      class="modal-content"
-    >
+    <div class="modal-content">
 
       <h2>
         ${
@@ -2172,9 +2663,7 @@ function showCheckoutModal(
         class="order-summary-box"
       ></textarea>
 
-      <div
-        class="social-links"
-      >
+      <div class="social-links">
 
         <a
           href="${SOCIAL_LINKS.facebook}"
@@ -2247,12 +2736,42 @@ function closeCheckoutModal() {
 
 
 /* =====================================
-   20. INITIALIZATION
+   ESC KEY
+===================================== */
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (
+      event.key ===
+      "Escape"
+    ) {
+      closeProductModal();
+
+      const checkoutModal =
+        document.getElementById(
+          "checkoutModal"
+        );
+
+      if (
+        checkoutModal
+      ) {
+        closeCheckoutModal();
+      }
+    }
+  }
+);
+
+
+/* =====================================
+   INITIALIZATION
 ===================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+    injectAffiliateStyles();
+
     initTheme();
 
     updateCartUI();
