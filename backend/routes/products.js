@@ -3,25 +3,128 @@ const Product = require("../models/Product");
 
 const router = express.Router();
 
-// GET products with pagination
+// ============================================================
+// HELPER: Escape special regex characters
+// ============================================================
+
+function escapeRegex(value) {
+  return String(value).replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+}
+
+// ============================================================
+// GET PRODUCTS
+// Pagination + Search
+// ============================================================
+
 router.get("/", async (req, res) => {
   try {
-    let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 40;
+    // ----------------------------------------------------------
+    // Pagination
+    // ----------------------------------------------------------
 
-    // Safety limits
-    if (page < 1) page = 1;
-    if (limit < 1) limit = 40;
-    if (limit > 100) limit = 100;
+    let page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 40;
+
+    if (page < 1) {
+      page = 1;
+    }
+
+    if (limit < 1) {
+      limit = 40;
+    }
+
+    if (limit > 100) {
+      limit = 100;
+    }
+
+    // ----------------------------------------------------------
+    // Search
+    // ----------------------------------------------------------
+
+    const search =
+      typeof req.query.search === "string"
+        ? req.query.search.trim()
+        : "";
+
+    // ----------------------------------------------------------
+    // Build MongoDB filter
+    // ----------------------------------------------------------
+
+    const filter = {};
+
+    if (search) {
+      const safeSearch = escapeRegex(search);
+
+      filter.$or = [
+        {
+          name: {
+            $regex: safeSearch,
+            $options: "i",
+          },
+        },
+        {
+          description: {
+            $regex: safeSearch,
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: safeSearch,
+            $options: "i",
+          },
+        },
+        {
+          source: {
+            $regex: safeSearch,
+            $options: "i",
+          },
+        },
+        {
+          externalId: {
+            $regex: safeSearch,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    // ----------------------------------------------------------
+    // Calculate pagination
+    // ----------------------------------------------------------
 
     const skip = (page - 1) * limit;
 
-    const products = await Product.find()
+    // ----------------------------------------------------------
+    // Fetch products
+    // ----------------------------------------------------------
+
+    const products = await Product.find(filter)
       .sort({ _id: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
-    const total = await Product.countDocuments();
+    // ----------------------------------------------------------
+    // Count filtered products
+    // ----------------------------------------------------------
+
+    const total = await Product.countDocuments(filter);
+
+    const totalPages =
+      total > 0
+        ? Math.ceil(total / limit)
+        : 1;
+
+    const hasMore =
+      skip + products.length < total;
+
+    // ----------------------------------------------------------
+    // Response
+    // ----------------------------------------------------------
 
     res.json({
       success: true,
@@ -29,12 +132,16 @@ router.get("/", async (req, res) => {
       limit,
       count: products.length,
       total,
-      totalPages: Math.ceil(total / limit),
-      hasMore: skip + products.length < total,
+      totalPages,
+      hasMore,
+      search,
       products,
     });
   } catch (error) {
-    console.error("Get products error:", error.message);
+    console.error(
+      "Get products error:",
+      error.message
+    );
 
     res.status(500).json({
       success: false,
@@ -44,10 +151,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET one product
+// ============================================================
+// GET ONE PRODUCT
+// ============================================================
+
 router.get("/:id", async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product =
+      await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -61,7 +172,10 @@ router.get("/:id", async (req, res) => {
       product,
     });
   } catch (error) {
-    console.error("Get product error:", error.message);
+    console.error(
+      "Get product error:",
+      error.message
+    );
 
     res.status(500).json({
       success: false,
@@ -71,10 +185,14 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// CREATE product
+// ============================================================
+// CREATE PRODUCT
+// ============================================================
+
 router.post("/", async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const product =
+      await Product.create(req.body);
 
     res.status(201).json({
       success: true,
@@ -82,7 +200,10 @@ router.post("/", async (req, res) => {
       product,
     });
   } catch (error) {
-    console.error("Create product error:", error.message);
+    console.error(
+      "Create product error:",
+      error.message
+    );
 
     res.status(400).json({
       success: false,
@@ -91,17 +212,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-// UPDATE product
+// ============================================================
+// UPDATE PRODUCT
+// ============================================================
+
 router.put("/:id", async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const product =
+      await Product.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
     if (!product) {
       return res.status(404).json({
@@ -116,7 +241,10 @@ router.put("/:id", async (req, res) => {
       product,
     });
   } catch (error) {
-    console.error("Update product error:", error.message);
+    console.error(
+      "Update product error:",
+      error.message
+    );
 
     res.status(400).json({
       success: false,
@@ -125,10 +253,16 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE product
+// ============================================================
+// DELETE PRODUCT
+// ============================================================
+
 router.delete("/:id", async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product =
+      await Product.findByIdAndDelete(
+        req.params.id
+      );
 
     if (!product) {
       return res.status(404).json({
@@ -142,7 +276,10 @@ router.delete("/:id", async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (error) {
-    console.error("Delete product error:", error.message);
+    console.error(
+      "Delete product error:",
+      error.message
+    );
 
     res.status(400).json({
       success: false,
@@ -150,5 +287,9 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
+
+// ============================================================
+// EXPORT ROUTER
+// ============================================================
 
 module.exports = router;
