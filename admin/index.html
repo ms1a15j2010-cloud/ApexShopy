@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,410 +8,602 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ApexShopy Admin Dashboard</title>
+  <title>ApexShopy Admin</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/admin/style.css">
 </head>
 
 <body>
 
-  <div class="admin-container">
+  <!-- ==========================================================
+       LOGIN SCREEN
+  =========================================================== -->
 
-    <!-- ==============================
-         SIDEBAR
-    =============================== -->
-    <aside class="admin-sidebar">
-
-      <div class="sidebar-top">
-
-        <div class="admin-brand">
-          <div class="brand-mark">A</div>
-
-          <div>
-            <h2>ApexShopy</h2>
-            <span>Admin Panel</span>
-          </div>
-        </div>
-
-        <nav class="admin-nav">
-
-          <button
-            type="button"
-            class="nav-item active"
-          >
-            <span class="nav-icon">▦</span>
-            <span>Products</span>
-          </button>
-
-          <a
-            href="/"
-            class="nav-item back-store"
-          >
-            <span class="nav-icon">←</span>
-            <span>Back to Store</span>
-          </a>
-
-        </nav>
-
-      </div>
-
-      <div class="sidebar-footer">
-        <span>ApexShopy Admin</span>
-        <small>Product Management</small>
-      </div>
-
-    </aside>
-
-
-    <!-- ==============================
-         MAIN CONTENT
-    =============================== -->
-    <main class="admin-content">
-
-      <!-- HEADER -->
-      <header class="admin-header">
-
-        <div class="header-title">
-
-          <div class="mobile-menu-icon">
-            ☰
-          </div>
-
-          <div>
-            <h1>Product Management</h1>
-
-            <p>
-              Manage your store products and inventory
-            </p>
-          </div>
-
-        </div>
-
-        <button
-          type="button"
-          class="btn-add"
-          onclick="openAddModal()"
-        >
-          <span class="btn-add-icon">+</span>
-          Add New Product
-        </button>
-
-      </header>
-
-
-      <!-- ==============================
-           STATS
-      =============================== -->
-      <section class="stats-grid">
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📦
-          </div>
-
-          <div class="stat-info">
-
-            <span class="stat-label">
-              Total Products
-            </span>
-
-            <strong id="totalProductCount">
-              0
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ==============================
-           PRODUCTS TABLE
-      =============================== -->
-      <section class="admin-table-container">
-
-        <div class="table-header">
-
-          <div>
-            <h2>All Products</h2>
-
-            <p>
-              Showing 40 products per page
-            </p>
-          </div>
-
-        </div>
-
-
-        <!-- Scrollable table area -->
-        <div class="table-scroll">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th class="image-column">
-                  Image
-                </th>
-
-                <th class="name-column">
-                  Name
-                </th>
-
-                <th>
-                  Category
-                </th>
-
-                <th>
-                  Price
-                </th>
-
-                <th>
-                  Stock
-                </th>
-
-                <th class="actions-column">
-                  Actions
-                </th>
-              </tr>
-
-            </thead>
-
-            <tbody id="adminProductTable">
-
-              <tr>
-                <td
-                  colspan="6"
-                  class="loading-cell"
-                >
-                  Loading products...
-                </td>
-              </tr>
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </section>
-
-    </main>
-
-  </div>
-
-
-  <!-- ==============================
-       PRODUCT MODAL
-  =============================== -->
   <div
-    id="productModal"
-    class="modal-overlay hidden"
+    id="loginScreen"
+    class="login-screen"
   >
 
-    <div class="modal-card">
 
-      <div class="modal-header">
+<div class="login-card">
 
-        <div>
-          <h2 id="modalTitle">
-            Add New Product
-          </h2>
+  <div class="login-brand">
 
-          <p>
-            Enter the product information below.
-          </p>
-        </div>
+    <div class="brand-mark">
+      A
+    </div>
 
-        <button
-          type="button"
-          class="modal-close"
-          onclick="closeModal()"
-          aria-label="Close"
-        >
-          &times;
-        </button>
-
-      </div>
-
-
-      <form
-        id="productForm"
-        onsubmit="handleProductSubmit(event)"
-      >
-
-        <input
-          type="hidden"
-          id="productId"
-        >
-
-
-        <!-- PRODUCT NAME -->
-        <div class="form-group">
-
-          <label for="productName">
-            Product Name *
-          </label>
-
-          <input
-            type="text"
-            id="productName"
-            required
-            maxlength="200"
-            autocomplete="off"
-          >
-
-        </div>
-
-
-        <!-- CATEGORY -->
-        <div class="form-group">
-
-          <label for="productCategory">
-            Category
-          </label>
-
-          <select id="productCategory">
-
-            <option value="Electronics">
-              Electronics
-            </option>
-
-            <option value="Apparel">
-              Apparel
-            </option>
-
-            <option value="Accessories">
-              Accessories
-            </option>
-
-            <option value="Sports & Outdoors">
-              Sports & Outdoors
-            </option>
-
-            <option value="Wearables">
-              Wearables
-            </option>
-
-            <option value="Smart Home">
-              Smart Home
-            </option>
-
-            <option value="Tops & Tees">
-              Tops & Tees
-            </option>
-
-            <option value="General">
-              General
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- PRICE + STOCK -->
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label for="productPrice">
-              Price ($) *
-            </label>
-
-            <input
-              type="number"
-              id="productPrice"
-              step="0.01"
-              min="0"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="productStock">
-              Stock Count
-            </label>
-
-            <input
-              type="number"
-              id="productStock"
-              min="0"
-              value="10"
-            >
-
-          </div>
-
-        </div>
-
-
-        <!-- IMAGE -->
-        <div class="form-group">
-
-          <label for="productImage">
-            Image URL or Path
-          </label>
-
-          <input
-            type="text"
-            id="productImage"
-            placeholder="https://... or images/product.jpg"
-            autocomplete="off"
-          >
-
-        </div>
-
-
-        <!-- DESCRIPTION -->
-        <div class="form-group">
-
-          <label for="productDescription">
-            Description
-          </label>
-
-          <textarea
-            id="productDescription"
-            rows="4"
-          ></textarea>
-
-        </div>
-
-
-        <!-- ACTIONS -->
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="btn-cancel"
-            onclick="closeModal()"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            class="btn-save"
-          >
-            Save Product
-          </button>
-
-        </div>
-
-      </form>
-
+    <div>
+      <h1>ApexShopy</h1>
+      <span>Admin Panel</span>
     </div>
 
   </div>
 
 
-  <script src="admin.js"></script>
+  <div class="login-header">
+
+    <h2>Admin Login</h2>
+
+    <p>
+      Sign in to manage your ApexShopy products.
+    </p>
+
+  </div>
+
+
+  <form
+    id="loginForm"
+  >
+
+    <div class="form-group">
+
+      <label for="loginUsername">
+        Username
+      </label>
+
+      <input
+        type="text"
+        id="loginUsername"
+        name="username"
+        required
+        autocomplete="username"
+        maxlength="100"
+        placeholder="Enter admin username"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="loginPassword">
+        Password
+      </label>
+
+      <input
+        type="password"
+        id="loginPassword"
+        name="password"
+        required
+        autocomplete="current-password"
+        maxlength="200"
+        placeholder="Enter admin password"
+      >
+
+    </div>
+
+
+    <div
+      id="loginError"
+      class="login-error hidden"
+      role="alert"
+    ></div>
+
+
+    <button
+      type="submit"
+      id="loginButton"
+      class="login-button"
+    >
+      Sign In
+    </button>
+
+  </form>
+
+
+  <div class="login-footer">
+
+    <a
+      href="/"
+      class="back-store-link"
+    >
+      ← Back to Store
+    </a>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- ==========================================================
+       ADMIN DASHBOARD
+  =========================================================== -->
+
+  <div
+    id="adminDashboard"
+    class="admin-container hidden"
+  >
+
+
+<!-- ==============================
+     SIDEBAR
+=============================== -->
+
+<aside class="admin-sidebar">
+
+  <div class="sidebar-top">
+
+    <div class="admin-brand">
+
+      <div class="brand-mark">
+        A
+      </div>
+
+      <div>
+        <h2>ApexShopy</h2>
+        <span>Admin Panel</span>
+      </div>
+
+    </div>
+
+
+    <nav class="admin-nav">
+
+      <button
+        type="button"
+        class="nav-item active"
+      >
+        <span class="nav-icon">▦</span>
+        <span>Products</span>
+      </button>
+
+
+      <!-- <a
+        href="/"
+        class="nav-item back-store"
+      >
+        <span class="nav-icon">←</span>
+        <span>Back to Store</span>
+      </a> -->
+
+    </nav>
+
+  </div>
+
+
+  <div class="sidebar-footer">
+
+    <span>ApexShopy Admin</span>
+
+    <small>
+      Product Management
+    </small>
+
+  </div>
+
+</aside>
+
+
+<!-- ==============================
+     MAIN CONTENT
+=============================== -->
+
+<main class="admin-content">
+
+  <!-- HEADER -->
+
+  <header class="admin-header">
+
+    <div class="header-title">
+
+      <div class="mobile-menu-icon">
+        ☰
+      </div>
+
+      <div>
+
+        <h1>
+          Product Management
+        </h1>
+
+        <p>
+          Manage your store products and inventory
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <span
+        id="loggedInAdmin"
+        class="logged-in-admin"
+      >
+        Admin
+      </span>
+
+      <button
+        type="button"
+        class="btn-logout"
+        onclick="logoutAdmin()"
+      >
+        Logout
+      </button>
+
+      <button
+        type="button"
+        class="btn-add"
+        onclick="openAddModal()"
+      >
+
+        <span class="btn-add-icon">
+          +
+        </span>
+
+        Add New Product
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- ==============================
+       STATS
+  =============================== -->
+
+  <section class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        📦
+      </div>
+
+      <div class="stat-info">
+
+        <span class="stat-label">
+          Total Products
+        </span>
+
+        <strong id="totalProductCount">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==============================
+       PRODUCTS TABLE
+  =============================== -->
+
+  <section class="admin-table-container">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          All Products
+        </h2>
+
+        <p>
+          Showing 40 products per page
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Scrollable table area -->
+
+    <div class="table-scroll">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th class="image-column">
+              Image
+            </th>
+
+            <th class="name-column">
+              Name
+            </th>
+
+            <th>
+              Category
+            </th>
+
+            <th>
+              Price
+            </th>
+
+            <th>
+              Stock
+            </th>
+
+            <th class="actions-column">
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="adminProductTable">
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="loading-cell"
+            >
+              Loading products...
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+  </div>
+
+  <!-- ==========================================================
+       PRODUCT MODAL
+  =========================================================== -->
+
+  <div
+    id="productModal"
+    class="modal-overlay hidden"
+  >
+
+
+<div class="modal-card">
+
+  <div class="modal-header">
+
+    <div>
+
+      <h2 id="modalTitle">
+        Add New Product
+      </h2>
+
+      <p>
+        Enter the product information below.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="modal-close"
+      onclick="closeModal()"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+
+  </div>
+
+
+  <form
+    id="productForm"
+    onsubmit="handleProductSubmit(event)"
+  >
+
+    <input
+      type="hidden"
+      id="productId"
+    >
+
+
+    <!-- PRODUCT NAME -->
+
+    <div class="form-group">
+
+      <label for="productName">
+        Product Name *
+      </label>
+
+      <input
+        type="text"
+        id="productName"
+        required
+        maxlength="200"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <!-- CATEGORY -->
+
+    <div class="form-group">
+
+      <label for="productCategory">
+        Category
+      </label>
+
+      <select id="productCategory">
+
+        <option value="Electronics">
+          Electronics
+        </option>
+
+        <option value="Apparel">
+          Apparel
+        </option>
+
+        <option value="Accessories">
+          Accessories
+        </option>
+
+        <option value="Sports & Outdoors">
+          Sports & Outdoors
+        </option>
+
+        <option value="Wearables">
+          Wearables
+        </option>
+
+        <option value="Smart Home">
+          Smart Home
+        </option>
+
+        <option value="Tops & Tees">
+          Tops & Tees
+        </option>
+
+        <option value="General">
+          General
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- PRICE + STOCK -->
+
+    <div class="form-row">
+
+      <div class="form-group">
+
+        <label for="productPrice">
+          Price ($) *
+        </label>
+
+        <input
+          type="number"
+          id="productPrice"
+          step="0.01"
+          min="0"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="productStock">
+          Stock Count
+        </label>
+
+        <input
+          type="number"
+          id="productStock"
+          min="0"
+          value="10"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- IMAGE -->
+
+    <div class="form-group">
+
+      <label for="productImage">
+        Image URL or Path
+      </label>
+
+      <input
+        type="text"
+        id="productImage"
+        placeholder="https://... or images/product.jpg"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+
+    <div class="form-group">
+
+      <label for="productDescription">
+        Description
+      </label>
+
+      <textarea
+        id="productDescription"
+        rows="4"
+      ></textarea>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn-cancel"
+        onclick="closeModal()"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        type="submit"
+        class="btn-save"
+      >
+        Save Product
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+  </div>
+
+  <!-- ==========================================================
+       ADMIN JAVASCRIPT
+  =========================================================== -->
+
+  <script src="/admin/admin.js"></script>
 
 </body>
 </html>
-
