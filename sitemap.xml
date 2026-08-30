@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://apexshopy.vercel.app/</loc>
+    <loc>https://apex-shopy.vercel.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://apexshopy.vercel.app/category.html</loc>
+    <loc>https://apex-shopy.vercel.app/category.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

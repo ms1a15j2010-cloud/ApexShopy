@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://apexshopy.vercel.app/sitemap.xml
+Sitemap: https://apex-shopy.vercel.app/sitemap.xml
