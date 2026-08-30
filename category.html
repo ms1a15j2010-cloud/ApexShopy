@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Browse ApexShopy products by category. Shop electronics, wearables, accessories, sports products, smart home products and apparel."
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <title>ApexShopy - Categories</title>
+
+  <link
+    rel="icon"
+    type="image/x-icon"
+    href="/favicon.ico"
+  >
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+</head>
+
+<body>
+
+  <!-- =====================================
+       HEADER
+  ====================================== -->
+
+  <header class="site-header">
+
+    <div class="header-container">
+
+      <a
+        href="index.html"
+        class="logo"
+      >
+        <span class="logo-mark">▲</span>
+        <span class="logo-text">
+          APEX<span>SHOPY</span>
+        </span>
+      </a>
+
+
+      <nav class="main-nav">
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a
+          href="category.html"
+          class="active"
+        >
+          Categories
+        </a>
+
+        <a href="index.html#shop">
+          Shop
+        </a>
+
+      </nav>
+
+
+      <div class="header-actions">
+
+        <button
+          type="button"
+          id="themeToggleBtn"
+          class="theme-toggle-btn"
+          onclick="toggleTheme()"
+        >
+          🌙 Dark Mode
+        </button>
+
+
+        <button
+          type="button"
+          class="cart-btn"
+          onclick="toggleCart()"
+        >
+          🛒 Cart
+          <span
+            id="cartCount"
+            class="cart-count"
+          >
+            0
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================
+       PAGE HERO
+  ====================================== -->
+
+  <section class="page-hero">
+
+    <div class="container">
+
+      <h1>
+        Shop by Category
+      </h1>
+
+      <p>
+        Explore our latest products across
+        electronics, wearables, sports,
+        accessories, apparel and more.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+       CATEGORY SECTION
+  ====================================== -->
+
+  <main>
+
+    <section
+      class="categories-section"
+      id="categories"
+    >
+
+      <div class="container">
+
+        <div class="section-heading">
+
+          <h2>
+            Product Categories
+          </h2>
+
+          <p>
+            Choose a category to discover
+            products.
+          </p>
+
+        </div>
+
+
+        <div class="categories">
+
+          <button
+            type="button"
+            class="active"
+            onclick="filterCategory('All', event)"
+          >
+            All
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Electronics', event)"
+          >
+            Electronics
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Wearables', event)"
+          >
+            Wearables
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Accessories', event)"
+          >
+            Accessories
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Sports & Outdoors', event)"
+          >
+            Sports & Outdoors
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Smart Home', event)"
+          >
+            Smart Home
+          </button>
+
+
+          <button
+            type="button"
+            onclick="filterCategory('Apparel', event)"
+          >
+            Apparel
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================
+         SEARCH
+    ====================================== -->
+
+    <section class="shop-section">
+
+      <div class="container">
+
+        <div class="shop-toolbar">
+
+          <div class="search-box">
+
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Search products..."
+              autocomplete="off"
+              oninput="filterProducts()"
+            >
+
+            <span class="search-icon">
+              🔍
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- =====================================
+             PRODUCT GRID
+        ====================================== -->
+
+        <div
+          id="productGrid"
+          class="product-grid"
+        >
+
+          <div class="loading-msg">
+            <p>
+              Loading products...
+            </p>
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =====================================
+       CART OVERLAY
+  ====================================== -->
+
+  <div
+    id="cartOverlay"
+    class="cart-overlay"
+    onclick="toggleCart()"
+  ></div>
+
+
+  <!-- =====================================
+       CART SIDEBAR
+  ====================================== -->
+
+  <aside
+    id="cartSidebar"
+    class="cart-sidebar"
+  >
+
+    <div class="cart-header">
+
+      <h2>
+        Your Cart
+      </h2>
+
+      <button
+        type="button"
+        class="close-cart-btn"
+        onclick="toggleCart()"
+        aria-label="Close cart"
+      >
+        &times;
+      </button>
+
+    </div>
+
+
+    <div
+      id="cartItems"
+      class="cart-items"
+    >
+
+      <p class="empty-cart-msg">
+        Your cart is currently empty.
+      </p>
+
+    </div>
+
+
+    <div class="cart-footer">
+
+      <div class="cart-total">
+
+        <span>
+          Total
+        </span>
+
+        <strong id="cartTotalAmount">
+          PKR 0.00
+        </strong>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="checkout-btn"
+        onclick="checkoutMultiPlatform()"
+      >
+        Proceed to Checkout
+      </button>
+
+
+      <button
+        type="button"
+        class="clear-cart-btn"
+        onclick="clearCart()"
+      >
+        Clear Cart
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =====================================
+       FOOTER
+  ====================================== -->
+
+  <footer class="site-footer">
+
+    <div class="container">
+
+      <div class="footer-content">
+
+        <div class="footer-brand">
+
+          <a
+            href="index.html"
+            class="logo"
+          >
+            <span class="logo-mark">▲</span>
+
+            <span class="logo-text">
+              APEX<span>SHOPY</span>
+            </span>
+          </a>
+
+          <p>
+            Discover quality products from
+            trusted online marketplaces.
+          </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+          <h3>
+            Quick Links
+          </h3>
+
+          <a href="index.html">
+            Home
+          </a>
+
+          <a href="category.html">
+            Categories
+          </a>
+
+          <a href="index.html#shop">
+            Shop
+          </a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+          <h3>
+            Categories
+          </h3>
+
+          <a
+            href="category.html"
+            onclick="sessionStorage.setItem('apexCategory', 'Electronics')"
+          >
+            Electronics
+          </a>
+
+          <a
+            href="category.html"
+            onclick="sessionStorage.setItem('apexCategory', 'Wearables')"
+          >
+            Wearables
+          </a>
+
+          <a
+            href="category.html"
+            onclick="sessionStorage.setItem('apexCategory', 'Sports & Outdoors')"
+          >
+            Sports & Outdoors
+          </a>
+
+          <a
+            href="category.html"
+            onclick="sessionStorage.setItem('apexCategory', 'Apparel')"
+          >
+            Apparel
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <p>
+          &copy;
+          <span id="currentYear"></span>
+          ApexShopy. All rights reserved.
+        </p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =====================================
+       SCRIPTS
+  ====================================== -->
+
+  <script src="toast.js"></script>
+
+  <script src="script.js"></script>
+
+
+  <script>
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        const yearElement =
+          document.getElementById(
+            "currentYear"
+          );
+
+        if (yearElement) {
+          yearElement.textContent =
+            new Date().getFullYear();
+        }
+
+
+        const savedCategory =
+          sessionStorage.getItem(
+            "apexCategory"
+          );
+
+        if (
+          savedCategory &&
+          savedCategory !== "All"
+        ) {
+
+          const buttons =
+            document.querySelectorAll(
+              ".categories button"
+            );
+
+          buttons.forEach(
+            (button) => {
+
+              if (
+                button.textContent.trim() ===
+                savedCategory
+              ) {
+
+                button.click();
+
+              }
+
+            }
+          );
+
+          sessionStorage.removeItem(
+            "apexCategory"
+          );
+
+        }
+
+      }
+    );
+  </script>
+
+</body>
+</html>
