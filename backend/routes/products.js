@@ -1,5 +1,6 @@
 const express = require("express");
 const Product = require("../models/Product");
+const requireAdminAuth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -51,13 +52,6 @@ function normalizeProductPrices(product) {
 
 // ============================================================
 // APEXSHOPY CATEGORY KEYWORDS
-//
-// These mirror the category logic used by the frontend.
-//
-// IMPORTANT:
-// The order matters.
-// Wearables and Smart Home are checked before Electronics,
-// Sports & Outdoors before Apparel, etc.
 // ============================================================
 
 const CATEGORY_RULES = {
@@ -198,19 +192,13 @@ const CATEGORY_RULES = {
 
 // ============================================================
 // HELPER: Build category MongoDB filter
-//
-// Category matching is performed against BOTH:
-//   - product.category
-//   - product.name
-//
-// This allows products such as:
-// "Smart Watch Fitness Tracker"
-// to be found even if the database category itself
-// is something more generic.
 // ============================================================
 
 function buildCategoryFilter(category) {
-  if (!category || category === "All") {
+  if (
+    !category ||
+    category === "All"
+  ) {
     return null;
   }
 
@@ -221,14 +209,17 @@ function buildCategoryFilter(category) {
 
   let actualCategory = null;
 
-  for (const categoryName of Object.keys(
-    CATEGORY_RULES
-  )) {
+  for (
+    const categoryName of
+    Object.keys(CATEGORY_RULES)
+  ) {
     if (
       categoryName.toLowerCase() ===
       normalizedCategory
     ) {
-      actualCategory = categoryName;
+      actualCategory =
+        categoryName;
+
       break;
     }
   }
@@ -272,413 +263,514 @@ function buildCategoryFilter(category) {
 
 // ============================================================
 // GET PRODUCTS
+//
+// PUBLIC
+//
 // Pagination + Search + Category
 // ============================================================
 
-router.get("/", async (req, res) => {
-  try {
-    // ----------------------------------------------------------
-    // Pagination
-    // ----------------------------------------------------------
+router.get(
+  "/",
+  async (req, res) => {
+    try {
+      // --------------------------------------------------------
+      // Pagination
+      // --------------------------------------------------------
 
-    let page =
-      parseInt(req.query.page, 10) || 1;
+      let page =
+        parseInt(
+          req.query.page,
+          10
+        ) || 1;
 
-    let limit =
-      parseInt(req.query.limit, 10) || 40;
+      let limit =
+        parseInt(
+          req.query.limit,
+          10
+        ) || 40;
 
-    if (page < 1) {
-      page = 1;
-    }
+      if (page < 1) {
+        page = 1;
+      }
 
-    if (limit < 1) {
-      limit = 40;
-    }
+      if (limit < 1) {
+        limit = 40;
+      }
 
-    // Never allow a request to pull more than 100 products.
-    if (limit > 100) {
-      limit = 100;
-    }
+      // Never allow more than 100 products.
+      if (limit > 100) {
+        limit = 100;
+      }
 
-    // ----------------------------------------------------------
-    // Search
-    // ----------------------------------------------------------
+      // --------------------------------------------------------
+      // Search
+      // --------------------------------------------------------
 
-    const search =
-      typeof req.query.search === "string"
-        ? req.query.search.trim()
-        : "";
+      const search =
+        typeof req.query.search ===
+        "string"
+          ? req.query.search.trim()
+          : "";
 
-    // ----------------------------------------------------------
-    // Category
-    // ----------------------------------------------------------
+      // --------------------------------------------------------
+      // Category
+      // --------------------------------------------------------
 
-    const category =
-      typeof req.query.category === "string"
-        ? req.query.category.trim()
-        : "";
+      const category =
+        typeof req.query.category ===
+        "string"
+          ? req.query.category.trim()
+          : "";
 
-    // ----------------------------------------------------------
-    // Build MongoDB filter
-    // ----------------------------------------------------------
+      // --------------------------------------------------------
+      // Build MongoDB filter
+      // --------------------------------------------------------
 
-    const filterParts = [];
+      const filterParts = [];
 
-    // ----------------------------------------------------------
-    // SEARCH FILTER
-    // ----------------------------------------------------------
+      // --------------------------------------------------------
+      // SEARCH FILTER
+      // --------------------------------------------------------
 
-    if (search) {
-      const safeSearch =
-        escapeRegex(search);
+      if (search) {
+        const safeSearch =
+          escapeRegex(search);
 
-      filterParts.push({
-        $or: [
-          {
-            name: {
-              $regex: safeSearch,
-              $options: "i",
+        filterParts.push({
+          $or: [
+            {
+              name: {
+                $regex: safeSearch,
+                $options: "i",
+              },
             },
-          },
-          {
-            description: {
-              $regex: safeSearch,
-              $options: "i",
+            {
+              description: {
+                $regex: safeSearch,
+                $options: "i",
+              },
             },
-          },
-          {
-            category: {
-              $regex: safeSearch,
-              $options: "i",
+            {
+              category: {
+                $regex: safeSearch,
+                $options: "i",
+              },
             },
-          },
-          {
-            source: {
-              $regex: safeSearch,
-              $options: "i",
+            {
+              source: {
+                $regex: safeSearch,
+                $options: "i",
+              },
             },
-          },
-          {
-            externalId: {
-              $regex: safeSearch,
-              $options: "i",
+            {
+              externalId: {
+                $regex: safeSearch,
+                $options: "i",
+              },
             },
-          },
-        ],
+          ],
+        });
+      }
+
+      // --------------------------------------------------------
+      // CATEGORY FILTER
+      // --------------------------------------------------------
+
+      const categoryFilter =
+        buildCategoryFilter(
+          category
+        );
+
+      if (categoryFilter) {
+        filterParts.push(
+          categoryFilter
+        );
+      }
+
+      // --------------------------------------------------------
+      // FINAL FILTER
+      // --------------------------------------------------------
+
+      const filter =
+        filterParts.length === 0
+          ? {}
+          : filterParts.length === 1
+          ? filterParts[0]
+          : {
+              $and: filterParts,
+            };
+
+      // --------------------------------------------------------
+      // Pagination calculation
+      // --------------------------------------------------------
+
+      const skip =
+        (page - 1) * limit;
+
+      // --------------------------------------------------------
+      // Fetch products
+      // --------------------------------------------------------
+
+      const rawProducts =
+        await Product.find(
+          filter
+        )
+          .sort({
+            _id: -1,
+          })
+          .skip(skip)
+          .limit(limit)
+          .lean();
+
+      // --------------------------------------------------------
+      // Normalize prices
+      // --------------------------------------------------------
+
+      const products =
+        rawProducts.map(
+          normalizeProductPrices
+        );
+
+      // --------------------------------------------------------
+      // Count products
+      // --------------------------------------------------------
+
+      const total =
+        await Product.countDocuments(
+          filter
+        );
+
+      const totalPages =
+        total > 0
+          ? Math.ceil(
+              total / limit
+            )
+          : 1;
+
+      const hasMore =
+        skip +
+          products.length <
+        total;
+
+      // --------------------------------------------------------
+      // Response
+      // --------------------------------------------------------
+
+      return res.json({
+        success: true,
+        page,
+        limit,
+        count:
+          products.length,
+        total,
+        totalPages,
+        hasMore,
+        search,
+        category:
+          category || "All",
+        products,
+      });
+
+    } catch (error) {
+      console.error(
+        "Get products error:",
+        error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Failed to fetch products",
+        error:
+          error.message,
       });
     }
-
-    // ----------------------------------------------------------
-    // CATEGORY FILTER
-    // ----------------------------------------------------------
-
-    const categoryFilter =
-      buildCategoryFilter(
-        category
-      );
-
-    if (categoryFilter) {
-      filterParts.push(
-        categoryFilter
-      );
-    }
-
-    // ----------------------------------------------------------
-    // FINAL FILTER
-    // ----------------------------------------------------------
-
-    const filter =
-      filterParts.length === 0
-        ? {}
-        : filterParts.length === 1
-        ? filterParts[0]
-        : {
-            $and: filterParts,
-          };
-
-    // ----------------------------------------------------------
-    // Calculate pagination
-    // ----------------------------------------------------------
-
-    const skip =
-      (page - 1) * limit;
-
-    // ----------------------------------------------------------
-    // Fetch products
-    // ----------------------------------------------------------
-
-    const rawProducts =
-      await Product.find(filter)
-        .sort({
-          _id: -1,
-        })
-        .skip(skip)
-        .limit(limit)
-        .lean();
-
-    // ----------------------------------------------------------
-    // Normalize prices
-    // ----------------------------------------------------------
-
-    const products =
-      rawProducts.map(
-        normalizeProductPrices
-      );
-
-    // ----------------------------------------------------------
-    // Count filtered products
-    // ----------------------------------------------------------
-
-    const total =
-      await Product.countDocuments(
-        filter
-      );
-
-    const totalPages =
-      total > 0
-        ? Math.ceil(
-            total / limit
-          )
-        : 1;
-
-    const hasMore =
-      skip +
-        products.length <
-      total;
-
-    // ----------------------------------------------------------
-    // Response
-    // ----------------------------------------------------------
-
-    res.json({
-      success: true,
-      page,
-      limit,
-      count: products.length,
-      total,
-      totalPages,
-      hasMore,
-      search,
-      category:
-        category || "All",
-      products,
-    });
-  } catch (error) {
-    console.error(
-      "Get products error:",
-      error.message
-    );
-
-    res.status(500).json({
-      success: false,
-      message:
-        "Failed to fetch products",
-      error: error.message,
-    });
   }
-});
+);
 
 // ============================================================
 // GET ONE PRODUCT
+//
+// PUBLIC
 // ============================================================
 
-router.get("/:id", async (req, res) => {
-  try {
-    const product =
-      await Product.findById(
-        req.params.id
-      ).lean();
+router.get(
+  "/:id",
+  async (req, res) => {
+    try {
+      const product =
+        await Product.findById(
+          req.params.id
+        ).lean();
 
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Product not found",
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found",
+        });
+      }
+
+      const normalizedProduct =
+        normalizeProductPrices(
+          product
+        );
+
+      return res.json({
+        success: true,
+        product:
+          normalizedProduct,
       });
-    }
 
-    const normalizedProduct =
-      normalizeProductPrices(
-        product
+    } catch (error) {
+      console.error(
+        "Get product error:",
+        error.message
       );
 
-    res.json({
-      success: true,
-      product:
-        normalizedProduct,
-    });
-  } catch (error) {
-    console.error(
-      "Get product error:",
-      error.message
-    );
-
-    res.status(500).json({
-      success: false,
-      message:
-        "Failed to fetch product",
-      error: error.message,
-    });
+      return res.status(500).json({
+        success: false,
+        message:
+          "Failed to fetch product",
+        error:
+          error.message,
+      });
+    }
   }
-});
+);
 
 // ============================================================
 // CREATE PRODUCT
+//
+// PROTECTED
+//
+// Requires:
+// Authorization: Bearer JWT_TOKEN
 // ============================================================
 
-router.post("/", async (req, res) => {
-  try {
-    const body = {
-      ...req.body,
-    };
+router.post(
+  "/",
+  requireAdminAuth,
+  async (req, res) => {
+    try {
+      const body = {
+        ...req.body,
+      };
 
-    // Keep price and pricePKR compatible.
+      // --------------------------------------------------------
+      // Validate basic input
+      // --------------------------------------------------------
 
-    if (
-      body.price === undefined &&
-      body.pricePKR !== undefined
-    ) {
-      body.price =
-        Number(body.pricePKR);
-    }
+      if (
+        typeof body.name !==
+          "string" ||
+        !body.name.trim()
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Product name is required.",
+        });
+      }
 
-    if (
-      body.pricePKR === undefined &&
-      body.price !== undefined
-    ) {
-      body.pricePKR =
-        Number(body.price);
-    }
+      // --------------------------------------------------------
+      // Keep price and pricePKR compatible
+      // --------------------------------------------------------
 
-    const product =
-      await Product.create(
-        body
+      if (
+        body.price ===
+          undefined &&
+        body.pricePKR !==
+          undefined
+      ) {
+        body.price =
+          Number(
+            body.pricePKR
+          );
+      }
+
+      if (
+        body.pricePKR ===
+          undefined &&
+        body.price !==
+          undefined
+      ) {
+        body.pricePKR =
+          Number(
+            body.price
+          );
+      }
+
+      // --------------------------------------------------------
+      // Create product
+      // --------------------------------------------------------
+
+      const product =
+        await Product.create(
+          body
+        );
+
+      return res.status(201).json({
+        success: true,
+        message:
+          "Product created successfully",
+        product,
+      });
+
+    } catch (error) {
+      console.error(
+        "Create product error:",
+        error.message
       );
 
-    res.status(201).json({
-      success: true,
-      message:
-        "Product created successfully",
-      product,
-    });
-  } catch (error) {
-    console.error(
-      "Create product error:",
-      error.message
-    );
-
-    res.status(400).json({
-      success: false,
-      message:
-        error.message,
-    });
+      return res.status(400).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
   }
-});
+);
 
 // ============================================================
 // UPDATE PRODUCT
+//
+// PROTECTED
+//
+// Requires:
+// Authorization: Bearer JWT_TOKEN
 // ============================================================
 
-router.put("/:id", async (req, res) => {
-  try {
-    const body = {
-      ...req.body,
-    };
+router.put(
+  "/:id",
+  requireAdminAuth,
+  async (req, res) => {
+    try {
+      const body = {
+        ...req.body,
+      };
 
-    // Keep price and pricePKR synchronized.
+      // --------------------------------------------------------
+      // Keep price and pricePKR synchronized
+      // --------------------------------------------------------
 
-    if (
-      body.pricePKR !== undefined &&
-      body.price === undefined
-    ) {
-      body.price =
-        Number(body.pricePKR);
-    }
+      if (
+        body.pricePKR !==
+          undefined &&
+        body.price ===
+          undefined
+      ) {
+        body.price =
+          Number(
+            body.pricePKR
+          );
+      }
 
-    if (
-      body.price !== undefined &&
-      body.pricePKR === undefined
-    ) {
-      body.pricePKR =
-        Number(body.price);
-    }
+      if (
+        body.price !==
+          undefined &&
+        body.pricePKR ===
+          undefined
+      ) {
+        body.pricePKR =
+          Number(
+            body.price
+          );
+      }
 
-    const product =
-      await Product.findByIdAndUpdate(
-        req.params.id,
-        body,
-        {
-          new: true,
-          runValidators: true,
-        }
+      // --------------------------------------------------------
+      // Update product
+      // --------------------------------------------------------
+
+      const product =
+        await Product.findByIdAndUpdate(
+          req.params.id,
+          body,
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message:
+          "Product updated successfully",
+        product,
+      });
+
+    } catch (error) {
+      console.error(
+        "Update product error:",
+        error.message
       );
 
-    if (!product) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
-          "Product not found",
+          error.message,
       });
     }
-
-    res.json({
-      success: true,
-      message:
-        "Product updated successfully",
-      product,
-    });
-  } catch (error) {
-    console.error(
-      "Update product error:",
-      error.message
-    );
-
-    res.status(400).json({
-      success: false,
-      message:
-        error.message,
-    });
   }
-});
+);
 
 // ============================================================
 // DELETE PRODUCT
+//
+// PROTECTED
+//
+// Requires:
+// Authorization: Bearer JWT_TOKEN
 // ============================================================
 
-router.delete("/:id", async (req, res) => {
-  try {
-    const product =
-      await Product.findByIdAndDelete(
-        req.params.id
+router.delete(
+  "/:id",
+  requireAdminAuth,
+  async (req, res) => {
+    try {
+      const product =
+        await Product.findByIdAndDelete(
+          req.params.id
+        );
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message:
+          "Product deleted successfully",
+      });
+
+    } catch (error) {
+      console.error(
+        "Delete product error:",
+        error.message
       );
 
-    if (!product) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
-          "Product not found",
+          "Failed to delete product",
+        error:
+          error.message,
       });
     }
-
-    res.json({
-      success: true,
-      message:
-        "Product deleted successfully",
-    });
-  } catch (error) {
-    console.error(
-      "Delete product error:",
-      error.message
-    );
-
-    res.status(400).json({
-      success: false,
-      message:
-        "Failed to delete product",
-      error: error.message,
-    });
   }
-});
+);
 
 // ============================================================
 // EXPORT ROUTER
