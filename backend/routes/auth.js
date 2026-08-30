@@ -10,11 +10,10 @@ const router = express.Router();
 
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
-
-    // ----------------------------------------------------------
-    // Validate request
-    // ----------------------------------------------------------
+    const {
+      username,
+      password,
+    } = req.body || {};
 
     if (
       typeof username !== "string" ||
@@ -24,13 +23,10 @@ router.post("/login", async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "Username and password are required.",
+        message:
+          "Username and password are required.",
       });
     }
-
-    // ----------------------------------------------------------
-    // Check required environment variables
-    // ----------------------------------------------------------
 
     if (
       !process.env.ADMIN_USERNAME ||
@@ -38,18 +34,15 @@ router.post("/login", async (req, res) => {
       !process.env.JWT_SECRET
     ) {
       console.error(
-        "Admin authentication environment variables are not configured."
+        "Missing admin authentication environment variables."
       );
 
       return res.status(500).json({
         success: false,
-        message: "Server authentication is not configured.",
+        message:
+          "Server authentication is not configured.",
       });
     }
-
-    // ----------------------------------------------------------
-    // Normalize username
-    // ----------------------------------------------------------
 
     const suppliedUsername =
       username.trim().toLowerCase();
@@ -59,23 +52,16 @@ router.post("/login", async (req, res) => {
         .trim()
         .toLowerCase();
 
-    // ----------------------------------------------------------
-    // Check username
-    //
-    // We deliberately return the same error message for an
-    // incorrect username or password.
-    // ----------------------------------------------------------
-
-    if (suppliedUsername !== configuredUsername) {
+    if (
+      suppliedUsername !==
+      configuredUsername
+    ) {
       return res.status(401).json({
         success: false,
-        message: "Invalid username or password.",
+        message:
+          "Invalid username or password.",
       });
     }
-
-    // ----------------------------------------------------------
-    // Check password
-    // ----------------------------------------------------------
 
     const passwordMatches =
       await bcrypt.compare(
@@ -86,13 +72,10 @@ router.post("/login", async (req, res) => {
     if (!passwordMatches) {
       return res.status(401).json({
         success: false,
-        message: "Invalid username or password.",
+        message:
+          "Invalid username or password.",
       });
     }
-
-    // ----------------------------------------------------------
-    // Create JWT
-    // ----------------------------------------------------------
 
     const token = jwt.sign(
       {
@@ -105,10 +88,6 @@ router.post("/login", async (req, res) => {
       }
     );
 
-    // ----------------------------------------------------------
-    // Successful login
-    // ----------------------------------------------------------
-
     return res.json({
       success: true,
       message: "Login successful.",
@@ -118,7 +97,6 @@ router.post("/login", async (req, res) => {
         role: "admin",
       },
     });
-
   } catch (error) {
     console.error(
       "Admin login error:",
@@ -133,7 +111,7 @@ router.post("/login", async (req, res) => {
 });
 
 // ============================================================
-// VERIFY CURRENT ADMIN TOKEN
+// VERIFY ADMIN TOKEN
 // ============================================================
 
 router.get("/verify", (req, res) => {
@@ -141,7 +119,8 @@ router.get("/verify", (req, res) => {
     if (!process.env.JWT_SECRET) {
       return res.status(500).json({
         success: false,
-        message: "Server authentication is not configured.",
+        message:
+          "Server authentication is not configured.",
       });
     }
 
@@ -149,7 +128,7 @@ router.get("/verify", (req, res) => {
       req.headers.authorization || "";
 
     const parts =
-      authorization.trim().split(" ");
+      authorization.trim().split(/\s+/);
 
     if (
       parts.length !== 2 ||
@@ -158,7 +137,8 @@ router.get("/verify", (req, res) => {
     ) {
       return res.status(401).json({
         success: false,
-        message: "Authentication required.",
+        message:
+          "Authentication required.",
       });
     }
 
@@ -174,7 +154,8 @@ router.get("/verify", (req, res) => {
     ) {
       return res.status(403).json({
         success: false,
-        message: "Admin access required.",
+        message:
+          "Admin access required.",
       });
     }
 
@@ -186,7 +167,6 @@ router.get("/verify", (req, res) => {
         role: decoded.role,
       },
     });
-
   } catch (error) {
     console.error(
       "Admin verification error:",
@@ -196,10 +176,10 @@ router.get("/verify", (req, res) => {
     return res.status(401).json({
       success: false,
       authenticated: false,
-      message: "Invalid or expired authentication token.",
+      message:
+        "Invalid or expired authentication token.",
     });
   }
 });
 
 module.exports = router;
-

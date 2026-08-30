@@ -6,10 +6,6 @@ const jwt = require("jsonwebtoken");
 
 function requireAdminAuth(req, res, next) {
   try {
-    // ----------------------------------------------------------
-    // JWT secret
-    // ----------------------------------------------------------
-
     if (!process.env.JWT_SECRET) {
       console.error(
         "JWT_SECRET is not configured."
@@ -22,26 +18,8 @@ function requireAdminAuth(req, res, next) {
       });
     }
 
-    // ----------------------------------------------------------
-    // Authorization header
-    // ----------------------------------------------------------
-
     const authorization =
       req.headers.authorization || "";
-
-    if (!authorization) {
-      return res.status(401).json({
-        success: false,
-        message:
-          "Authentication required.",
-      });
-    }
-
-    // ----------------------------------------------------------
-    // Expected format:
-    //
-    // Authorization: Bearer YOUR_JWT_TOKEN
-    // ----------------------------------------------------------
 
     const parts =
       authorization.trim().split(/\s+/);
@@ -54,25 +32,17 @@ function requireAdminAuth(req, res, next) {
       return res.status(401).json({
         success: false,
         message:
-          "Invalid authentication token.",
+          "Authentication required.",
       });
     }
 
     const token = parts[1];
-
-    // ----------------------------------------------------------
-    // Verify JWT
-    // ----------------------------------------------------------
 
     const decoded =
       jwt.verify(
         token,
         process.env.JWT_SECRET
       );
-
-    // ----------------------------------------------------------
-    // Verify admin role
-    // ----------------------------------------------------------
 
     if (
       !decoded ||
@@ -85,30 +55,17 @@ function requireAdminAuth(req, res, next) {
       });
     }
 
-    // ----------------------------------------------------------
-    // Store authenticated admin information
-    // ----------------------------------------------------------
-
     req.admin = {
       username: decoded.username,
       role: decoded.role,
     };
 
-    // ----------------------------------------------------------
-    // Continue to protected route
-    // ----------------------------------------------------------
-
     next();
-
   } catch (error) {
     console.error(
       "Authentication error:",
       error.message
     );
-
-    // ----------------------------------------------------------
-    // Expired token
-    // ----------------------------------------------------------
 
     if (
       error.name === "TokenExpiredError"
@@ -120,10 +77,6 @@ function requireAdminAuth(req, res, next) {
       });
     }
 
-    // ----------------------------------------------------------
-    // Invalid token
-    // ----------------------------------------------------------
-
     if (
       error.name === "JsonWebTokenError"
     ) {
@@ -134,10 +87,6 @@ function requireAdminAuth(req, res, next) {
       });
     }
 
-    // ----------------------------------------------------------
-    // Other authentication errors
-    // ----------------------------------------------------------
-
     return res.status(401).json({
       success: false,
       message:
@@ -146,5 +95,6 @@ function requireAdminAuth(req, res, next) {
   }
 }
 
-module.exports = requireAdminAuth;
+module.exports =
+  requireAdminAuth;
 

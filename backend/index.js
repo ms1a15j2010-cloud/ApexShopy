@@ -29,12 +29,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(
   "/images",
   express.static(
-    path.join(
-      __dirname,
-      "..",
-      "public",
-      "images"
-    )
+    path.join(__dirname, "..", "public", "images")
   )
 );
 
@@ -45,31 +40,22 @@ app.use(
 let mongoConnectionPromise = null;
 
 async function connectDatabase() {
-  // Already connected
-  if (
-    mongoose.connection.readyState === 1
-  ) {
+  if (mongoose.connection.readyState === 1) {
     return;
   }
 
-  // Check MongoDB URI
   if (!process.env.MONGODB_URI) {
     throw new Error(
       "MONGODB_URI environment variable is not configured"
     );
   }
 
-  // Reuse existing connection attempt
   if (!mongoConnectionPromise) {
-    mongoConnectionPromise =
-      mongoose.connect(
-        process.env.MONGODB_URI,
-        {
-          serverSelectionTimeoutMS: 10000,
-        }
-      ).catch((error) => {
-        // Allow another connection attempt
-        // after a failed connection.
+    mongoConnectionPromise = mongoose
+      .connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000,
+      })
+      .catch((error) => {
         mongoConnectionPromise = null;
         throw error;
       });
@@ -88,10 +74,8 @@ app.get("/", async (req, res) => {
 
     return res.json({
       success: true,
-      message:
-        "ApexShopy backend is running",
+      message: "ApexShopy backend is running",
     });
-
   } catch (error) {
     console.error(
       "MongoDB connection failed:",
@@ -100,47 +84,19 @@ app.get("/", async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message:
-        "Database connection failed",
+      message: "Database connection failed",
       error: error.message,
     });
   }
 });
 
 // ============================================================
-// DATABASE MIDDLEWARE
-//
-// All API routes that need MongoDB will automatically
-// establish the database connection before continuing.
-// ============================================================
-
-app.use(
-  async (req, res, next) => {
-    try {
-      await connectDatabase();
-      next();
-
-    } catch (error) {
-      console.error(
-        "MongoDB connection failed:",
-        error.message
-      );
-
-      return res.status(500).json({
-        success: false,
-        message:
-          "Database connection failed",
-        error: error.message,
-      });
-    }
-  }
-);
-
-// ============================================================
 // AUTHENTICATION ROUTES
 //
-// POST /api/auth/login
-// GET  /api/auth/verify
+// IMPORTANT:
+// These routes do NOT require MongoDB.
+// This prevents Vercel login from failing because of
+// a database connection problem.
 // ============================================================
 
 app.use(
@@ -149,12 +105,33 @@ app.use(
 );
 
 // ============================================================
+// DATABASE MIDDLEWARE
+//
+// Only database-dependent API routes come after this.
+// ============================================================
+
+app.use(
+  async (req, res, next) => {
+    try {
+      await connectDatabase();
+      next();
+    } catch (error) {
+      console.error(
+        "MongoDB connection failed:",
+        error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Database connection failed",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// ============================================================
 // PRODUCT ROUTES
-//
-// GET requests remain public.
-//
-// POST / PUT / DELETE will be protected inside
-// routes/products.js.
 // ============================================================
 
 app.use(
@@ -170,8 +147,7 @@ app.use(
   (req, res) => {
     return res.status(404).json({
       success: false,
-      message:
-        "API endpoint not found.",
+      message: "API endpoint not found.",
     });
   }
 );
@@ -189,8 +165,7 @@ app.use(
 
     return res.status(500).json({
       success: false,
-      message:
-        "Internal server error.",
+      message: "Internal server error.",
     });
   }
 );
