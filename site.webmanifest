@@ -1,0 +1,11 @@
+{
+  "name": "ApexShopy",
+  "short_name": "ApexShopy",
+  "description": "Discover quality products from trusted online marketplaces.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff6a00",
+  "lang": "en"
+}
