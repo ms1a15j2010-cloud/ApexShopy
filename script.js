@@ -3862,6 +3862,8 @@ document.addEventListener(
     initTheme();
 
     updateCartUI();
+    
+    initGoogleAnalytics();
 
     fetchProducts(
       true
