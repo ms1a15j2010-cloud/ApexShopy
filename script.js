@@ -1,4 +1,4 @@
-/* =====================================
+﻿/* =====================================
    APEXSHOPY - STORE CONFIGURATION & STATE
 ===================================== */
 
@@ -586,624 +586,224 @@ function getApexCategory(
   const text =
     `${category} ${name} ${description}`;
 
-  /* =================================
-     1. WEARABLES
-  ================================= */
-
   if (
-    category.includes(
-      "wearable"
-    ) ||
-    category.includes(
-      "smart watch"
-    ) ||
-    category.includes(
-      "smartwatch"
-    ) ||
-    category.includes(
-      "fitness tracker"
-    ) ||
-    category.includes(
-      "fitness band"
-    ) ||
-    category.includes(
-      "smart band"
-    ) ||
-    text.includes(
-      "smart watch"
-    ) ||
-    text.includes(
-      "smartwatch"
-    ) ||
-    text.includes(
-      "fitness tracker"
-    ) ||
-    text.includes(
-      "fitness band"
-    ) ||
-    text.includes(
-      "smart band"
-    ) ||
-    text.includes(
-      "sports watch"
-    ) ||
-    text.includes(
-      "heart rate monitor"
-    ) ||
-    text.includes(
-      "smart bracelet"
-    )
+    category.includes("wearable") ||
+    category.includes("smart watch") ||
+    category.includes("smartwatch") ||
+    category.includes("fitness tracker") ||
+    category.includes("fitness band") ||
+    category.includes("smart band") ||
+    text.includes("smart watch") ||
+    text.includes("smartwatch") ||
+    text.includes("fitness tracker") ||
+    text.includes("fitness band") ||
+    text.includes("smart band") ||
+    text.includes("sports watch") ||
+    text.includes("heart rate monitor") ||
+    text.includes("smart bracelet")
   ) {
     return "Wearables";
   }
 
-  /* =================================
-     2. SMART HOME
-  ================================= */
-
   if (
-    category.includes(
-      "smart home"
-    ) ||
-    category.includes(
-      "home automation"
-    ) ||
-    category.includes(
-      "home appliance"
-    ) ||
-    category.includes(
-      "smart device"
-    ) ||
-    category.includes(
-      "lighting"
-    ) ||
-    category.includes(
-      "security"
-    ) ||
-    text.includes(
-      "smart home"
-    ) ||
-    text.includes(
-      "smart bulb"
-    ) ||
-    text.includes(
-      "smart lamp"
-    ) ||
-    text.includes(
-      "smart plug"
-    ) ||
-    text.includes(
-      "smart switch"
-    ) ||
-    text.includes(
-      "smart socket"
-    ) ||
-    text.includes(
-      "security camera"
-    ) ||
-    text.includes(
-      "ip camera"
-    ) ||
-    text.includes(
-      "doorbell camera"
-    ) ||
-    text.includes(
-      "home security"
-    ) ||
-    text.includes(
-      "robot vacuum"
-    ) ||
-    text.includes(
-      "home automation"
-    ) ||
-    text.includes(
-      "smart thermostat"
-    ) ||
-    text.includes(
-      "smart lock"
-    )
+    category.includes("smart home") ||
+    category.includes("home automation") ||
+    category.includes("home appliance") ||
+    category.includes("smart device") ||
+    category.includes("lighting") ||
+    category.includes("security") ||
+    text.includes("smart home") ||
+    text.includes("smart bulb") ||
+    text.includes("smart lamp") ||
+    text.includes("smart plug") ||
+    text.includes("smart switch") ||
+    text.includes("smart socket") ||
+    text.includes("security camera") ||
+    text.includes("ip camera") ||
+    text.includes("doorbell camera") ||
+    text.includes("home security") ||
+    text.includes("robot vacuum") ||
+    text.includes("home automation") ||
+    text.includes("smart thermostat") ||
+    text.includes("smart lock")
   ) {
     return "Smart Home";
   }
 
-  /* =================================
-     3. SPORTS & OUTDOORS
-  ================================= */
-
   if (
-    category.includes(
-      "sports"
-    ) ||
-    category.includes(
-      "sporting"
-    ) ||
-    category.includes(
-      "outdoor"
-    ) ||
-    category.includes(
-      "fitness"
-    ) ||
-    category.includes(
-      "exercise"
-    ) ||
-    category.includes(
-      "camping"
-    ) ||
-    category.includes(
-      "hiking"
-    ) ||
-    category.includes(
-      "cycling"
-    ) ||
-    category.includes(
-      "fishing"
-    ) ||
-    category.includes(
-      "running"
-    ) ||
-    category.includes(
-      "sportswear"
-    ) ||
-    category.includes(
-      "gym"
-    ) ||
-    category.includes(
-      "training"
-    ) ||
-    text.includes(
-      "gym equipment"
-    ) ||
-    text.includes(
-      "workout"
-    ) ||
-    text.includes(
-      "yoga"
-    ) ||
-    text.includes(
-      "football"
-    ) ||
-    text.includes(
-      "soccer"
-    ) ||
-    text.includes(
-      "basketball"
-    ) ||
-    text.includes(
-      "tennis"
-    ) ||
-    text.includes(
-      "volleyball"
-    ) ||
-    text.includes(
-      "badminton"
-    ) ||
-    text.includes(
-      "golf"
-    ) ||
-    text.includes(
-      "running shoes"
-    ) ||
-    text.includes(
-      "sports shoes"
-    ) ||
-    text.includes(
-      "boxing gloves"
-    ) ||
-    text.includes(
-      "boxing"
-    ) ||
-    text.includes(
-      "exercise equipment"
-    ) ||
-    text.includes(
-      "fitness equipment"
-    ) ||
-    text.includes(
-      "resistance band"
-    ) ||
-    text.includes(
-      "dumbbell"
-    ) ||
-    text.includes(
-      "jump rope"
-    ) ||
-    text.includes(
-      "camping gear"
-    ) ||
-    text.includes(
-      "hiking gear"
-    )
+    category.includes("sports") ||
+    category.includes("sporting") ||
+    category.includes("outdoor") ||
+    category.includes("fitness") ||
+    category.includes("exercise") ||
+    category.includes("camping") ||
+    category.includes("hiking") ||
+    category.includes("cycling") ||
+    category.includes("fishing") ||
+    category.includes("running") ||
+    category.includes("sportswear") ||
+    category.includes("gym") ||
+    category.includes("training") ||
+    text.includes("gym equipment") ||
+    text.includes("workout") ||
+    text.includes("yoga") ||
+    text.includes("football") ||
+    text.includes("soccer") ||
+    text.includes("basketball") ||
+    text.includes("tennis") ||
+    text.includes("volleyball") ||
+    text.includes("badminton") ||
+    text.includes("golf") ||
+    text.includes("running shoes") ||
+    text.includes("sports shoes") ||
+    text.includes("boxing gloves") ||
+    text.includes("boxing") ||
+    text.includes("exercise equipment") ||
+    text.includes("fitness equipment") ||
+    text.includes("resistance band") ||
+    text.includes("dumbbell") ||
+    text.includes("jump rope") ||
+    text.includes("camping gear") ||
+    text.includes("hiking gear")
   ) {
     return "Sports & Outdoors";
   }
 
-  /* =================================
-     4. ELECTRONICS
-  ================================= */
-
   if (
-    category.includes(
-      "consumer electronics"
-    ) ||
-    category.includes(
-      "computer"
-    ) ||
-    category.includes(
-      "computers"
-    ) ||
-    category.includes(
-      "phones"
-    ) ||
-    category.includes(
-      "phone"
-    ) ||
-    category.includes(
-      "mobile"
-    ) ||
-    category.includes(
-      "tablet"
-    ) ||
-    category.includes(
-      "electronic"
-    ) ||
-    category.includes(
-      "camera"
-    ) ||
-    category.includes(
-      "audio"
-    ) ||
-    category.includes(
-      "headphone"
-    ) ||
-    category.includes(
-      "earphone"
-    ) ||
-    category.includes(
-      "speaker"
-    ) ||
-    category.includes(
-      "gaming"
-    ) ||
-    category.includes(
-      "computer accessories"
-    ) ||
-    category.includes(
-      "home electronics"
-    ) ||
-    category.includes(
-      "digital"
-    ) ||
-    text.includes(
-      "bluetooth"
-    ) ||
-    text.includes(
-      "keyboard"
-    ) ||
-    text.includes(
-      "mouse"
-    ) ||
-    text.includes(
-      "usb"
-    ) ||
-    text.includes(
-      "charger"
-    ) ||
-    text.includes(
-      "power bank"
-    ) ||
-    text.includes(
-      "projector"
-    ) ||
-    text.includes(
-      "drone"
-    ) ||
-    text.includes(
-      "headphones"
-    ) ||
-    text.includes(
-      "earbuds"
-    ) ||
-    text.includes(
-      "wireless earbuds"
-    ) ||
-    text.includes(
-      "gaming mouse"
-    ) ||
-    text.includes(
-      "gaming keyboard"
-    ) ||
-    text.includes(
-      "game controller"
-    ) ||
-    text.includes(
-      "computer monitor"
-    ) ||
-    text.includes(
-      "webcam"
-    ) ||
-    text.includes(
-      "microphone"
-    ) ||
-    text.includes(
-      "bluetooth speaker"
-    ) ||
-    text.includes(
-      "phone case"
-    ) ||
-    text.includes(
-      "mobile phone"
-    ) ||
-    text.includes(
-      "smartphone"
-    ) ||
-    text.includes(
-      "power adapter"
-    )
+    category.includes("consumer electronics") ||
+    category.includes("computer") ||
+    category.includes("computers") ||
+    category.includes("phones") ||
+    category.includes("phone") ||
+    category.includes("mobile") ||
+    category.includes("tablet") ||
+    category.includes("electronic") ||
+    category.includes("camera") ||
+    category.includes("audio") ||
+    category.includes("headphone") ||
+    category.includes("earphone") ||
+    category.includes("speaker") ||
+    category.includes("gaming") ||
+    category.includes("computer accessories") ||
+    category.includes("home electronics") ||
+    category.includes("digital") ||
+    text.includes("bluetooth") ||
+    text.includes("keyboard") ||
+    text.includes("mouse") ||
+    text.includes("usb") ||
+    text.includes("charger") ||
+    text.includes("power bank") ||
+    text.includes("projector") ||
+    text.includes("drone") ||
+    text.includes("headphones") ||
+    text.includes("earbuds") ||
+    text.includes("wireless earbuds") ||
+    text.includes("gaming mouse") ||
+    text.includes("gaming keyboard") ||
+    text.includes("game controller") ||
+    text.includes("computer monitor") ||
+    text.includes("webcam") ||
+    text.includes("microphone") ||
+    text.includes("bluetooth speaker") ||
+    text.includes("phone case") ||
+    text.includes("mobile phone") ||
+    text.includes("smartphone") ||
+    text.includes("power adapter")
   ) {
     return "Electronics";
   }
 
-  /* =================================
-     5. APPAREL
-  ================================= */
-
   if (
-    category.includes(
-      "tops"
-    ) ||
-    category.includes(
-      "tees"
-    ) ||
-    category.includes(
-      "clothing"
-    ) ||
-    category.includes(
-      "apparel"
-    ) ||
-    category.includes(
-      "men's clothing"
-    ) ||
-    category.includes(
-      "women's clothing"
-    ) ||
-    category.includes(
-      "boys' clothing"
-    ) ||
-    category.includes(
-      "girls' clothing"
-    ) ||
-    category.includes(
-      "men clothing"
-    ) ||
-    category.includes(
-      "women clothing"
-    ) ||
-    category.includes(
-      "shoes"
-    ) ||
-    category.includes(
-      "sneakers"
-    ) ||
-    category.includes(
-      "underwear"
-    ) ||
-    category.includes(
-      "sleepwear"
-    ) ||
-    category.includes(
-      "jackets"
-    ) ||
-    category.includes(
-      "pants"
-    ) ||
-    category.includes(
-      "dresses"
-    ) ||
-    category.includes(
-      "shirts"
-    ) ||
-    category.includes(
-      "hoodies"
-    ) ||
-    category.includes(
-      "skirts"
-    ) ||
-    category.includes(
-      "socks"
-    ) ||
-    category.includes(
-      "jeans"
-    ) ||
-    category.includes(
-      "bottoms"
-    ) ||
-    category.includes(
-      "outerwear"
-    ) ||
-    category.includes(
-      "footwear"
-    ) ||
-    text.includes(
-      "t-shirt"
-    ) ||
-    text.includes(
-      "t shirt"
-    ) ||
-    text.includes(
-      "tee shirt"
-    ) ||
-    text.includes(
-      "sweatshirt"
-    ) ||
-    text.includes(
-      "jeans"
-    ) ||
-    text.includes(
-      "hoodie"
-    ) ||
-    text.includes(
-      "joggers"
-    ) ||
-    text.includes(
-      "leggings"
-    ) ||
-    text.includes(
-      "shorts"
-    ) ||
-    text.includes(
-      "trousers"
-    ) ||
-    text.includes(
-      "dress"
-    ) ||
-    text.includes(
-      "skirt"
-    ) ||
-    text.includes(
-      "sneakers"
-    ) ||
-    text.includes(
-      "shoes"
-    ) ||
-    text.includes(
-      "clothing"
-    )
+    category.includes("tops") ||
+    category.includes("tees") ||
+    category.includes("clothing") ||
+    category.includes("apparel") ||
+    category.includes("men's clothing") ||
+    category.includes("women's clothing") ||
+    category.includes("boys' clothing") ||
+    category.includes("girls' clothing") ||
+    category.includes("men clothing") ||
+    category.includes("women clothing") ||
+    category.includes("shoes") ||
+    category.includes("sneakers") ||
+    category.includes("underwear") ||
+    category.includes("sleepwear") ||
+    category.includes("jackets") ||
+    category.includes("pants") ||
+    category.includes("dresses") ||
+    category.includes("shirts") ||
+    category.includes("hoodies") ||
+    category.includes("skirts") ||
+    category.includes("socks") ||
+    category.includes("jeans") ||
+    category.includes("bottoms") ||
+    category.includes("outerwear") ||
+    category.includes("footwear") ||
+    text.includes("t-shirt") ||
+    text.includes("t shirt") ||
+    text.includes("tee shirt") ||
+    text.includes("sweatshirt") ||
+    text.includes("jeans") ||
+    text.includes("hoodie") ||
+    text.includes("joggers") ||
+    text.includes("leggings") ||
+    text.includes("shorts") ||
+    text.includes("trousers") ||
+    text.includes("dress") ||
+    text.includes("skirt") ||
+    text.includes("sneakers") ||
+    text.includes("shoes") ||
+    text.includes("clothing")
   ) {
     return "Apparel";
   }
 
-  /* =================================
-     6. ACCESSORIES
-  ================================= */
-
   if (
-    category.includes(
-      "bags"
-    ) ||
-    category.includes(
-      "bag"
-    ) ||
-    category.includes(
-      "luggage"
-    ) ||
-    category.includes(
-      "wallet"
-    ) ||
-    category.includes(
-      "jewelry"
-    ) ||
-    category.includes(
-      "accessories"
-    ) ||
-    category.includes(
-      "keychain"
-    ) ||
-    category.includes(
-      "belts"
-    ) ||
-    category.includes(
-      "belt"
-    ) ||
-    category.includes(
-      "sunglasses"
-    ) ||
-    category.includes(
-      "watches"
-    ) ||
-    category.includes(
-      "watch"
-    ) ||
-    category.includes(
-      "fashion accessories"
-    ) ||
-    text.includes(
-      "backpack"
-    ) ||
-    text.includes(
-      "handbag"
-    ) ||
-    text.includes(
-      "crossbody"
-    ) ||
-    text.includes(
-      "wallet"
-    ) ||
-    text.includes(
-      "keychain"
-    ) ||
-    text.includes(
-      "belt"
-    ) ||
-    text.includes(
-      "sunglasses"
-    ) ||
-    text.includes(
-      "watch strap"
-    ) ||
-    text.includes(
-      "purse"
-    ) ||
-    text.includes(
-      "tote bag"
-    ) ||
-    text.includes(
-      "travel bag"
-    ) ||
-    text.includes(
-      "luggage"
-    ) ||
-    text.includes(
-      "jewelry"
-    ) ||
-    text.includes(
-      "necklace"
-    ) ||
-    text.includes(
-      "bracelet"
-    ) ||
-    text.includes(
-      "ring"
-    )
+    category.includes("bags") ||
+    category.includes("bag") ||
+    category.includes("luggage") ||
+    category.includes("wallet") ||
+    category.includes("jewelry") ||
+    category.includes("accessories") ||
+    category.includes("keychain") ||
+    category.includes("belts") ||
+    category.includes("belt") ||
+    category.includes("sunglasses") ||
+    category.includes("watches") ||
+    category.includes("watch") ||
+    category.includes("fashion accessories") ||
+    text.includes("backpack") ||
+    text.includes("handbag") ||
+    text.includes("crossbody") ||
+    text.includes("wallet") ||
+    text.includes("keychain") ||
+    text.includes("belt") ||
+    text.includes("sunglasses") ||
+    text.includes("watch strap") ||
+    text.includes("purse") ||
+    text.includes("tote bag") ||
+    text.includes("travel bag") ||
+    text.includes("luggage") ||
+    text.includes("jewelry") ||
+    text.includes("necklace") ||
+    text.includes("bracelet") ||
+    text.includes("ring")
   ) {
     return "Accessories";
   }
 
-  /* =================================
-     7. TOOLS / AUTOMOTIVE
-  ================================= */
-
   if (
-    category.includes(
-      "tool"
-    ) ||
-    category.includes(
-      "tool parts"
-    ) ||
-    category.includes(
-      "automotive"
-    ) ||
-    category.includes(
-      "car"
-    ) ||
-    category.includes(
-      "motorcycle"
-    ) ||
-    category.includes(
-      "vehicle"
-    ) ||
-    category.includes(
-      "replacement parts"
-    ) ||
-    category.includes(
-      "auto"
-    )
+    category.includes("tool") ||
+    category.includes("tool parts") ||
+    category.includes("automotive") ||
+    category.includes("car") ||
+    category.includes("motorcycle") ||
+    category.includes("vehicle") ||
+    category.includes("replacement parts") ||
+    category.includes("auto")
   ) {
     return "Accessories";
   }
-
-  /* =================================
-     DEFAULT
-  ================================= */
 
   return "Accessories";
 }
@@ -1263,10 +863,6 @@ async function fetchProducts(
       productsPerPage
     );
 
-    /* =================================
-       SERVER-SIDE CATEGORY FILTER
-    ================================= */
-
     if (
       activeCategory &&
       activeCategory !== "All"
@@ -1276,10 +872,6 @@ async function fetchProducts(
         activeCategory
       );
     }
-
-    /* =================================
-       SERVER-SIDE SEARCH FILTER
-    ================================= */
 
     if (
       searchQuery.trim()
@@ -2193,14 +1785,6 @@ function renderProducts() {
     return;
   }
 
-  /*
-    Category filtering is performed
-    by the backend.
-
-    Local filtering remains as a
-    compatibility safety layer.
-  */
-
   const filteredProducts =
     products.filter(
       (product) =>
@@ -2607,7 +2191,6 @@ function openProductModal(
     return;
   }
 
-  /* GA4 product view */
   trackProductView(
     product
   );
@@ -3381,7 +2964,6 @@ function addToCart(
     });
   }
 
-  /* GA4 add_to_cart */
   trackAddToCart(
     product,
     1
@@ -3634,7 +3216,6 @@ async function checkoutMultiPlatform() {
     return;
   }
 
-  /* GA4 begin_checkout */
   trackCheckoutStart();
 
   const orderSummary =
@@ -3846,27 +3427,1248 @@ document.addEventListener(
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-
-    /* =================================
-       GOOGLE ANALYTICS 4 STARTS HERE
-    ================================= */
-
     initGoogleAnalytics();
-
-    /* =================================
-       STORE INITIALIZATION
-    ================================= */
-
     injectAffiliateStyles();
-
     initTheme();
-
     updateCartUI();
-    
-    initGoogleAnalytics();
-
-    fetchProducts(
-      true
-    );
+    fetchProducts(true);
   }
 );
+
+/* =========================================================
+   APEXSHOPY CHATBOT - REAL PRODUCT API
+========================================================= */
+
+(function () {
+  const chatbotToggle =
+    document.getElementById("apexChatbotToggle");
+
+  const chatbotWindow =
+    document.getElementById("apexChatbotWindow");
+
+  const chatbotClose =
+    document.getElementById("apexChatbotClose");
+
+  const chatbotInput =
+    document.getElementById("apexChatbotInput");
+
+  const chatbotSend =
+    document.getElementById("apexChatbotSend");
+
+  const chatbotMessages =
+    document.getElementById("apexChatbotMessages");
+
+  if (
+    !chatbotToggle ||
+    !chatbotWindow ||
+    !chatbotClose ||
+    !chatbotInput ||
+    !chatbotSend ||
+    !chatbotMessages
+  ) {
+    return;
+  }
+
+  /* =====================================
+     OPEN CHATBOT
+  ===================================== */
+
+  function openChatbot() {
+    chatbotWindow.style.display = "flex";
+
+    chatbotWindow.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    chatbotInput.focus();
+  }
+
+  /* =====================================
+     CLOSE CHATBOT
+  ===================================== */
+
+  function closeChatbot() {
+    chatbotWindow.style.display = "none";
+
+    chatbotWindow.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+  }
+
+  /* =====================================
+     ADD TEXT MESSAGE
+  ===================================== */
+
+  function addMessage(
+  message,
+  type,
+  isHTML = false
+) {
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    `apex-chatbot-message ${type}`;
+
+  if (isHTML) {
+    messageElement.innerHTML =
+      message;
+  } else {
+    messageElement.textContent =
+      message;
+  }
+
+  chatbotMessages.appendChild(
+    messageElement
+  );
+
+  chatbotMessages.scrollTop =
+    chatbotMessages.scrollHeight;
+}
+  /* =====================================
+     ADD PRODUCT RESULTS
+  ===================================== */
+
+  function addProductMessage(foundProducts, budget = null) {
+    if (!Array.isArray(foundProducts) || foundProducts.length === 0) {
+      addMessage(
+        budget !== null
+          ? `I couldn't find a real ApexShopy product matching your search under PKR ${budget.toLocaleString()}. Try a higher budget or another product name.`
+          : "I couldn't find a matching ApexShopy product. Try another product name or category.",
+        "bot"
+      );
+
+      return;
+    }
+
+    const heading =
+      budget !== null
+        ? `I found these ApexShopy products under PKR ${budget.toLocaleString()}:`
+        : "I found these ApexShopy products:";
+
+    let html = `<div class="apex-chatbot-product-results">`;
+    html += `<div class="apex-chatbot-result-heading">${heading}</div>`;
+
+    foundProducts.forEach(function (product) {
+      const name = escapeHTML(
+        String(product.name || "ApexShopy Product")
+      );
+
+      const pricePKR = getChatbotProductPricePKR(product);
+
+      const priceText = Number.isFinite(pricePKR)
+        ? `PKR ${pricePKR.toLocaleString("en-PK", {
+            maximumFractionDigits: 2
+          })}`
+        : "Price unavailable";
+
+      const image = product.image
+        ? `<img src="${escapeHTML(product.image)}" alt="${name}" class="apex-chatbot-product-image">`
+        : "";
+
+      const affiliateUrl =
+        typeof product.affiliateUrl === "string" &&
+        product.affiliateUrl.trim()
+          ? product.affiliateUrl.trim()
+          : "";
+
+      let buttonHTML = "";
+
+      if (affiliateUrl) {
+        buttonHTML = `
+          <a
+            href="${escapeHTML(affiliateUrl)}"
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            class="apex-chatbot-product-link"
+            data-product-id="${escapeHTML(String(getProductId(product)))}"
+          >
+            View Product
+          </a>
+        `;
+      } else {
+        buttonHTML = `
+          <span class="apex-chatbot-product-unavailable">
+            Product link unavailable
+          </span>
+        `;
+      }
+
+      html += `
+        <div class="apex-chatbot-product">
+          ${image}
+
+          <div class="apex-chatbot-product-content">
+            <div class="apex-chatbot-product-name">
+              ${name}
+            </div>
+
+            <div class="apex-chatbot-product-price">
+              ${priceText}
+            </div>
+
+            ${buttonHTML}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+
+    addMessage(html, "bot", true);
+  }
+
+  /* =====================================
+     CHATBOT PRICE HELPER
+  ===================================== */
+
+  function getChatbotProductPricePKR(
+    product
+  ) {
+    const directPrice =
+      Number(
+        product?.pricePKR
+      );
+
+    if (
+      Number.isFinite(
+        directPrice
+      ) &&
+      directPrice >= 0
+    ) {
+      return directPrice;
+    }
+
+    const legacyPrice =
+      Number(
+        product?.price
+      );
+
+    if (
+      Number.isFinite(
+        legacyPrice
+      ) &&
+      legacyPrice >= 0
+    ) {
+      return legacyPrice;
+    }
+
+    const usd =
+      getPriceUSD(
+        product
+      );
+
+    if (
+      usd !== null &&
+      Number.isFinite(
+        usd
+      ) &&
+      usd > 0
+    ) {
+      return (
+        usd *
+        USD_TO_PKR
+      );
+    }
+
+    return null;
+  }
+
+  /* =====================================
+     SEARCH PRODUCTS WITH PAGINATION
+     
+     IMPORTANT:
+     We do NOT search only the first 5
+     products anymore.
+
+     We continue through API pages and
+     collect products that actually match
+     the requested budget.
+  ===================================== */
+
+ async function searchChatbotProducts(searchTerm, budget = null) {
+  const pageSize = 100;
+  const maxPages = 10;
+
+  function normalize(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function hasAffiliateUrl(product) {
+    return (
+      typeof product?.affiliateUrl === "string" &&
+      product.affiliateUrl.trim().length > 0
+    );
+  }
+
+  function getProductPrice(product) {
+    const pricePKR = Number(product?.pricePKR);
+
+    if (Number.isFinite(pricePKR) && pricePKR >= 0) {
+      return pricePKR;
+    }
+
+    const price = Number(product?.price);
+
+    if (Number.isFinite(price) && price >= 0) {
+      return price;
+    }
+
+    const usdPrice = Number(product?.priceUSD);
+
+    if (Number.isFinite(usdPrice) && usdPrice >= 0) {
+      return usdPrice * USD_TO_PKR;
+    }
+
+    return null;
+  }
+
+  const query = normalize(searchTerm);
+
+  if (!query) {
+    return [];
+  }
+
+  /*
+   * Product-intent groups.
+   * These stop unrelated products such as
+   * "Headphones T-Shirt" from appearing for "headphones".
+   */
+  const intentGroups = [
+    {
+      keywords: [
+        "headphone",
+        "headphones",
+        "headset",
+        "earphone",
+        "earphones",
+        "earbud",
+        "earbuds",
+        "tws"
+      ],
+      required: [
+        "headphone",
+        "headphones",
+        "headset",
+        "earphone",
+        "earphones",
+        "earbud",
+        "earbuds",
+        "tws"
+      ],
+      blocked: [
+        "t shirt",
+        "tshirt",
+        "shirt",
+        "hoodie",
+        "sticker",
+        "poster",
+        "cable",
+        "wire",
+        "adapter",
+        "case",
+        "cover",
+        "connector",
+        "bracket",
+        "replacement",
+        "accessory"
+      ]
+    },
+
+    {
+      keywords: [
+        "smartwatch",
+        "smart watch",
+        "watch",
+        "fitness watch"
+      ],
+      required: [
+        "smartwatch",
+        "smart watch",
+        "fitness watch"
+      ],
+      blocked: [
+        "strap",
+        "band",
+        "case",
+        "cover",
+        "screen protector",
+        "protector",
+        "replacement"
+      ]
+    },
+
+    {
+      keywords: [
+        "phone",
+        "smartphone",
+        "mobile",
+        "iphone",
+        "android"
+      ],
+      required: [
+        "phone",
+        "smartphone",
+        "mobile",
+        "iphone",
+        "android"
+      ],
+      blocked: [
+        "case",
+        "cover",
+        "screen protector",
+        "protector",
+        "cable",
+        "charger",
+        "holder",
+        "mount",
+        "replacement",
+        "accessory"
+      ]
+    },
+
+    {
+      keywords: [
+        "laptop",
+        "notebook computer",
+        "notebook"
+      ],
+      required: [
+        "laptop",
+        "notebook computer",
+        "notebook"
+      ],
+      blocked: [
+        "bag",
+        "sleeve",
+        "case",
+        "cover",
+        "stand",
+        "cooling pad",
+        "charger",
+        "cable",
+        "keyboard"
+      ]
+    },
+
+    {
+      keywords: [
+        "tablet",
+        "ipad"
+      ],
+      required: [
+        "tablet",
+        "ipad"
+      ],
+      blocked: [
+        "case",
+        "cover",
+        "screen protector",
+        "protector",
+        "stand",
+        "holder",
+        "keyboard"
+      ]
+    },
+
+    {
+      keywords: [
+        "camera",
+        "digital camera",
+        "action camera",
+        "webcam"
+      ],
+      required: [
+        "camera",
+        "webcam"
+      ],
+      blocked: [
+        "bag",
+        "case",
+        "cover",
+        "strap",
+        "lens cap",
+        "protector",
+        "mount",
+        "holder",
+        "battery",
+        "charger"
+      ]
+    },
+
+    {
+      keywords: [
+        "shoe",
+        "shoes",
+        "sneaker",
+        "sneakers",
+        "running shoes",
+        "football shoes",
+        "sports shoes"
+      ],
+      required: [
+        "shoe",
+        "shoes",
+        "sneaker",
+        "sneakers"
+      ],
+      blocked: [
+        "laces",
+        "lace",
+        "insole",
+        "insoles",
+        "bag",
+        "cleaner",
+        "cover"
+      ]
+    },
+
+    {
+      keywords: [
+        "shirt",
+        "t shirt",
+        "tshirt",
+        "t-shirt",
+        "top",
+        "hoodie",
+        "jacket",
+        "clothing",
+        "dress",
+        "pants",
+        "trousers"
+      ],
+      required: [
+        "shirt",
+        "t shirt",
+        "tshirt",
+        "t-shirt",
+        "top",
+        "hoodie",
+        "jacket",
+        "dress",
+        "pants",
+        "trousers"
+      ],
+      blocked: [
+        "sticker",
+        "poster",
+        "print",
+        "case"
+      ]
+    },
+
+    {
+      keywords: [
+        "gaming",
+        "gaming mouse",
+        "gaming keyboard",
+        "gaming headset",
+        "controller",
+        "gamepad"
+      ],
+      required: [
+        "gaming",
+        "controller",
+        "gamepad"
+      ],
+      blocked: [
+        "sticker",
+        "poster",
+        "shirt",
+        "t shirt"
+      ]
+    },
+
+    {
+      keywords: [
+        "fitness",
+        "gym",
+        "workout",
+        "exercise",
+        "fitness equipment"
+      ],
+      required: [
+        "fitness",
+        "gym",
+        "workout",
+        "exercise"
+      ],
+      blocked: [
+        "shirt",
+        "t shirt",
+        "poster",
+        "sticker"
+      ]
+    },
+
+    {
+      keywords: [
+        "football",
+        "soccer",
+        "badminton",
+        "tennis",
+        "basketball",
+        "sports"
+      ],
+      required: [
+        "football",
+        "soccer",
+        "badminton",
+        "tennis",
+        "basketball",
+        "sports"
+      ],
+      blocked: [
+        "sticker",
+        "poster",
+        "shirt",
+        "t shirt"
+      ]
+    },
+
+    {
+      keywords: [
+        "bag",
+        "backpack",
+        "handbag",
+        "travel bag"
+      ],
+      required: [
+        "bag",
+        "backpack",
+        "handbag"
+      ],
+      blocked: [
+        "sticker",
+        "poster",
+        "shirt",
+        "t shirt"
+      ]
+    },
+
+    {
+      keywords: [
+        "home",
+        "kitchen",
+        "decor",
+        "furniture",
+        "household"
+      ],
+      required: [
+        "home",
+        "kitchen",
+        "decor",
+        "furniture",
+        "household"
+      ],
+      blocked: [
+        "shirt",
+        "t shirt",
+        "sticker",
+        "poster"
+      ]
+    },
+
+    {
+      keywords: [
+        "electronics",
+        "electronic",
+        "gadget",
+        "charger",
+        "power bank",
+        "speaker",
+        "keyboard",
+        "mouse"
+      ],
+      required: [
+        "electronics",
+        "electronic",
+        "gadget",
+        "charger",
+        "power bank",
+        "speaker",
+        "keyboard",
+        "mouse"
+      ],
+      blocked: [
+        "shirt",
+        "t shirt",
+        "sticker",
+        "poster"
+      ]
+    }
+  ];
+
+  const matchingGroup = intentGroups.find(function (group) {
+    return group.keywords.some(function (keyword) {
+      return query.includes(keyword);
+    });
+  });
+
+  const queryWords = query
+    .split(/\s+/)
+    .filter(function (word) {
+      return word.length >= 2;
+    });
+
+  function productMatchesIntent(product) {
+    if (!matchingGroup) {
+      return true;
+    }
+
+    const title = normalize(product?.name);
+
+    const hasRequiredWord = matchingGroup.required.some(function (word) {
+      return title.includes(word);
+    });
+
+    if (!hasRequiredWord) {
+      return false;
+    }
+
+    const hasBlockedWord = matchingGroup.blocked.some(function (word) {
+      return title.includes(word);
+    });
+
+    if (hasBlockedWord) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function scoreProduct(product) {
+    const title = normalize(product?.name);
+
+    if (!title) {
+      return -1;
+    }
+
+    if (!productMatchesIntent(product)) {
+      return -1;
+    }
+
+    let score = 0;
+
+    const titleWords = title.split(/\s+/);
+
+    queryWords.forEach(function (word) {
+      if (titleWords.includes(word)) {
+        score += 20;
+      } else if (title.includes(word)) {
+        score += 8;
+      }
+    });
+
+    if (matchingGroup) {
+      matchingGroup.required.forEach(function (word) {
+        if (title.includes(word)) {
+          score += 25;
+        }
+      });
+    }
+
+    if (title === query) {
+      score += 100;
+    }
+
+    if (title.startsWith(query)) {
+      score += 50;
+    }
+
+    return score;
+  }
+
+  const allProducts = [];
+
+  try {
+    for (let page = 1; page <= maxPages; page++) {
+      const apiUrl =
+        `${API_BASE_URL}/api/products` +
+        `?search=${encodeURIComponent(searchTerm)}` +
+        `&page=${page}` +
+        `&limit=${pageSize}`;
+
+      const response = await fetch(apiUrl);
+
+      if (!response.ok) {
+        throw new Error(`Product API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const products = Array.isArray(data?.products)
+        ? data.products
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+      if (products.length === 0) {
+        break;
+      }
+
+      products.forEach(function (product) {
+        /*
+         * IMPORTANT:
+         * Only affiliate products are allowed.
+         */
+        if (!hasAffiliateUrl(product)) {
+          return;
+        }
+
+        const pricePKR = getProductPrice(product);
+
+        /*
+         * IMPORTANT:
+         * Budget is a hard maximum.
+         */
+        if (
+          budget !== null &&
+          (
+            pricePKR === null ||
+            pricePKR > budget
+          )
+        ) {
+          return;
+        }
+
+        const score = scoreProduct(product);
+
+        if (score < 0) {
+          return;
+        }
+
+        allProducts.push({
+          product: product,
+          score: score,
+          pricePKR: pricePKR
+        });
+      });
+
+      if (
+        data?.hasMore === false ||
+        products.length < pageSize
+      ) {
+        break;
+      }
+    }
+
+    /*
+     * Best relevance first.
+     * If relevance is equal, cheaper products first.
+     */
+    allProducts.sort(function (a, b) {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      if (
+        a.pricePKR !== null &&
+        b.pricePKR !== null
+      ) {
+        return a.pricePKR - b.pricePKR;
+      }
+
+      if (a.pricePKR !== null) {
+        return -1;
+      }
+
+      if (b.pricePKR !== null) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    /*
+     * Remove duplicate products.
+     */
+    const results = [];
+    const seen = new Set();
+
+    for (const item of allProducts) {
+      const product = item.product;
+
+      const id =
+        product?._id ??
+        product?.id ??
+        product?.slug ??
+        product?.affiliateUrl ??
+        product?.name;
+
+      const key = String(id);
+
+      if (seen.has(key)) {
+        continue;
+      }
+
+      seen.add(key);
+      results.push(product);
+
+      /*
+       * Show a maximum of 5 products.
+       */
+      if (results.length >= 5) {
+        break;
+      }
+    }
+
+    return results;
+  } catch (error) {
+    console.error("ApexShopy chatbot product search error:", error);
+    return [];
+  }
+}
+  /* =====================================
+     EXTRACT BUDGET
+  ===================================== */
+
+  function extractBudget(
+    text
+  ) {
+    const match =
+      text.match(
+        /(?:under|below|less than|max(?:imum)?|budget)\s*(?:pkr|rs\.?|₨)?\s*([\d,]+)/i
+      );
+
+    if (
+      !match
+    ) {
+      return null;
+    }
+
+    const amount =
+      Number(
+        match[1].replace(
+          /,/g,
+          ""
+        )
+      );
+
+    return Number.isFinite(
+      amount
+    )
+      ? amount
+      : null;
+  }
+
+  /* =====================================
+     REMOVE BUDGET / CHAT WORDS
+  ===================================== */
+
+  function getSearchTerm(text) {
+  let searchTerm = text
+    .replace(/under\s*(?:pkr|rs\.?|₨)?\s*[\d,]+/gi, "")
+    .replace(/below\s*(?:pkr|rs\.?|₨)?\s*[\d,]+/gi, "")
+    .replace(/less than\s*(?:pkr|rs\.?|₨)?\s*[\d,]+/gi, "")
+    .replace(/(?:pkr|rs\.?|₨)\s*[\d,]+/gi, "")
+    .replace(
+      /\b(show|find|search|give|me|some|something|products?|please|i|need|want|for|my|budget|cheap|under|below|real|apexshopy|shop|items?|item)\b/gi,
+      " "
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return searchTerm;
+}
+  /* =====================================
+     PROCESS USER MESSAGE
+  ===================================== */
+
+  async function processMessage(
+    message
+  ) {
+    const text =
+      message
+        .toLowerCase()
+        .trim();
+
+    /* GREETING */
+
+    if (
+      /\bhi\b/.test(
+        text
+      ) ||
+      /\bhello\b/.test(
+        text
+      ) ||
+      /\bhey\b/.test(
+        text
+      )
+    ) {
+      addMessage(
+        "Hi! Welcome to ApexShopy. What product are you looking for?",
+        "bot"
+      );
+
+      return;
+    }
+
+    /* HELP */
+
+    if (
+      text.includes(
+        "help"
+      ) ||
+      text.includes(
+        "what can you do"
+      )
+    ) {
+      addMessage(
+        "I can search real ApexShopy products by name, category and budget. Try: 'show me watches' or 'find smartwatches under PKR 3000'.",
+        "bot"
+      );
+
+      return;
+    }
+
+    /* CATEGORIES */
+
+    if (
+      text.includes(
+        "category"
+      ) ||
+      text.includes(
+        "categories"
+      )
+    ) {
+      addMessage(
+        "You can search Electronics, Apparel, Accessories, Sports & Outdoors, Wearables and Smart Home products.",
+        "bot"
+      );
+
+      return;
+    }
+
+    /* THANK YOU */
+
+    if (
+      text.includes(
+        "thank"
+      ) ||
+      text.includes(
+        "thanks"
+      )
+    ) {
+      addMessage(
+        "You're welcome! Happy shopping with ApexShopy.",
+        "bot"
+      );
+
+      return;
+    }
+
+    /* EXTRACT BUDGET */
+
+    const budget =
+      extractBudget(
+        text
+      );
+
+    /* EXTRACT PRODUCT SEARCH */
+
+    let searchTerm =
+      getSearchTerm(
+        text
+      );
+
+    /*
+      Friendly fallbacks.
+    */
+
+    if (
+      !searchTerm
+    ) {
+      if (
+        text.includes(
+          "gadget"
+        )
+      ) {
+        searchTerm =
+          "gadget";
+      } else if (
+        text.includes(
+          "electronics"
+        ) ||
+        text.includes(
+          "electronic"
+        )
+      ) {
+        searchTerm =
+          "electronics";
+      } else if (
+        text.includes(
+          "fitness"
+        ) ||
+        text.includes(
+          "gym"
+        )
+      ) {
+        searchTerm =
+          "fitness";
+      } else if (
+        text.includes(
+          "sport"
+        )
+      ) {
+        searchTerm =
+          "sports";
+      } else if (
+        text.includes(
+          "watch"
+        )
+      ) {
+        searchTerm =
+          "watch";
+      } else {
+        searchTerm =
+          "";
+      }
+    }
+
+    /*
+      Tell the user what is happening.
+    */
+
+    addMessage(
+      budget !== null
+        ? `Searching ApexShopy for ${searchTerm} under PKR ${budget.toLocaleString(
+            "en-PK"
+          )}...`
+        : `Searching ApexShopy for ${searchTerm}...`,
+      "bot"
+    );
+
+    /*
+      IMPORTANT:
+      Budget is passed into the search
+      function so the function can scan
+      multiple API pages.
+    */
+
+    const foundProducts =
+      await searchChatbotProducts(
+        searchTerm,
+        budget
+      );
+
+    addProductMessage(
+      foundProducts,
+      budget
+    );
+  }
+
+  /* =====================================
+     SEND MESSAGE
+  ===================================== */
+
+  async function sendMessage() {
+    const message =
+      chatbotInput.value.trim();
+
+    if (
+      !message
+    ) {
+      return;
+    }
+
+    addMessage(
+      message,
+      "user"
+    );
+
+    chatbotInput.value =
+      "";
+
+    chatbotSend.disabled =
+      true;
+
+    try {
+      await processMessage(
+        message
+      );
+
+    } catch (
+      error
+    ) {
+      console.error(
+        "Chatbot error:",
+        error
+      );
+
+      addMessage(
+        "Sorry, I couldn't search the store right now. Please try again.",
+        "bot"
+      );
+
+    } finally {
+      chatbotSend.disabled =
+        false;
+
+      chatbotInput.focus();
+    }
+  }
+
+  /* =====================================
+     CHATBOT TOGGLE
+  ===================================== */
+
+  chatbotToggle.addEventListener(
+    "click",
+    function () {
+      const isOpen =
+        chatbotWindow.style.display ===
+        "flex";
+
+      if (
+        isOpen
+      ) {
+        closeChatbot();
+      } else {
+        openChatbot();
+      }
+    }
+  );
+
+  /* =====================================
+     CLOSE BUTTON
+  ===================================== */
+
+  chatbotClose.addEventListener(
+    "click",
+    closeChatbot
+  );
+
+  /* =====================================
+     SEND BUTTON
+  ===================================== */
+
+  chatbotSend.addEventListener(
+    "click",
+    sendMessage
+  );
+
+  /* =====================================
+     ENTER KEY
+  ===================================== */
+
+  chatbotInput.addEventListener(
+    "keydown",
+    function (event) {
+      if (
+        event.key ===
+        "Enter"
+      ) {
+        event.preventDefault();
+
+        sendMessage();
+      }
+    }
+  );
+})();
