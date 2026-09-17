@@ -3335,3 +3335,158 @@ img {
   }
 }
 
+/* =========================================================
+   APEXSHOPY CHATBOT
+========================================================= */
+
+.apex-chatbot {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  font-family: inherit;
+}
+
+/* Floating button */
+.apex-chatbot-toggle {
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: #111827;
+  color: #ffffff;
+  font-size: 25px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apex-chatbot-toggle:hover {
+  transform: scale(1.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Chat window */
+.apex-chatbot-window {
+  position: absolute;
+  right: 0;
+  bottom: 72px;
+  width: 350px;
+  height: 470px;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+}
+
+/* Header */
+.apex-chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: #111827;
+  color: #ffffff;
+}
+
+.apex-chatbot-header strong {
+  display: block;
+  font-size: 16px;
+}
+
+.apex-chatbot-header span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.apex-chatbot-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Messages */
+.apex-chatbot-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f9fafb;
+}
+
+.apex-chatbot-message {
+  max-width: 82%;
+  padding: 11px 13px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.apex-chatbot-message.bot {
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+  border-bottom-left-radius: 5px;
+}
+
+/* Input area */
+.apex-chatbot-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.apex-chatbot-input input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  font: inherit;
+}
+
+.apex-chatbot-input input:focus {
+  border-color: #111827;
+}
+
+.apex-chatbot-input button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .apex-chatbot {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .apex-chatbot-window {
+    right: 0;
+    bottom: 70px;
+    width: calc(100vw - 32px);
+    height: 65vh;
+    max-height: 500px;
+  }
+}
+

@@ -1496,7 +1496,78 @@
 
   </footer>
 
+  <!-- =========================================================
+       APEXSHOPY CHATBOT
+  ========================================================== -->
 
+  <div class="apex-chatbot">
+
+    <!-- Floating Chat Button -->
+    <button
+      id="apexChatbotToggle"
+      class="apex-chatbot-toggle"
+      aria-label="Open ApexShopy Chat"
+      type="button"
+    >
+      💬
+    </button>
+
+    <!-- Chat Window -->
+    <div
+      id="apexChatbotWindow"
+      class="apex-chatbot-window"
+      aria-hidden="true"
+    >
+
+      <div class="apex-chatbot-header">
+
+        <div>
+          <strong>ApexShopy Assistant</strong>
+          <span>Shopping help</span>
+        </div>
+
+        <button
+          id="apexChatbotClose"
+          class="apex-chatbot-close"
+          aria-label="Close chat"
+          type="button"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div id="apexChatbotMessages" class="apex-chatbot-messages">
+
+        <div class="apex-chatbot-message bot">
+          👋 Hi! Welcome to ApexShopy.<br>
+          How can I help you find something today?
+        </div>
+
+      </div>
+
+      <div class="apex-chatbot-input">
+
+        <input
+          id="apexChatbotInput"
+          type="text"
+          placeholder="Ask about products..."
+          autocomplete="off"
+        />
+
+        <button
+          id="apexChatbotSend"
+          type="button"
+          aria-label="Send message"
+        >
+          ➤
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
   <!-- =========================================================
        JAVASCRIPT

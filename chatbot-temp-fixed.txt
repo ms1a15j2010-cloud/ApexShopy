@@ -1,0 +1,194 @@
+﻿   APEXSHOPY CHATBOT
+========================================================= */
+
+(function () {
+  const chatbotToggle = document.getElementById("apexChatbotToggle");
+  const chatbotWindow = document.getElementById("apexChatbotWindow");
+  const chatbotClose = document.getElementById("apexChatbotClose");
+  const chatbotInput = document.getElementById("apexChatbotInput");
+  const chatbotSend = document.getElementById("apexChatbotSend");
+  const chatbotMessages = document.getElementById("apexChatbotMessages");
+
+  if (
+    !chatbotToggle ||
+    !chatbotWindow ||
+    !chatbotClose ||
+    !chatbotInput ||
+    !chatbotSend ||
+    !chatbotMessages
+  ) {
+    return;
+  }
+
+  function openChatbot() {
+    chatbotWindow.style.display = "flex";
+    chatbotWindow.setAttribute("aria-hidden", "false");
+    chatbotInput.focus();
+  }
+
+  function closeChatbot() {
+    chatbotWindow.style.display = "none";
+    chatbotWindow.setAttribute("aria-hidden", "true");
+  }
+
+  function addMessage(
+  message,
+  type,
+  isHTML = false
+) {
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    `apex-chatbot-message ${type}`;
+
+  if (isHTML) {
+    messageElement.innerHTML =
+      message;
+  } else {
+    messageElement.textContent =
+      message;
+  }
+
+  chatbotMessages.appendChild(
+    messageElement
+  );
+
+  chatbotMessages.scrollTop =
+    chatbotMessages.scrollHeight;
+}
+  function getBotResponse(message) {
+    const text =
+      message.toLowerCase().trim();
+
+    if (
+  /\bhi\b/.test(text) ||
+  /\bhello\b/.test(text) ||
+  /\bhey\b/.test(text)
+) {
+      return "Hi! Welcome to ApexShopy. How can I help you today?";
+    }
+
+    if (
+      text.includes("gadget") ||
+      text.includes("electronics") ||
+      text.includes("electronic")
+    ) {
+      return "Sure! ApexShopy has gadgets, electronics, accessories and smart products. What type of product are you looking for?";
+    }
+
+    if (
+      text.includes("fitness") ||
+      text.includes("sport") ||
+      text.includes("gym")
+    ) {
+      return "Great choice! We have fitness and sports products. Tell me what you're looking for and I'll help you find something suitable.";
+    }
+
+    if (
+      text.includes("smartwatch") ||
+      text.includes("smart watch") ||
+      text.includes("watch")
+    ) {
+      return "We have wearable products including smartwatches and watches. Tell me your budget and I can help narrow down the options.";
+    }
+
+    if (
+      text.includes("cheap") ||
+      text.includes("budget") ||
+      text.includes("under")
+    ) {
+      return "Sure! Tell me your maximum budget, for example: 'under PKR 3000'.";
+    }
+
+    if (
+      text.includes("price") ||
+      text.includes("cost")
+    ) {
+      return "I can help you find products by price. Tell me your budget or the product you're interested in.";
+    }
+
+    if (
+      text.includes("category") ||
+      text.includes("categories")
+    ) {
+      return "You can explore Electronics, Apparel, Accessories, Sports & Outdoors, Wearables and Smart Home products.";
+    }
+
+    if (
+      text.includes("help") ||
+      text.includes("what can you do")
+    ) {
+      return "I can help you explore products, categories, budgets and shopping ideas. Try asking: 'Show me gadgets' or 'I need something under PKR 3000'.";
+    }
+
+    if (
+      text.includes("thank") ||
+      text.includes("thanks")
+    ) {
+      return "You're welcome! Happy shopping with ApexShopy.";
+    }
+
+    return "I'm here to help you shop! Try asking about gadgets, fitness products, watches, categories or products under a specific budget.";
+  }
+
+  function sendMessage() {
+    const message =
+      chatbotInput.value.trim();
+
+    if (!message) {
+      return;
+    }
+
+    addMessage(
+      message,
+      "user"
+    );
+
+    chatbotInput.value = "";
+
+    setTimeout(function () {
+      const response =
+        getBotResponse(message);
+
+      addMessage(
+        response,
+        "bot"
+      );
+    }, 400);
+  }
+
+  chatbotToggle.addEventListener(
+    "click",
+    function () {
+      const isOpen =
+        chatbotWindow.style.display === "flex";
+
+      if (isOpen) {
+        closeChatbot();
+      } else {
+        openChatbot();
+      }
+    }
+  );
+
+  chatbotClose.addEventListener(
+    "click",
+    closeChatbot
+  );
+
+  chatbotSend.addEventListener(
+    "click",
+    sendMessage
+  );
+
+  chatbotInput.addEventListener(
+    "keydown",
+    function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+  );
+})();
